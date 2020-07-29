@@ -1,0 +1,41 @@
+*
+    padding: 0
+    margin: 0
+    box-sizing: border-box
+    -webkit-tap-highlight-color: transparent
+    -webkit-font-smoothing: antialiased
+
+    &:before, &:after
+        box-sizing: border-box
+        -webkit-tap-highlight-color: transparent
+    
+body
+    font-family: $primary-font
+    font-size: 16px
+    font-weight: $font-weight-regular
+    line-height: 19px
+    color: $brown
+
+ul
+    li
+        list-style: none
+        padding: 0
+
+img
+    max-width: 100%
+
+a
+    text-decoration: none
+    color: inherit
+    cursor: pointer
+
+    &:active, &:hover, &:focus
+        @extend a
+
+input, button, textarea
+    &:focus, &:active
+        box-shadow: none
+        outline: 0
+
+abbr[title]
+    text-decoration: none

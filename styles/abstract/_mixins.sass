@@ -1,0 +1,47 @@
+@mixin fontFace($family, $weight, $fileName, $style: normal)
+    @font-face
+        font-family: $family
+        font-style: $style
+        font-weight: $weight
+        font-display: block
+        src: local($family), url('/static/fonts/#{$fileName}.woff') format('woff')
+        
+@mixin placeholder
+    &::-webkit-input-placeholder
+        @content
+    &:-ms-input-placeholder
+        @content
+    &::-moz-placeholder
+        @content
+    &:-moz-placeholder
+        @content
+
+@mixin image-full-fit($fit, $position)
+    width: 100%
+    height: 100%
+    object-fit: $fit
+    object-position: $position
+
+@mixin full-circle($width, $height)
+    width: $width
+    min-width: $width
+    flex: 0 0 $width
+    height: $height
+    border-radius: 50%
+
+@mixin ellipsis
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+
+@mixin full-absolute
+    position: absolute
+    top: 0
+    left: 0
+    bottom: 0
+    right: 0
+
+@mixin flex-position($justify, $align)
+    display: flex
+    justify-content: $justify
+    align-items: $align

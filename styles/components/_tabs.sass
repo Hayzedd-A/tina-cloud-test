@@ -1,0 +1,42 @@
+.tabs-container
+    display: flex
+    width: 100%
+    overflow: auto
+    padding: 30px
+    position: sticky
+    position: -webkit-sticky
+    top: 0
+    background: $white
+    z-index: 10
+    -ms-overflow-style: none
+    scrollbar-width: none
+
+    &::-webkit-scrollbar
+        display: none
+
+    .tab-item
+        font-size: 21px
+        margin-right: 30px
+        position: relative
+        white-space: nowrap
+        cursor: pointer
+        @include flex-position(center, initial)
+        // transition: all ease-in-out .3s
+
+        &::after
+            content: ""
+            position: absolute
+            @include full-circle(7px, 7px)
+            background: $brown
+            opacity: 0
+            bottom: -15px
+            transition: all ease-in-out .3s
+
+        &:last-child
+            margin-right: 0
+
+        &.active
+            font-weight: $font-weight-bold
+
+            &::after
+                opacity: 1

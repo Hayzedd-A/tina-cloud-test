@@ -1,0 +1,217 @@
+.shop-container
+    min-width: 100%
+    height: 100%
+    overflow: auto
+
+    & > .container
+        padding-bottom: 120px
+    
+.shop-section
+    margin-top: 35px
+    padding: 0 30px
+    display: flex
+    flex-direction: column
+    align-items: center
+
+    .section-title
+        height: 35px
+        width: auto
+        @include flex-position(initial, center)
+        border-radius: 18px
+        padding: 0 10px
+        font-size: 16px
+        font-weight: $font-weight-bold
+        background: transparentize($grey, 0.87)
+
+        &.favorite
+            background: transparentize($yellow, 0.87)
+
+        .icon
+            display: flex
+            width: 20px
+            margin-right: 10px
+
+            img, svg
+                width: 100%
+                height: auto
+
+    .section-items
+        margin-top: 30px
+        display: grid
+        grid-template-columns: repeat(2, 1fr)
+        grid-gap: 25px
+
+        @media (min-width: 640px)
+            grid-template-columns: repeat(3, 1fr)
+            grid-gap: 30px
+
+        @media (min-width: 1024px)
+            grid-template-columns: repeat(4, 1fr)
+            grid-gap: 40px
+
+        .shop-item
+            height: 285px
+            border-radius: 15px
+            background: transparentize($yellow, 0.80)
+            overflow: hidden
+            cursor: pointer
+
+            .item-image
+                width: 100%
+                height: 240px
+                border-radius: 0 0 15px 15px
+                position: relative
+                overflow: hidden
+
+                img
+                    @include image-full-fit(cover, top)
+
+                .item-name
+                    @include flex-position(initial, flex-end)
+                    position: absolute
+                    bottom: 0
+                    width: 100%
+                    height: 100px
+                    background: $shop-item-name-shadow
+                    color: $white
+                    font-weight: $font-weight-bold
+                    padding: 10px
+                    word-break: break-word
+
+            .item-price
+                font-size: 18px
+                font-weight: $font-weight-bold
+                display: block
+                padding: 12px 15px
+
+.shop-item-details
+    min-width: 100%
+    height: 100%
+    overflow: auto
+    padding-bottom: 100px
+    position: relative
+
+    .item-image
+        height: 360px
+        position: relative
+
+        img
+            @include image-full-fit(cover, top)
+
+        .back
+            position: absolute
+            top: 45px
+            left: 20px
+            @include full-circle(45px, 45px)
+            @include flex-position(center, center)
+            background: $black-trans
+            cursor: pointer
+            padding: 10px
+            transform: rotate(180deg)
+
+            svg
+                path
+                    stroke: $white
+
+    .item-info
+        border-bottom: 1px solid transparentize($grey-2, 0.82)
+        padding: 20px
+
+        .name-price
+            @include flex-position(space-between, flex-start)
+            font-size: 22px
+            font-weight: $font-weight-bold
+            line-height: 27px
+            margin-bottom: 25px
+
+            .name
+                max-width: 230px
+                word-break: break-word
+
+            .price
+                white-space: nowrap
+
+        .description
+            line-height: 19px
+            opacity: 0.6
+
+    .select-section
+        padding: 20px
+        margin-bottom: 20px
+
+        .title
+            display: block
+            font-size: 14px
+            font-weight: $font-weight-bold
+            color: $grey-2
+            margin-bottom: 35px
+            letter-spacing: 1px
+
+        .sizes
+            width: 100%
+            overflow: auto
+            @include flex-position(initial, center)
+            -ms-overflow-style: none
+            scrollbar-width: none
+
+            &::-webkit-scrollbar
+                display: none
+
+            .size-selector
+                @include flex-position(center, center)
+                height: 45px
+                padding: 0 20px
+                font-size: 20px
+                background: transparentize($grey, 0.87)
+                border: 2px solid transparent
+                border-radius: 22px
+                transition: all ease-in-out .4s
+                margin-right: 30px
+                cursor: pointer
+
+                &.active
+                    border-color: $yellow
+                    background: $white
+                    font-weight: $font-weight-bold
+
+                &:last-child
+                    margin-right: 0
+
+        .quantity
+            @include flex-position(space-between, center)
+
+            .add-toppings
+                @include flex-position(center, center)
+                cursor: pointer
+                padding: 0 20px
+                font-size: 14px
+                font-weight: $font-weight-bold
+                letter-spacing: 1px
+                height: 65px
+                border-radius: 32px
+                background: transparentize($yellow, 0.87)
+
+    .add-to-cart
+        position: fixed
+        bottom: 0
+        width: 100%
+        background: $yellow
+        box-shadow: $add-cart-shadow
+        height: 85px
+        padding: 0 20px
+        font-size: 22px
+        font-weight: $font-weight-bold
+        line-height: 1
+
+        & > div
+            @include flex-position(initial, center)
+
+        .container
+            height: 100%
+            @include flex-position(space-between, center)
+
+        svg
+            margin-left: 20px
+            opacity: 0.6
+        
+

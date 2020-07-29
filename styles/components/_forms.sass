@@ -1,0 +1,30 @@
+.number-selector-container
+    @include flex-position(space-between, center)
+    width: 190px
+    border-radius: 32px
+    background: transparentize($grey, 0.87)
+    padding: 10px
+
+    .selector
+        @include flex-position(center, center)
+        @include full-circle(50px, 50px)
+        background: $white
+        box-shadow: $number-selector-shadow
+        cursor: pointer
+
+        svg
+            width: 100%
+            height: auto
+
+        &.disabled
+            pointer-events: none
+            opacity: 0.3
+
+    input
+        background-color: transparent
+        border: 0
+        color: $brown
+        font-size: 22px
+        font-weight: $font-weight-bold
+        text-align: center
+        width: 40px

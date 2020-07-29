@@ -1,7 +1,7 @@
-import '../styles.scss'
+import "../styles/style.sass"
 
-function MyApp({ Component, pageProps }) {
+function GourmetTwist({ Component, pageProps }) {
   return <Component {...pageProps} />
 }
 
-export default MyApp
+export default GourmetTwist
