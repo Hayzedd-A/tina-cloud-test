@@ -46,16 +46,21 @@ class Home extends Component {
   render() {
     const { selectedItem, showDetails, showSplash } = this.state;
 
-    return showSplash ? (
-      <SplashScreen />
-    ) : (
+    return (
       <Main>
-        <div className="swipe-container">
-          <div className={classNames("swiper", { showDetails })}>
-            <Shop selectItem={this.selectItem} />
-            <ShopItemDetails goBack={this.goBack} selectedItem={selectedItem} />
+        {showSplash ? (
+          <SplashScreen />
+        ) : (
+          <div className="swipe-container">
+            <div className={classNames("swiper", { showDetails })}>
+              <Shop selectItem={this.selectItem} />
+              <ShopItemDetails
+                goBack={this.goBack}
+                selectedItem={selectedItem}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </Main>
     );
   }

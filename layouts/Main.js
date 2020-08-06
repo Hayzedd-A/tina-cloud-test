@@ -1,8 +1,11 @@
-import Head from "../components/Head";
+import Head from "next/head";
 
 const Main = ({ children }) => (
   <>
-    <Head />
+    <Head>
+      <title>Gourmet Twist App</title>
+    </Head>
+
     <div className="app">{children}</div>
   </>
 );
