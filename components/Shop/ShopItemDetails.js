@@ -1,5 +1,6 @@
 import { Component } from "react";
 import classNames from "classnames";
+import * as shallowequal from "shallowequal";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 
 import { CartConsumer } from "../../providers/CartProvider";
@@ -11,38 +12,7 @@ import { RightArrow } from "../../public/static/vectors";
 import { reduceLinearArray } from "../../utils/functions";
 import Toaster from "../Toaster";
 
-const toppings = [
-  {
-    id: 1,
-    name: "Peanut",
-    price: "1000"
-  },
-  {
-    id: 2,
-    name: "Pecan",
-    price: "2100"
-  },
-  {
-    id: 3,
-    name: "Almond",
-    price: "1300"
-  },
-  {
-    id: 4,
-    name: "Raisins",
-    price: "1100"
-  },
-  {
-    id: 5,
-    name: "Granola",
-    price: "2400"
-  },
-  {
-    id: 6,
-    name: "Chocolate",
-    price: "4400"
-  }
-];
+import { toppings } from "./data";
 
 class ShopItemDetails extends Component {
   constructor(props) {
@@ -92,12 +62,13 @@ class ShopItemDetails extends Component {
     });
   };
 
-  addToCart = () => {
+  cartAction = () => {
     const { selectedSize, selectedToppings, quantity } = this.state;
-    const { selectedItem, addToCart, goBack } = this.props;
-    const { name, price } = selectedItem;
+    const { selectedItem, addToCart, updateCart, goBack } = this.props;
+    const { id, name, price } = selectedItem;
 
     const cartItem = {
+      id,
       name,
       price,
       size: selectedSize,
@@ -106,13 +77,23 @@ class ShopItemDetails extends Component {
       totalCost: this.getTotalCost()
     };
 
-    addToCart(cartItem, () => {
-      this.openToaster(
-        "success",
-        `Added ${name} x${quantity} successfully to the cart`
-      );
-      goBack();
-    });
+    const inCart = this.checkCart(id);
+
+    inCart
+      ? updateCart(cartItem, () => {
+          this.openToaster(
+            "success",
+            `Updated ${name} x${quantity} in the cart successfully`
+          );
+          goBack();
+        })
+      : addToCart(cartItem, () => {
+          this.openToaster(
+            "success",
+            `Added ${name} x${quantity} successfully to the cart`
+          );
+          goBack();
+        });
   };
 
   getTotalCost = () => {
@@ -145,6 +126,33 @@ class ShopItemDetails extends Component {
     });
   };
 
+  checkCart = itemId => {
+    const inCart = this.props.cart.find(({ id }) => id === itemId);
+
+    return inCart;
+  };
+
+  componentDidUpdate(prevProps) {
+    const { selectedItem } = this.props;
+
+    if (!shallowequal(prevProps.selectedItem, selectedItem)) {
+      const inCart = this.checkCart(selectedItem.id);
+      const { quantity, toppings, size } = inCart || {};
+
+      inCart
+        ? this.setState({
+            quantity,
+            selectedToppings: toppings,
+            selectedSize: size
+          })
+        : this.setState({
+            quantity: 1,
+            selectedToppings: [],
+            selectedSize: "Regular"
+          });
+    }
+  }
+
   render() {
     const {
       selectedSize,
@@ -157,6 +165,8 @@ class ShopItemDetails extends Component {
     const { image, name, price, description } = selectedItem;
 
     const sizes = ["Regular", "Mini", "Maxi", "Large"];
+
+    const inCart = this.checkCart(selectedItem.id);
 
     return (
       <div className="shop-item-details">
@@ -214,9 +224,13 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         </div>
-        <div className="add-to-cart" onClick={this.addToCart}>
+        <div className="add-to-cart" onClick={this.cartAction}>
           <div className="container">
-            <span>Add {quantity} to Order</span>
+            {inCart ? (
+              <span>Update order</span>
+            ) : (
+              <span>Add {quantity} to Order</span>
+            )}
             <div>
               <span className="total-price">
                 ₦ {this.getTotalCost().toLocaleString()}

@@ -237,10 +237,10 @@
 
     .toppings-form
         background: $white
-        border-radius: 25px 25px 0 0
         width: 100%
         max-width: 700px
-        max-height: 720px
+        max-height: 700px
+        border-radius: 25px 25px 0 0
 
         &-header
             @include flex-position(space-between, center)
@@ -260,6 +260,9 @@
                     height: auto
 
         .toppings-list
+            height: 400px
+            overflow: auto
+
             .item
                 @include flex-position(space-between, center)
                 padding: 15px 20px

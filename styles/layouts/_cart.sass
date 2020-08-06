@@ -5,7 +5,7 @@
     padding-bottom: 160px
 
     .cart-header
-        padding: 50px 20px 
+        padding: 50px 20px 35px
         position: relative
         
         .back
@@ -33,13 +33,15 @@
             align-self: center
             max-width: 290px
             height: 60px
-            margin: 45px auto
+            margin: 45px auto 0
             padding: 0 15px
             border-radius: 31px
             background: transparentize($yellow, 0.87)
 
             .icon
-                width: 30px
+                width: 20px
+                flex: 0 0 20px
+                height: 30px
                 margin-right: 10px
                 display: flex
 
@@ -86,6 +88,10 @@
 
                     .name
                         font-size: 16px
+                        max-width: 170px
+
+                    .price
+                        white-space: nowrap
 
                 .main-description
                     .price

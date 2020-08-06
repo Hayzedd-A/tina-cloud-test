@@ -3,11 +3,13 @@ import classNames from "classnames";
 
 import Shop, { ShopItemDetails } from "../components/Shop";
 import Main from "../layouts/Main";
+import SplashScreen from "../components/SplashScreen";
 
 class Home extends Component {
   state = {
     selectedItem: {},
-    showDetails: false
+    showDetails: false,
+    showSplash: true
   };
 
   selectItem = selectedItem => {
@@ -29,10 +31,24 @@ class Home extends Component {
     );
   };
 
-  render() {
-    const { selectedItem, showDetails } = this.state;
+  componentDidMount() {
+    this.splashtimeout = setTimeout(() => {
+      this.setState({
+        showSplash: false
+      });
+    }, 4000);
+  }
 
-    return (
+  componentWillUnmount() {
+    clearTimeout(this.splashtimeout);
+  }
+
+  render() {
+    const { selectedItem, showDetails, showSplash } = this.state;
+
+    return showSplash ? (
+      <SplashScreen />
+    ) : (
       <Main>
         <div className="swipe-container">
           <div className={classNames("swiper", { showDetails })}>

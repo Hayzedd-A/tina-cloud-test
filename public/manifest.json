@@ -1,0 +1,21 @@
+{
+    "name": "gourmet-twist",
+    "short_name": "gourmet-twist",
+    "display": "standalone",
+    "orientation": "portrait",
+    "theme_color": "#F2C131",
+    "background_color": "#FFFFFF",
+    "start_url": "/",
+    "icons": [
+      {
+        "src": "/icons/android-chrome-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/icons/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }

@@ -10,21 +10,27 @@ const Shop = ({ selectItem }) => {
   const tabs = ["Breads", "Zobo", "Peanut Burger", "Cakes", "Soups"];
   const items = [
     {
+      id: 1,
       name: "Double Chocolate Banana Bread",
       image: "/static/images/banana-bread.jpg",
-      description: "Nunc id arcu sem. Proin augue massa, pretium sit amet elementum vitae, elementum a ligula. ",
+      description:
+        "Nunc id arcu sem. Proin augue massa, pretium sit amet elementum vitae, elementum a ligula. ",
       price: 4900
     },
     {
+      id: 2,
       name: "Basic Banana Bread",
       image: "/static/images/banana-bread2.jpg",
-      description: "Nunc id arcu sem. Proin augue massa, pretium sit amet elementum vitae, elementum a ligula. ",
+      description:
+        "Nunc id arcu sem. Proin augue massa, pretium sit amet elementum vitae, elementum a ligula. ",
       price: 3000
     },
     {
+      id: 3,
       name: "Chocochip Banana Bread",
       image: "/static/images/banana-bread3.jpg",
-      description: "Nunc id arcu sem. Proin augue massa, pretium sit amet elementum vitae, elementum a ligula. ",
+      description:
+        "Nunc id arcu sem. Proin augue massa, pretium sit amet elementum vitae, elementum a ligula. ",
       price: 4000
     }
   ];
