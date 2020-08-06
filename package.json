@@ -5,10 +5,13 @@
     "start": "next start -p $PORT"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "classnames": "^2.2.6",
+    "moment": "^2.27.0",
     "next": "latest",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-transition-group": "1.x",
     "sass": "1.26.3"
   }
 }

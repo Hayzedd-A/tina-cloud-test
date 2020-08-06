@@ -1,13 +1,15 @@
 .number-selector-container
     @include flex-position(space-between, center)
-    width: 190px
+    width: 100%
+    max-width: 190px
     border-radius: 32px
     background: transparentize($grey, 0.87)
     padding: 10px
+    margin-right: 15px
 
     .selector
         @include flex-position(center, center)
-        @include full-circle(50px, 50px)
+        @include full-circle(45px, 45px)
         background: $white
         box-shadow: $number-selector-shadow
         cursor: pointer
@@ -28,3 +30,108 @@
         font-weight: $font-weight-bold
         text-align: center
         width: 40px
+
+    &.small
+        border-radius: 22px
+        max-width: 110px
+
+        .selector
+            @include full-circle(25px, 25px)
+
+        input
+            font-size: 16px
+            width: 25px
+
+.input-container
+    label
+        color: $grey-2
+        font-size: 14px
+        font-weight: $font-weight-bold
+        text-transform: uppercase
+        letter-spacing: 1px
+        display: block
+        margin-bottom: 15px
+        transition: all ease-in-out .3s
+
+    .input
+        border: 1px solid transparentize($brown, 0.45)
+        border-radius: 13px
+        height: 60px
+        width: 100%
+        font-size: 18px
+        padding: 0 20px
+        background: transparent
+        position: relative
+        box-shadow: 0
+        transition: all ease-in-out .3s
+        background: $white
+        color: $brown
+        @include flex-position(initial, center)
+
+        @include placeholder
+            color: transparentize($brown, 0.41)
+            font-family: $primary-font
+            font-size: 18px
+
+        &:focus
+            border-color: $brown
+            outline: 0
+
+    &.isFocused
+        label
+            color: $brown
+
+        .input
+            border-color: $brown
+
+    &.error
+        label
+            color: $red
+
+        .input
+            border-color: $red
+
+
+.checkbox-container
+    .checkbox
+        position: relative
+        display: flex
+        padding-left: 0
+        text-transform: none
+        align-items: center
+
+        span
+            display: inline-block
+
+        input
+            height: 0
+            opacity: 0
+            position: absolute
+
+            & ~ .checkbox-display
+                @include flex-position(center, center)
+                width: 20px
+                height: 20px
+                border: 2px solid transparentize($brown, 0.4)
+                border-radius: 5px
+                background: transparent
+                transition: all ease-in-out .3s
+                cursor: pointer
+
+                svg
+                    transition: all ease-in-out .3s
+                    opacity: 0
+                    height: auto
+
+            &:checked
+                & ~ .checkbox-display
+                    background: $brown
+                    border-color: $brown
+
+                    svg
+                        opacity: 1
+
+        .checkbox-label
+            font-size: 14px
+            color: $grey
+            margin-left: 10px

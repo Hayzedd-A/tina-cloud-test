@@ -29,6 +29,8 @@
         .icon
             display: flex
             width: 20px
+            flex: 0 0 20px
+            height: 20px
             margin-right: 10px
 
             img, svg
@@ -191,6 +193,13 @@
                 height: 65px
                 border-radius: 32px
                 background: transparentize($yellow, 0.87)
+                white-space: nowrap
+
+                &.active
+                    background: transparentize($yellow, 0.48)
+
+                @media (max-width: 400px)
+                    padding: 0 15px
 
     .add-to-cart
         position: fixed
@@ -203,6 +212,7 @@
         font-size: 22px
         font-weight: $font-weight-bold
         line-height: 1
+        cursor: pointer
 
         & > div
             @include flex-position(initial, center)
@@ -214,5 +224,103 @@
         svg
             margin-left: 20px
             opacity: 0.6
-        
+
+.toppings-form-container
+    position: fixed
+    bottom: 0
+    @include flex-position(center, flex-end)
+    background: $black-trans-2
+    width: 100%
+    height: 100vh
+    overflow: hidden
+    z-index: 1000
+
+    .toppings-form
+        background: $white
+        border-radius: 25px 25px 0 0
+        width: 100%
+        max-width: 700px
+        max-height: 720px
+
+        &-header
+            @include flex-position(space-between, center)
+            font-size: 22px
+            font-weight: $font-weight-bold
+            padding: 30px 20px
+            border-bottom: 1px solid transparentize($grey-2, 0.7)
+
+            .close
+                cursor: pointer
+                width: 25px
+                flex: 0 0 25px
+                height: 25px
+
+                svg
+                    width: 100%
+                    height: auto
+
+        .toppings-list
+            .item
+                @include flex-position(space-between, center)
+                padding: 15px 20px
+                border-bottom: 1px solid transparentize($grey-2, 0.82)
+
+                & > div
+                    @include flex-position(initial, center)
+
+                .image
+                    width: 45px
+                    height: 45px
+                    border-radius: 4px
+                    overflow: hidden
+                    margin-right: 15px
+
+                    img
+                        @include image-full-fit(cover, top)
+
+                .name
+                    display: block
+                    font-size: 20px
+                    line-height: 24px
+                    margin-bottom: 5px
+                    transition: all ease-in-out .3s
+
+                .price
+                    font-size: 18px
+                    line-height: 22px
+                    opacity: 0.57
+                    transition: all ease-in-out .3s
+
+                &.active
+                    .name
+                        font-weight: $font-weight-bold
+
+                    .price
+                        opacity: 1
+
+        .toppings-action
+            .continue
+                @include flex-position(center, center)
+                width: 100%
+                height: 85px
+                background: $yellow
+                font-size: 20px
+                font-weight: $font-weight-bold
+                line-height: 1
+                cursor: pointer
+                box-shadow: $add-cart-shadow
+
+.toppings-form-animation-enter
+    transform: translateY(100%)
+
+    &.toppings-form-animation-enter-active
+        transform: translateY(0%)
+        transition: transform 500ms ease-in
+
+.toppings-form-animation-leave
+    transform: translateY(0%)
+
+    &.toppings-form-animation-leave-active
+        transform: translateY(100%)
+        transition: transform 300ms ease-in
 

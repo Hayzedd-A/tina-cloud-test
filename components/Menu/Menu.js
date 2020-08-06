@@ -1,24 +1,37 @@
+import Link from "next/link";
 import { Bread, Avatar, Bag } from "../../public/static/vectors";
 
 const Menu = () => (
   <div className="menu-container">
     <div className="menu-item active">
-      <span className="icon">
-        <Bread />
-      </span>
-      <span className="text">Shop Bread</span>
+      <Link href="/">
+        <a>
+          <span className="icon">
+            <Bread />
+          </span>
+          <span className="text">Shop Bread</span>
+        </a>
+      </Link>
     </div>
     <div className="menu-item">
-      <span className="icon">
-        <Avatar />
-      </span>
-      <span className="text">My Account</span>
+      <Link href="/my-account">
+        <a>
+          <span className="icon">
+            <Avatar />
+          </span>
+          <span className="text">My Account</span>
+        </a>
+      </Link>
     </div>
     <div className="menu-item">
-      <span className="icon">
-        <Bag />
-      </span>
-      <span className="text">Cart</span>
+      <Link href="/cart">
+        <a>
+          <span className="icon">
+            <Bag />
+          </span>
+          <span className="text">Cart</span>
+        </a>
+      </Link>
     </div>
   </div>
 );

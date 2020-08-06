@@ -1,8 +1,8 @@
 import { Component } from "react";
 import classNames from "classnames";
 
-import Head from "../components/Head";
 import Shop, { ShopItemDetails } from "../components/Shop";
+import Main from "../layouts/Main";
 
 class Home extends Component {
   state = {
@@ -33,20 +33,14 @@ class Home extends Component {
     const { selectedItem, showDetails } = this.state;
 
     return (
-      <>
-        <Head />
-        <div className="app">
-          <div className="swipe-container">
-            <div className={classNames("swiper", { showDetails })}>
-              <Shop selectItem={this.selectItem} />
-              <ShopItemDetails
-                goBack={this.goBack}
-                selectedItem={selectedItem}
-              />
-            </div>
+      <Main>
+        <div className="swipe-container">
+          <div className={classNames("swiper", { showDetails })}>
+            <Shop selectItem={this.selectItem} />
+            <ShopItemDetails goBack={this.goBack} selectedItem={selectedItem} />
           </div>
         </div>
-      </>
+      </Main>
     );
   }
 }

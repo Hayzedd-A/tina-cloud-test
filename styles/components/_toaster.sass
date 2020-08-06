@@ -1,0 +1,38 @@
+.toaster-container
+    position: fixed
+    top: 45px
+    left: 20px
+    right: 20px
+    background: $white
+    border-radius: 12px
+    max-width: 700px
+    height: 75px
+    margin: auto
+    padding: 0 15px
+    box-shadow: $toaster-shadow
+    @include flex-position(space-between, center)
+    z-index: 10000
+
+    & > div
+        @include flex-position(initial, center)
+
+    .status
+        @include full-circle(40px, 40px)
+        @include flex-position(center, center)
+        margin-right: 20px
+
+        &.success
+            background: transparentize($green, 0.71)
+
+            svg
+                path
+                    stroke: $green-2
+
+    .message
+        font-size: 16px
+        font-weight: $font-weight-bold
+        padding-right: 50px
+
+    .close
+        display: flex
+        cursor: pointer

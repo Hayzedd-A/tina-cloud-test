@@ -1,0 +1,167 @@
+.cart-container
+    min-width: 100%
+    height: 100vh
+    overflow: auto
+    padding-bottom: 160px
+
+    .cart-header
+        padding: 50px 20px 
+        position: relative
+        
+        .back
+            position: absolute
+            top: 37px
+            left: 20px
+            @include full-circle(45px, 45px)
+            @include flex-position(center, center)
+            background: $brown-2
+            cursor: pointer
+            padding: 10px
+            transform: rotate(180deg)
+
+            svg
+                path
+                    stroke: $white
+        
+        .title
+            font-size: 22px
+            font-weight: $font-weight-bold
+            text-align: center
+
+        .info
+            @include flex-position(initial, center)
+            align-self: center
+            max-width: 290px
+            height: 60px
+            margin: 45px auto
+            padding: 0 15px
+            border-radius: 31px
+            background: transparentize($yellow, 0.87)
+
+            .icon
+                width: 30px
+                margin-right: 10px
+                display: flex
+
+                img
+                    width: 100%
+
+            .text
+                font-size: 16px
+                font-weight: $font-weight-bold
+
+    .cart-items
+        .title
+            font-size: 14px
+            font-weight: bold
+            letter-spacing: 1px
+            color: $grey-2
+            padding: 0 20px
+
+        .cart-item
+            padding: 25px 20px
+            border-bottom: 1px solid transparentize($grey-2, 0.82)
+
+            .container
+                display: flex
+                align-items: flex-start
+
+            .image
+                width: 50px
+                flex: 0 0 50px
+                height: 50px
+                border-radius: 8px
+                overflow: hidden
+                margin-right: 15px
+
+                img
+                    @include image-full-fit(cover, top)
+
+            .info
+                width: 100%
+                
+                .main-description, .mini-description
+                    @include flex-position(space-between, flex-start)
+                    margin-bottom: 4px
+
+                    .name
+                        font-size: 16px
+
+                .main-description
+                    .price
+                        font-size: 20px
+                        font-weight: $font-weight-bold
+
+                .mini-description
+                    .name, .price
+                        opacity: 0.59
+
+                .number-selector-container
+                    margin-top: 15px
+
+            &:last-child
+                border-bottom: 0
+
+    .sub-total
+        padding: 0 20px
+        font-weight: $font-weight-bold
+
+        .container
+            padding: 25px 0
+            @include flex-position(space-between, center)
+            background-image: linear-gradient(to right, $grey-2 55%, rgba(255, 255, 255, 0) 0%)
+            background-position: top
+            background-size: 20px 1px
+            background-repeat: repeat-x
+
+        .title
+            font-size: 16px
+
+        .value
+            font-size: 24px
+
+    .checkout-form
+        padding: 0 20px
+
+    .cart-actions
+        position: fixed
+        bottom: 0
+        width: 100%
+        background: $white
+
+        .delivery-fees-notice
+            background: transparentize($green-3, 0.71)
+            padding: 0 25px
+            height: 70px
+            font-size: 16px
+            font-weight: $font-weight-bold
+
+            .container
+                @include flex-position(initial, center)
+                height: 100%
+
+            .icon
+                @include full-circle(40px, 40px)
+                margin-right: 20px
+
+                img
+                    width: 100%
+
+        .checkout-button
+            background: $yellow
+            height: 90px
+            font-size: 22px
+            font-weight: $font-weight-bold
+            box-shadow: $add-cart-shadow
+            cursor: pointer
+
+            .container
+                @include flex-position(center, center)
+                height: 100%
+
+            svg
+                margin-left: 15px
+
+                path
+                    stroke: transparentize($brown, 0.39)
+

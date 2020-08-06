@@ -35,9 +35,10 @@ class NumberSelector extends Component {
 
   render() {
     const { value } = this.state;
+    const { className } = this.props;
 
     return (
-      <div className="number-selector-container">
+      <div className={`number-selector-container ${className || ""}`}>
         <span
           className={classNames("selector left", { disabled: value === 0 })}
           onClick={() => this.handleChange({ target: { value: value - 1 } })}

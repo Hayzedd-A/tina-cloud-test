@@ -1,3 +1,5 @@
+import Checkbox from "./Checkbox";
 import NumberSelector from "./NumberSelector";
+import TextField from "./TextField";
 
-export { NumberSelector }
+export { Checkbox, NumberSelector, TextField }

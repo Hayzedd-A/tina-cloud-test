@@ -56,11 +56,11 @@ export const logout = () => {
 };
 
 export const reduceArray = (array, reducer) => {
-  return array.reduce((prev, curr) => prev + parseInt(curr[reducer]), 0);
+  return array.reduce((prev, curr) => prev + parseFloat(curr[reducer]), 0);
 };
 
 export const reduceLinearArray = array => {
-  return array.reduce((prev, curr) => prev + parseInt(curr), 0);
+  return array.reduce((prev, curr) => prev + parseFloat(curr), 0);
 };
 
 export const getDays = () => {
