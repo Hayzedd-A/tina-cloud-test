@@ -58,7 +58,7 @@ class Checkout extends Component {
           </div>
           <div className="title">Checkout</div>
           <div className="info">
-            <span className="icon">
+            <span className="icon checkout-icon">
               <img src="/static/images/star.png" alt="" />
             </span>
             <span className="text">Well done! You’re almost there</span>
