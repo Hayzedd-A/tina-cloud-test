@@ -164,7 +164,7 @@ class ShopItemDetails extends Component {
     const { selectedItem, goBack } = this.props;
     const { image, name, price, description } = selectedItem;
 
-    const sizes = ["Regular", "Mini", "Maxi", "Large"];
+    const sizes = ["Regular", "Mini", "Maxi", "Large", "Giant"];
 
     const inCart = this.checkCart(selectedItem.id);
 
@@ -185,7 +185,7 @@ class ShopItemDetails extends Component {
             <div className="description">{description}</div>
           </div>
         </div>
-        <div className="select-section">
+        <div className="select-section sizes-section">
           <div className="container">
             <span className="title">SELECT SIZE</span>
             <div className="sizes">
@@ -218,7 +218,7 @@ class ShopItemDetails extends Component {
                 onClick={this.toggleToppingsForm}
               >
                 {selectedToppings.length
-                  ? `TOPPINGS (${selectedToppings.length})`
+                  ? `${selectedToppings.length} TOPPINGS`
                   : "ADD TOPPINGS"}
               </span>
             </div>
@@ -239,6 +239,15 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         </div>
+        <CSSTransitionGroup
+          transitionName="toppings-overlay-animation"
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={300}
+        >
+          {isToppingsFormActive && (
+            <div className="toppings-form-overlay"></div>
+          )}
+        </CSSTransitionGroup>
         <CSSTransitionGroup
           transitionName="toppings-form-animation"
           transitionEnterTimeout={500}

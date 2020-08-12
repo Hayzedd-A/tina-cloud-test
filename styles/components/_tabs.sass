@@ -10,9 +10,13 @@
     z-index: 10
     -ms-overflow-style: none
     scrollbar-width: none
+    transition: all ease-in-out .3s
 
     &::-webkit-scrollbar
         display: none
+
+    &.active
+        background: $yellow
 
     .tab-item
         font-size: 21px
@@ -21,7 +25,7 @@
         white-space: nowrap
         cursor: pointer
         @include flex-position(center, initial)
-        // transition: all ease-in-out .3s
+        transition: all ease-in-out .3s
 
         &::after
             content: ""
@@ -37,7 +41,5 @@
             margin-right: 0
 
         &.active
-            font-weight: $font-weight-bold
-
             &::after
                 opacity: 1
