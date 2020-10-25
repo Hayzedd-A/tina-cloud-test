@@ -112,3 +112,25 @@ export const convertDateObjectToString = date => {
 export const applyEllipsis = (text, limit) => {
   return text && text.length > limit ? `${text.substring(0, limit)}...` : text;
 };
+
+export const paystack = (
+  email,
+  ref,
+  amount,
+  handlePaystackSuccess,
+  handlePaystackClose,
+  metadata
+) => {
+  const handler = window.PaystackPop.setup({
+    key: "pk_test_dc0bc7c3c3925e6112d885e717a1cf393ce468fa",
+    email,
+    amount,
+    currency: 'NGN',
+    metadata,
+    ref,
+    callback: response => handlePaystackSuccess(response),
+    onClose: () => handlePaystackClose()
+  });
+
+  handler.openIframe();
+};

@@ -6,7 +6,7 @@ const ShopItem = ({ name, image, price, onClick }) => (
         <span>{name}</span>
       </div>
     </div>
-    <span className="item-price">₦ {price}</span>
+    <span className="item-price">₦ {price.toLocaleString()}</span>
   </div>
 );
 

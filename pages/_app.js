@@ -1,11 +1,14 @@
 import "../styles/style.sass";
 
+import ProductsProvider from "../providers/ProductsProvider";
 import CartProvider from "../providers/CartProvider";
 
 function GourmetTwist({ Component, pageProps }) {
   return (
     <CartProvider>
-      <Component {...pageProps} />
+      <ProductsProvider>
+        <Component {...pageProps} />
+      </ProductsProvider>
     </CartProvider>
   );
 }

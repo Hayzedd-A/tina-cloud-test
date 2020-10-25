@@ -8,19 +8,15 @@ import { NumberSelector } from "../FormElements";
 import { RightArrow } from "../../public/static/vectors";
 import { reduceArray, reduceLinearArray } from "../../utils/functions";
 
-import { toppings } from "../Shop/data";
-
 class Cart extends Component {
   cartAction = (item, quantity) => {
     const { updateCart, removeFromCart } = this.props;
-    const { price } = item;
+    const { unitPrice, toppings } = item;
 
-    const toppingsPrices = item.toppings.map(topping => {
-      return toppings.find(t => t.id === topping).price;
-    });
+    const toppingsPrices = toppings.map(topping => topping.unitPrice);
 
     const toppingsTotalCost = reduceLinearArray(toppingsPrices);
-    const totalCost = toppingsTotalCost + parseFloat(price) * quantity;
+    const totalCost = toppingsTotalCost + parseFloat(unitPrice) * quantity;
 
     quantity
       ? updateCart({ ...item, quantity, totalCost })
@@ -57,7 +53,15 @@ class Cart extends Component {
             <div className="container">ITEM</div>
           </div>
           {cart.map((cartItem, index) => {
-            const { id, name, size, quantity, price, totalCost } = cartItem;
+            const {
+              id,
+              name,
+              size,
+              quantity,
+              unitPrice,
+              totalCost,
+              toppings
+            } = cartItem;
 
             return (
               <div key={`cart-item-${index}`} className="cart-item">
@@ -77,9 +81,23 @@ class Cart extends Component {
                         {size} (x{quantity})
                       </span>
                       <span className="price">
-                        ₦{price.toLocaleString()} x {quantity}
+                        ₦{unitPrice.toLocaleString()} x {quantity}
                       </span>
                     </div>
+                    {toppings.map((topping, index) => (
+                      <div
+                        key={`topping-${index}`}
+                        className="mini-description"
+                      >
+                        <span className="name ellipsis">
+                          {topping.name} (x{topping.quantity})
+                        </span>
+                        <span className="price">
+                          ₦{topping.unitPrice.toLocaleString()} x{" "}
+                          {topping.quantity}
+                        </span>
+                      </div>
+                    ))}
                     <NumberSelector
                       value={quantity}
                       onChange={e => this.cartAction(cartItem, e.target.value)}

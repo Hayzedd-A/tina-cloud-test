@@ -5,7 +5,7 @@
 
     & > .container
         padding-bottom: 120px
-    
+
 .shop-section
     margin-bottom: 30px
     padding: 0 15px
@@ -83,6 +83,7 @@
                     font-weight: $font-weight-bold
                     padding: 10px
                     word-break: break-word
+                    text-transform: capitalize
 
             .item-price
                 font-size: 18px
@@ -133,6 +134,7 @@
             .name
                 max-width: 230px
                 word-break: break-word
+                text-transform: capitalize
 
             .price
                 white-space: nowrap
@@ -190,6 +192,10 @@
                 &:last-child
                     margin-right: 0
 
+                &.disabled
+                    pointer-events: none
+                    opacity: 0.5
+
         .quantity
             @include flex-position(space-between, center)
 
@@ -207,6 +213,10 @@
 
                 &.active
                     background: transparentize($yellow, 0.48)
+
+                &.disabled
+                    pointer-events: none
+                    opacity: 0.5
 
                 @media (max-width: 400px)
                     padding: 0 15px
@@ -230,6 +240,9 @@
         .container
             height: 100%
             @include flex-position(space-between, center)
+
+            & > div
+                @include flex-position(initial, center)
 
         svg
             margin-left: 20px
@@ -360,3 +373,23 @@
         transform: translateY(100%)
         transition: transform 300ms ease-in
 
+.geosuggest__suggests
+    padding: 0
+    box-sizing: border-box
+    background: $white
+    border: 1px solid transparentize($grey-2, 0.82)
+    border-radius: 0
+    outline: 0
+
+.geosuggest__item
+    list-style-type: none
+    font-size: 16px
+    line-height: 22px
+    padding: 5px 10px
+    margin-left: 0
+    cursor: pointer
+
+.geosuggest__suggests--hidden
+    max-height: 0
+    overflow: hidden
+    border-width: 0

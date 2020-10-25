@@ -42,9 +42,16 @@ export default class MyDocument extends Document {
             href="/static/favicon/favicon-16x16.png"
           />
           <link rel="manifest" href="/manifest.json" />
-          <link rel="mask-icon" href="/static/favicon/safari-pinned-tab.svg" color="#5bbad5" />
+          <link
+            rel="mask-icon"
+            href="/static/favicon/safari-pinned-tab.svg"
+            color="#5bbad5"
+          />
           <meta name="msapplication-TileColor" content="#da532c" />
           <meta name="theme-color" content="#ffffff" />
+
+          <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPEzytcDTH18DQU3BXioxWY183FPDfr1A&libraries=places"></script>
+          <script src="https://js.paystack.co/v1/inline.js"></script>
         </Head>
         <body>
           <Main />

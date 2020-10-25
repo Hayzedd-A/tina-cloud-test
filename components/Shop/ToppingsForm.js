@@ -10,7 +10,7 @@ const ToppingsForm = ({
   selectedToppings
 }) => {
   const checkIfSelected = toppingId =>
-    selectedToppings.some(topping => topping === toppingId);
+    selectedToppings.some(topping => topping.id === toppingId);
 
   return (
     <div className="toppings-form-container">
@@ -23,7 +23,10 @@ const ToppingsForm = ({
         </div>
 
         <div className="toppings-list">
-          {toppings.map(({ id, name, price }, index) => (
+          {toppings.map((topping, index) => {
+            const { id, name, unitPrice } = topping;
+
+            return (
             <div
               key={`topping-item-${index}`}
               className={classNames("item", { active: checkIfSelected(id) })}
@@ -35,18 +38,18 @@ const ToppingsForm = ({
                 <div>
                   <span className="name">{name}</span>
                   <span className="price">
-                    ₦ {parseFloat(price).toLocaleString()}
+                    ₦ {parseFloat(unitPrice).toLocaleString()}
                   </span>
                 </div>
               </div>
               <div>
                 <Checkbox
                   checked={checkIfSelected(id)}
-                  onChange={e => handleToppingsSelection(id, e)}
+                  onChange={e => handleToppingsSelection(topping, e)}
                 />
               </div>
             </div>
-          ))}
+          )})}
         </div>
         <div className="toppings-action">
           <span className="continue" onClick={closeToppingsForm}>

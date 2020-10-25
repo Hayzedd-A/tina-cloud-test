@@ -1,9 +1,11 @@
 import { Component } from "react";
 import classNames from "classnames";
 
-import Shop, { ShopItemDetails } from "../components/Shop";
 import Main from "../layouts/Main";
+import Shop, { ShopItemDetails } from "../components/Shop";
 import SplashScreen from "../components/SplashScreen";
+
+import { ProductsConsumer } from "../providers/ProductsProvider";
 
 class Home extends Component {
   state = {
@@ -45,10 +47,11 @@ class Home extends Component {
 
   render() {
     const { selectedItem, showDetails, showSplash } = this.state;
+    const { isLoadingProducts } = this.props;
 
     return (
       <Main>
-        {showSplash ? (
+        {isLoadingProducts ? (
           <SplashScreen />
         ) : (
           <div className="swipe-container">
@@ -66,4 +69,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default ProductsConsumer(Home);

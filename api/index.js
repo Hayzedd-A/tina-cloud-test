@@ -1,12 +1,12 @@
 import axios from "axios";
 
 export const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: "https://zupa-api.dev.intelia.io/",
   headers: {}
 });
 
 export const getUserDetails = () => {
-  return JSON.parse(localStorage.getItem("brightcube-user"));
+  return JSON.parse(localStorage.getItem("gourmet-twist-user"));
 };
 
 export const getRequest = async ({ url, params, token }) => {
@@ -30,7 +30,6 @@ export const getRequest = async ({ url, params, token }) => {
 export const postRequest = async ({ url, params, data, token }) => {
   const currentUser = getUserDetails();
 
-  console.log(process.env.REACT_APP_API_URL)
   var request = {
     url,
     method: "post",

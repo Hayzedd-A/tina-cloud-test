@@ -5,6 +5,8 @@ import Header from "../Header";
 import Tabs from "../Tabs";
 import Menu from "../Menu";
 
+import { ProductsConsumer } from "../../providers/ProductsProvider";
+
 class Shop extends Component {
   state = {
     currentTab: 0,
@@ -41,35 +43,9 @@ class Shop extends Component {
 
   render() {
     const { currentTab, isTabActive } = this.state;
-    const { selectItem } = this.props;
+    const { selectItem, products } = this.props;
 
-    const tabs = ["Breads", "Zobo", "Peanut Burger", "Cakes", "Soups"];
-    const items = [
-      {
-        id: 1,
-        name: "Double Chocolate Banana Bread",
-        image: "/static/images/banana-bread.jpg",
-        description:
-          "Nunc id arcu sem. Proin augue massa, pretium sit amet elementum vitae, elementum a ligula. ",
-        price: 4900
-      },
-      {
-        id: 2,
-        name: "Basic Banana Bread",
-        image: "/static/images/banana-bread2.jpg",
-        description:
-          "Nunc id arcu sem. Proin augue massa, pretium sit amet elementum vitae, elementum a ligula. ",
-        price: 3000
-      },
-      {
-        id: 3,
-        name: "Chocochip Banana Bread",
-        image: "/static/images/banana-bread3.jpg",
-        description:
-          "Nunc id arcu sem. Proin augue massa, pretium sit amet elementum vitae, elementum a ligula. ",
-        price: 4000
-      }
-    ];
+    const tabs = products.map(({ name }) => name);
 
     return (
       <div className="shop-container" id="shop-container">
@@ -89,15 +65,15 @@ class Shop extends Component {
               <span className="text">Most Recommended</span>
             </div>
             <div className="section-items">
-              {items.map((item, index) => {
-                const { name, image, price } = item;
+              {products[currentTab].products.map((item, index) => {
+                const { name, image, unitPrice } = item;
 
                 return (
                   <ShopItem
                     key={`item-${index}`}
                     name={name}
-                    image={image}
-                    price={price}
+                    image="/static/images/banana-bread.jpg"
+                    price={unitPrice}
                     onClick={() => selectItem(item)}
                   />
                 );
@@ -107,15 +83,15 @@ class Shop extends Component {
           <div className="shop-section">
             <div className="section-title">All Breads</div>
             <div className="section-items">
-              {items.map((item, index) => {
-                const { name, image, price } = item;
+              {products[currentTab].products.map((item, index) => {
+                const { name, image, unitPrice } = item;
 
                 return (
                   <ShopItem
                     key={`item-${index}`}
                     name={name}
-                    image={image}
-                    price={price}
+                    image="/static/images/banana-bread.jpg"
+                    price={unitPrice}
                     onClick={() => selectItem(item)}
                   />
                 );
@@ -129,4 +105,4 @@ class Shop extends Component {
   }
 }
 
-export default Shop;
+export default ProductsConsumer(Shop);

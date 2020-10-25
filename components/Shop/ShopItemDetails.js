@@ -12,8 +12,6 @@ import { RightArrow } from "../../public/static/vectors";
 import { reduceLinearArray } from "../../utils/functions";
 import Toaster from "../Toaster";
 
-import { toppings } from "./data";
-
 class ShopItemDetails extends Component {
   constructor(props) {
     super(props);
@@ -44,17 +42,15 @@ class ShopItemDetails extends Component {
     });
   };
 
-  handleToppingsSelection = (toppingId, { target }) => {
+  handleToppingsSelection = (topping, { target }) => {
     let selectedToppings = JSON.parse(
-      JSON.stringify(this.state.selectedToppings)
+      JSON.stringify({...this.state.selectedToppings, quantity: 1})
     );
 
     if (target.checked) {
-      selectedToppings.push(toppingId);
+      selectedToppings.push(topping);
     } else {
-      selectedToppings = selectedToppings.filter(
-        topping => topping !== toppingId
-      );
+      selectedToppings = selectedToppings.filter(({ id }) => id !== topping.id);
     }
 
     this.setState({
@@ -64,13 +60,14 @@ class ShopItemDetails extends Component {
 
   cartAction = () => {
     const { selectedSize, selectedToppings, quantity } = this.state;
-    const { selectedItem, addToCart, updateCart, goBack } = this.props;
-    const { id, name, price } = selectedItem;
+    const { addToCart, updateCart, goBack } = this.props;
+
+    const { id, name, unitPrice } = this.getSelectedItemDetails();
 
     const cartItem = {
       id,
       name,
-      price,
+      unitPrice,
       size: selectedSize,
       toppings: selectedToppings,
       quantity,
@@ -96,17 +93,27 @@ class ShopItemDetails extends Component {
         });
   };
 
+  getSelectedItemDetails = () => {
+    const { selectedSize } = this.state;
+    const { selectedItem } = this.props;
+
+    return selectedItem
+      ? selectedItem[selectedSize] && selectedItem[selectedSize].length
+        ? selectedItem[selectedSize][0]
+        : selectedItem
+      : {};
+  };
+
   getTotalCost = () => {
     let totalCost = 0;
     const { quantity, selectedToppings } = this.state;
-    const { price } = this.props.selectedItem;
 
-    const toppingsPrices = selectedToppings.map(topping => {
-      return toppings.find(t => t.id === topping).price;
-    });
+    const { unitPrice } = this.getSelectedItemDetails();
+
+    const toppingsPrices = selectedToppings.map(topping => topping.unitPrice);
 
     const toppingsTotalCost = reduceLinearArray(toppingsPrices);
-    totalCost = toppingsTotalCost + parseFloat(price) * quantity;
+    totalCost = toppingsTotalCost + parseFloat(unitPrice) * quantity;
 
     return totalCost;
   };
@@ -162,16 +169,23 @@ class ShopItemDetails extends Component {
       toaster
     } = this.state;
     const { selectedItem, goBack } = this.props;
-    const { image, name, price, description } = selectedItem;
 
-    const sizes = ["Regular", "Mini", "Maxi", "Large", "Giant"];
+    const {
+      image,
+      name,
+      unitPrice,
+      description,
+      toppings
+    } = this.getSelectedItemDetails();
+
+    const sizes = ["Regular", "Mini", "Maxi"];
 
     const inCart = this.checkCart(selectedItem.id);
 
     return (
       <div className="shop-item-details">
         <div className="item-image">
-          <img src={image} alt="" />
+          <img src="/static/images/banana-bread.jpg" alt="" />
           <span className="back" onClick={goBack}>
             <RightArrow />
           </span>
@@ -180,7 +194,9 @@ class ShopItemDetails extends Component {
           <div className="container">
             <div className="name-price">
               <span className="name">{name}</span>
-              <span className="price">₦ {price && price.toLocaleString()}</span>
+              <span className="price">
+                ₦ {unitPrice && unitPrice.toLocaleString()}
+              </span>
             </div>
             <div className="description">{description}</div>
           </div>
@@ -193,7 +209,8 @@ class ShopItemDetails extends Component {
                 <span
                   key={`size-${index}`}
                   className={classNames("size-selector", {
-                    active: selectedSize === size
+                    active: selectedSize === size,
+                    disabled: selectedItem[selectedSize] && !selectedItem[selectedSize].length
                   })}
                   onClick={() => this.selectSize(size)}
                 >
@@ -213,7 +230,8 @@ class ShopItemDetails extends Component {
               />
               <span
                 className={classNames("add-toppings", {
-                  active: selectedToppings.length
+                  active: selectedToppings.length,
+                  disabled: !toppings || (toppings && !toppings.length)
                 })}
                 onClick={this.toggleToppingsForm}
               >
