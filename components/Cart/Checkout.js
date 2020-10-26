@@ -167,7 +167,6 @@ class Checkout extends Component {
 
       const { paymentReference, amount } = res.data;
 
-      console.log(email);
       paystack(
         email,
         paymentReference,

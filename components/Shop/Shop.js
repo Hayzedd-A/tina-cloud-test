@@ -46,6 +46,7 @@ class Shop extends Component {
     const { selectItem, products } = this.props;
 
     const tabs = products.map(({ name }) => name);
+    const recommendedProducts = JSON.parse(JSON.stringify(products));
 
     return (
       <div className="shop-container" id="shop-container">
@@ -57,7 +58,7 @@ class Shop extends Component {
           switchTab={this.switchTab}
         />
         <div className="container">
-          <div className="shop-section">
+          <div className="shop-section carousel">
             <div className="section-title favorite">
               <span className="icon">
                 <img src="/static/images/diamond.png" alt="" />
@@ -65,7 +66,7 @@ class Shop extends Component {
               <span className="text">Most Recommended</span>
             </div>
             <div className="section-items">
-              {products[currentTab].products.map((item, index) => {
+              {recommendedProducts[currentTab].products.slice(0, 5).map((item, index) => {
                 const { name, image, unitPrice } = item;
 
                 return (

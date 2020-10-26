@@ -122,7 +122,7 @@ export const paystack = (
   metadata
 ) => {
   const handler = window.PaystackPop.setup({
-    key: "pk_test_dc0bc7c3c3925e6112d885e717a1cf393ce468fa",
+    key: "pk_test_b329f261c03b1afa0e9d2257a3bfa776a6a8e9ae",
     email,
     amount,
     currency: 'NGN',
