@@ -30,15 +30,6 @@ const Header = () => {
       >
         {isMenuActive && <HeaderMenu showMenu={showMenu} />}
       </CSSTransitionGroup>
-      {/* <CSSTransitionGroup
-        transitionName="search-input-animation"
-        transitionEnterTimeout={500}
-        transitionLeaveTimeout={300}
-      >
-        {isSearchInputActive && (
-          <SearchInput showSearchInput={showSearchInput} />
-        )}
-      </CSSTransitionGroup> */}
       <div className="swipe-container">
         <div
           className={classNames("swiper header-swiper", {
@@ -54,7 +45,7 @@ const Header = () => {
                 <span></span>
               </div>
 
-              <div className="logo">
+              <div className="logo" onClick={() => router.push("/")}>
                 <img src="/static/images/logo.png" alt="" />
               </div>
 

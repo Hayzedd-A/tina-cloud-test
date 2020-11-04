@@ -7,6 +7,7 @@ import Header from "../Header";
 import Menu from "../Menu";
 
 import { ProductsConsumer } from "../../providers/ProductsProvider";
+import { EmptySearch } from "../../public/static/vectors";
 
 class SearchResults extends Component {
   constructor(props) {
@@ -14,6 +15,8 @@ class SearchResults extends Component {
 
     const { router } = props;
     const { q } = router.query;
+
+    console.log("here", props.products);
 
     this.state = {
       q,
@@ -27,19 +30,21 @@ class SearchResults extends Component {
     const { products, router } = this.props;
     const { q } = router.query;
 
-    let allProducts = [];
-    let allToppings = [];
+    let allProducts = JSON.parse(JSON.stringify(this.state.allProducts));
+    let allToppings = JSON.parse(JSON.stringify(this.state.allToppings));
     let productsResult = [];
 
-    products.forEach(element => {
+    for (let i = 0; i < products.length; i++) {
+      const element = products[i];
+      
       allProducts = allProducts.concat(element.products);
       allToppings = allToppings.concat(element.toppings);
-    });
+    }
 
     if (q) {
-      productsResult = allProducts.filter(({ name }) =>
-        name.toLowerCase().includes(q.toLowerCase())
-      );
+      productsResult = JSON.parse(
+        JSON.stringify(allProducts)
+      ).filter(({ name }) => name.toLowerCase().includes(q.toLowerCase()));
     }
 
     this.setState({
@@ -47,7 +52,7 @@ class SearchResults extends Component {
       allToppings,
       productsResult
     });
-  }
+  };
 
   componentDidMount() {
     this.formatProducts();
@@ -61,9 +66,9 @@ class SearchResults extends Component {
     let productsResult = JSON.parse(JSON.stringify(this.state.productsResult));
 
     if (!shallowequal(prevProps.router, router) && q) {
-      productsResult = allProducts.filter(({ name }) =>
-        name.toLowerCase().includes(q.toLowerCase())
-      );
+      productsResult = JSON.parse(
+        JSON.stringify(allProducts)
+      ).filter(({ name }) => name.toLowerCase().includes(q.toLowerCase()));
 
       this.setState({
         productsResult
@@ -71,41 +76,80 @@ class SearchResults extends Component {
     }
 
     if (!shallowequal(prevProps.products, products) && products.length) {
-      this.formatProducts()
+      this.formatProducts();
     }
   }
 
   render() {
     const { productsResult, allToppings } = this.state;
+    const { isLoadingProducts, selectItem, products } = this.props;
 
     return (
       <div className="shop-container" id="shop-container">
         <Header />
         <div className="container">
-          <div className="shop-section search-section">
-            <div className="section-title">
-              {productsResult.length} Search Results found
-            </div>
-            <div className="section-items">
-              {productsResult.map((item, index) => {
-                const { name, sizes } = item;
-                const firstSize = Object.keys(sizes)[0];
-                const { imageUrl, unitPrice } = sizes[firstSize][0];
+          {!isLoadingProducts && (
+            <div className="shop-section search-section">
+              <div className="section-title">
+                {productsResult.length} Search Results found
+              </div>
+              {productsResult.length ? (
+                <div className="section-items">
+                  {productsResult.map((item, index) => {
+                    const { name, sizes } = item;
+                    const firstSize = Object.keys(sizes)[0];
+                    const { imageUrl, unitPrice } = sizes[firstSize][0];
 
-                return (
-                  <ShopItem
-                    key={`item-${index}`}
-                    name={name}
-                    image={imageUrl}
-                    price={unitPrice}
-                    onClick={() =>
-                      selectItem({ ...item, toppings: allToppings })
-                    }
-                  />
-                );
-              })}
+                    return (
+                      <ShopItem
+                        key={`item-${index}`}
+                        name={name}
+                        image={imageUrl}
+                        price={unitPrice}
+                        onClick={() =>
+                          selectItem({ ...item, toppings: allToppings })
+                        }
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <>
+                  <div className="empty-search-state">
+                    <div className="image">
+                      <EmptySearch />
+                    </div>
+                  </div>
+
+                  <div className="section-title favorite">
+                    <span className="icon">
+                      <img src="/static/images/diamond.png" alt="" />
+                    </span>
+                    <span className="text">Checkout our best stuff</span>
+                  </div>
+                  <div className="section-items">
+                    {products[0].products.slice(0, 4).map((item, index) => {
+                      const { name, sizes } = item;
+                      const firstSize = Object.keys(sizes)[0];
+                      const { imageUrl, unitPrice } = sizes[firstSize][0];
+
+                      return (
+                        <ShopItem
+                          key={`item-${index}`}
+                          name={name}
+                          image={imageUrl}
+                          price={unitPrice}
+                          onClick={() =>
+                            selectItem({ ...item, toppings: allToppings })
+                          }
+                        />
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
-          </div>
+          )}
           <Menu />
         </div>
       </div>

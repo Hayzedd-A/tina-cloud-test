@@ -5,6 +5,7 @@ import Bread from "./Bread";
 import Check from "./Check";
 import CircularClose from "./CircularClose";
 import Close from "./Close";
+import EmptySearch from "./EmptySearch";
 import RightArrow from "./RightArrow";
 import Search from "./Search";
 import SelectorAdd from "./SelectorAdd";
@@ -19,6 +20,7 @@ export {
   Check,
   CircularClose,
   Close,
+  EmptySearch,
   RightArrow,
   Search,
   SelectorAdd,

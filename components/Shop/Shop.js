@@ -43,7 +43,7 @@ class Shop extends Component {
 
   render() {
     const { currentTab, isTabActive } = this.state;
-    const { selectItem, products, search } = this.props;
+    const { selectItem, products } = this.props;
 
     const tabs = products.map(({ name }) => name);
     const toppings = products[currentTab].toppings;
