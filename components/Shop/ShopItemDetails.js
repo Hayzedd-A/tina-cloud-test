@@ -248,22 +248,22 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         </div>
+        <div
+          className={classNames("add-toppings", {
+            active: selectedToppings.length,
+            disabled: !toppings || (toppings && !toppings.length)
+          })}
+          onClick={this.toggleToppingsForm}
+        >
+          {selectedToppings.length
+            ? `${
+                selectedToppings.length === 1
+                  ? `${selectedToppings.length} TOPPING`
+                  : `${selectedToppings.length} TOPPINGS`
+              }`
+            : "ADD TOPPINGS"}
+        </div>
         <div className="item-footer">
-          <div
-            className={classNames("add-toppings", {
-              active: selectedToppings.length,
-              disabled: !toppings || (toppings && !toppings.length)
-            })}
-            onClick={this.toggleToppingsForm}
-          >
-            {selectedToppings.length
-              ? `${
-                  selectedToppings.length === 1
-                    ? `${selectedToppings.length} TOPPING`
-                    : `${selectedToppings.length} TOPPINGS`
-                }`
-              : "ADD TOPPINGS"}
-          </div>
           <div className="add-to-cart" onClick={this.cartAction}>
             <div className="container">
               {inCart ? (

@@ -45,9 +45,11 @@ class CreateLogin extends Component {
 
   checkFormValidity = () => {
     const { formData } = this.state;
+    const { router } = this.props;
+    const { newUser } = router.query;
     const { pin, confirmPin } = formData;
     return Object.values(formData).every(
-      value => value.valid && pin.value === confirmPin.value
+      value => value.valid && (newUser ? pin.value === confirmPin.value : true)
     );
   };
 
@@ -61,12 +63,13 @@ class CreateLogin extends Component {
   componentDidMount() {
     const currentUser = localStorage.getItem("gourmet-twist-user");
 
-    currentUser && this.props.router.push("/my-account")
+    currentUser && this.props.router.push("/my-account");
   }
 
   render() {
     const { toaster } = this.state;
-    const { isLoggingIn } = this.props;
+    const { isLoggingIn, router } = this.props;
+    const { newUser } = router.query;
 
     return (
       <Main>
@@ -83,31 +86,35 @@ class CreateLogin extends Component {
           </div>
           <div className="checkout-form login-form">
             <div className="container">
-              <div className="description">
-                Create a 4 digit pin for easy sign up
+              <div className="login-form-content">
+                <div className="description">
+                  Create a 4 digit pin for easy sign up
+                </div>
+                <TextField
+                  label="Phone Number"
+                  placeholder="Enter your phone number"
+                  name="phoneNumber"
+                  type="phone"
+                  onChange={this.handleChange}
+                  className="mb-40"
+                  required
+                />
+                <Pin
+                  label="Enter PIN"
+                  name="pin"
+                  onChange={this.handleChange}
+                  className="mb-40"
+                  required
+                />
+                {newUser && (
+                  <Pin
+                    label="Confirm PIN"
+                    name="confirmPin"
+                    onChange={this.handleChange}
+                    required
+                  />
+                )}
               </div>
-              <TextField
-                label="Phone Number"
-                placeholder="Enter your phone number"
-                name="phoneNumber"
-                type="phone"
-                onChange={this.handleChange}
-                className="mb-40"
-                required
-              />
-              <Pin
-                label="Enter PIN"
-                name="pin"
-                onChange={this.handleChange}
-                className="mb-40"
-                required
-              />
-              <Pin
-                label="Confirm PIN"
-                name="confirmPin"
-                onChange={this.handleChange}
-                required
-              />
               <div className="cart-actions">
                 <div
                   className={classNames("checkout-button", {

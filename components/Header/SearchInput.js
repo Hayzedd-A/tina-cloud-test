@@ -1,14 +1,34 @@
+import { useEffect, useRef } from "react";
 import { Close } from "../../public/static/vectors";
 
-const SearchInput = ({ showSearchInput }) => (
-  <div className="search-input-container">
-    <div className="search-input">
-      <input type="text" placeholder="Search Breads, Cakes and More" />
-      <div className="close" onClick={() => showSearchInput(false)}>
-        <Close />
+const SearchInput = ({
+  q,
+  handleSearch,
+  showSearchInput,
+  isSearchInputActive
+}) => {
+  const inputRef = useRef();
+
+  useEffect(() => {
+    isSearchInputActive && inputRef.current.focus();
+  });
+
+  return (
+    <div className="search-input-container">
+      <div className="search-input">
+        <input
+          ref={inputRef}
+          type="text"
+          onChange={({ target }) => handleSearch(target.value)}
+          placeholder="Search Breads, Cakes and More"
+          defaultValue={q}
+        />
+        <div className="close" onClick={() => showSearchInput(false)}>
+          <Close />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default SearchInput;

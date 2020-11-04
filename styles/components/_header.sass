@@ -4,6 +4,7 @@
     height: 110px
     position: relative
     z-index: 20
+    min-width: 100%
 
     .container
         @include flex-position(space-between, center)
@@ -88,12 +89,12 @@
             margin-bottom: 35px
 
 .search-input-container
-    @include full-fixed
     @include flex-position(center, center)
     height: 110px
     background: $brown
     padding: 0 20px
     z-index: 100000
+    min-width: 100%
 
     .search-input
         background: $brown-2

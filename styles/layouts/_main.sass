@@ -17,14 +17,50 @@
 
 .swipe-container
     display: flex
+    align-items: flex-start
     overflow: hidden
     width: 100%
-    height: 100vh
+
+    & > div
+        align-self: flex-start
 
     .swiper
         width: 100%
+        height: 100vh
         display: flex
+        align-items: flex-start
         transition: all ease-in-out .3s
+
+        &.header-swiper
+            height: 110px
 
         &.showDetails, &.showCheckout
             transform: translateX(-100%)
+
+.swiper-left-animation-enter
+    transform: translateX(-100%)
+
+    &.swiper-left-animation-enter-active
+        transform: translateX(0)
+        transition: transform 500ms ease-in
+
+.swiper-left-animation-leave
+    transform: translateX(0)
+
+    &.swiper-left-animation-leave-active
+        transform: translateX(-100%)
+        transition: transform 300ms ease-in
+
+.swiper-right-animation-enter
+    transform: translateX(100%)
+
+    &.swiper-right-animation-enter-active
+        transform: translateX(0)
+        transition: transform 500ms ease-in
+
+.swiper-right-animation-leave
+    transform: translateX(0)
+
+    &.swiper-right-animation-leave-active
+        transform: translateX(100%)
+        transition: transform 300ms ease-in

@@ -31,7 +31,7 @@ const HeaderMenu = ({ showMenu, logout, user }) => (
         </span>
       ) : (
         <Link href="/login">
-          <a>{label}</a>
+          <a>Login</a>
         </Link>
       )}
     </div>
