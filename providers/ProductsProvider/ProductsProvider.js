@@ -11,7 +11,9 @@ class ProductsProvider extends Component {
 
     this.state = {
       products: [],
+      productCategories: [],
       isLoadingProducts: true,
+      isLoadingProductCategories: true,
     };
   }
 
@@ -22,7 +24,7 @@ class ProductsProvider extends Component {
 
     try {
       const res = await getRequest({
-        url: "products-listing?storeId=ba629b0f-9749-4097-bfc7-825fdcfe6811"
+        url: "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/products"
       })
 
       this.setState({
@@ -39,7 +41,32 @@ class ProductsProvider extends Component {
     }
   };
 
+  getProductCagetegories = async () => {
+    this.setState({
+      isLoadingProductCategories: true
+    });
+
+    try {
+      const res = await getRequest({
+        url: "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/product-categories"
+      })
+
+      this.setState({
+        productCategories: res.data.data,
+        isLoadingProductCategories: false
+      })
+    } catch (error) {
+      const message = getRequestError(error);
+      console.log(error, message);
+
+      this.setState({
+        isLoadingProductCategories: false
+      })
+    }
+  };
+
   componentDidMount() {
+    this.getProductCagetegories();
     this.getProducts();
   }
 
@@ -48,6 +75,7 @@ class ProductsProvider extends Component {
       <ProductsContext.Provider
         value={{
           ...this.state,
+          getProductCagetegories: this.getProductCagetegories,
           getProducts: this.getProducts,
         }}
       >

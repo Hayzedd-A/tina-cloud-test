@@ -45,6 +45,7 @@
         display: grid
         grid-template-columns: repeat(2, 1fr)
         grid-gap: 15px
+        width: 100%
 
         @media (min-width: 640px)
             grid-template-columns: repeat(3, 1fr)
@@ -116,11 +117,11 @@
     min-width: 100%
     height: 100%
     overflow: auto
-    padding-bottom: 100px
+    padding-bottom: 170px
     position: relative
 
     .item-image
-        height: 360px
+        height: 315px
         position: relative
 
         img
@@ -220,47 +221,46 @@
         .quantity
             @include flex-position(space-between, center)
 
-            .add-toppings
-                @include flex-position(center, center)
-                cursor: pointer
-                padding: 0 20px
-                font-size: 14px
-                font-weight: $font-weight-bold
-                letter-spacing: 1px
-                height: 65px
-                border-radius: 32px
-                background: transparentize($yellow, 0.87)
-                white-space: nowrap
-
-                &.active
-                    background: transparentize($yellow, 0.48)
-
-                &.disabled
-                    pointer-events: none
-                    opacity: 0.5
-
-                @media (max-width: 400px)
-                    padding: 0 15px
-
-    .add-to-cart
+    .item-footer
         position: fixed
         bottom: 0
         width: 100%
-        background: $yellow
-        box-shadow: $add-cart-shadow
-        height: 85px
-        padding: 0 20px
+        // height: 85px
         font-size: 22px
         font-weight: $font-weight-bold
         line-height: 1
         cursor: pointer
 
-        & > div
-            @include flex-position(initial, center)
+        .add-toppings
+            @include flex-position(center, center)
+            cursor: pointer
+            padding: 0 20px
+            font-size: 14px
+            font-weight: $font-weight-bold
+            letter-spacing: 1px
+            height: 70px
+            background: transparentize($yellow, 0.87)
+            white-space: nowrap
+
+            &.active
+                background: transparentize($yellow, 0.48)
+
+            &.disabled
+                pointer-events: none
+                opacity: 0.5
+
+            @media (max-width: 400px)
+                padding: 0 15px
+
+        .add-to-cart
+            height: 85px
+            background: $yellow
+            box-shadow: $add-cart-shadow
+            padding: 0 20px
 
         .container
-            height: 100%
             @include flex-position(space-between, center)
+            height: 100%
 
             & > div
                 @include flex-position(initial, center)

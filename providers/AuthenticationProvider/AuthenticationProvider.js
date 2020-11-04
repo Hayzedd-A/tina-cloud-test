@@ -9,7 +9,7 @@ class AuthenticationProvider extends Component {
   constructor(props) {
     super(props);
 
-    const currentUser = localStorage.getItem('brightcube-user');
+    const currentUser = localStorage.getItem('gourmet-twist-user');
 
     this.state = {
       user: currentUser ? JSON.parse(currentUser) : null,
@@ -37,7 +37,7 @@ class AuthenticationProvider extends Component {
   };
 
   checkUser = () => {
-    const currentUser = localStorage.getItem("brightcube-user");
+    const currentUser = localStorage.getItem("gourmet-twist-user");
 
     this.setState(
       {
@@ -60,7 +60,7 @@ class AuthenticationProvider extends Component {
         data
       });
 
-      localStorage.setItem("brightcube-user", JSON.stringify(res.data));
+      localStorage.setItem("gourmet-twist-user", JSON.stringify(res.data));
 
       this.setState({
         isLoggingIn: false,
@@ -79,7 +79,7 @@ class AuthenticationProvider extends Component {
   };
 
   logout = () => {
-    localStorage.removeItem("brightcube-user");
+    localStorage.removeItem("gourmet-twist-user");
     this.setState({
       user: null
     });
@@ -133,7 +133,7 @@ class AuthenticationProvider extends Component {
 
       user.user = res.data;
 
-      localStorage.setItem("nettpharmacy-admin", JSON.stringify(user));
+      localStorage.setItem("gourmet-twist-user", JSON.stringify(user));
 
       this.setState({
         isUpdatingProfile: false,

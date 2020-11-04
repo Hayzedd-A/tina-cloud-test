@@ -4,16 +4,18 @@
     right: 0
     bottom: 0
     width: 100%
-    max-width: 700px
-    margin: auto
-    height: 90px
-    border-radius: 23px 23px 0 0
+    height: 80px
     background: $white
     box-shadow: $menu-shadow
     padding: 0 40px
     font-size: 14px
     font-weight: $font-weight-bold
-    @include flex-position(space-between, center)
+
+    & > div
+        max-width: 700px
+        height: 100%
+        margin: auto
+        @include flex-position(space-between, center)
 
     .menu-item
         cursor: pointer
@@ -21,24 +23,22 @@
         color: $brown
         opacity: 0.6
         transition: all ease-in-out .3s
+        font-size: 11px
+        line-height: 1
 
         .icon
-            @include full-circle(40px, 40px)
+            width: 20px
+            flex: 0 0 20px
             @include flex-position(center, center)
             transition: all ease-in-out .3s
-            margin: 0 auto 5px
+            margin: 0 auto 10px
 
             svg
                 height: auto
-                width: 17px
+                width: 100%
 
                 g, path
                     stroke: $brown
 
         &.active, &:hover
             opacity: 1
-
-            .icon
-                background: $yellow
-
-    

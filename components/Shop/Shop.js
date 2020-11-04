@@ -46,6 +46,7 @@ class Shop extends Component {
     const { selectItem, products } = this.props;
 
     const tabs = products.map(({ name }) => name);
+    const toppings = products[currentTab].toppings;
     const recommendedProducts = JSON.parse(JSON.stringify(products));
 
     return (
@@ -66,34 +67,40 @@ class Shop extends Component {
               <span className="text">Most Recommended</span>
             </div>
             <div className="section-items">
-              {recommendedProducts[currentTab].products.slice(0, 5).map((item, index) => {
-                const { name, image, unitPrice } = item;
+              {recommendedProducts[currentTab].products
+                .slice(0, 5)
+                .map((item, index) => {
+                  const { name, sizes } = item;
+                  const firstSize = Object.keys(sizes)[0];
+                  const { imageUrl, unitPrice } = sizes[firstSize][0];
 
-                return (
-                  <ShopItem
-                    key={`item-${index}`}
-                    name={name}
-                    image="/static/images/banana-bread.jpg"
-                    price={unitPrice}
-                    onClick={() => selectItem(item)}
-                  />
-                );
-              })}
+                  return (
+                    <ShopItem
+                      key={`item-${index}`}
+                      name={name}
+                      image={imageUrl}
+                      price={unitPrice}
+                      onClick={() => selectItem({...item, toppings})}
+                    />
+                  );
+                })}
             </div>
           </div>
           <div className="shop-section">
             <div className="section-title">All Breads</div>
             <div className="section-items">
               {products[currentTab].products.map((item, index) => {
-                const { name, image, unitPrice } = item;
+                const { name, sizes } = item;
+                const firstSize = Object.keys(sizes)[0];
+                const { imageUrl, unitPrice } = sizes[firstSize][0];
 
                 return (
                   <ShopItem
                     key={`item-${index}`}
                     name={name}
-                    image="/static/images/banana-bread.jpg"
+                    image={imageUrl}
                     price={unitPrice}
-                    onClick={() => selectItem(item)}
+                    onClick={() => selectItem({...item, toppings})}
                   />
                 );
               })}

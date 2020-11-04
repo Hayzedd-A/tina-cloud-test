@@ -153,14 +153,13 @@ class Checkout extends Component {
 
     try {
       const res = await postRequest({
-        url: "/placed-orders",
+        url: "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/placed-orders",
         data: {
           orderItems,
           customer: {
             name,
             phoneNumber,
-            address,
-            storeId: "ba629b0f-9749-4097-bfc7-825fdcfe6811"
+            address
           }
         }
       });
@@ -191,12 +190,9 @@ class Checkout extends Component {
   };
 
   handlePaystackSuccess = response => {
-    const { clearCart } = this.props;
+    const { clearCart, showCheckoutSuccess } = this.props;
     clearCart();
-    this.openToaster(
-      "success",
-      `Your order (${response.reference}) has been received and is being processed. Kindly check your email for more details`
-    );
+    showCheckoutSuccess(true)
   };
 
   handlePaystackClose = () => {
@@ -261,6 +257,7 @@ class Checkout extends Component {
               label="Phone Number"
               placeholder="Enter your phone number"
               name="phoneNumber"
+              type="phone"
               onChange={(e, valid) => this.handleChange(e, valid)}
               className="mb-40"
               required

@@ -179,3 +179,69 @@
                 path
                     stroke: transparentize($brown, 0.39)
 
+.checkout-success
+    padding: 60px 0
+
+    .success-badge
+        width: 100%
+        max-width: 275px
+        margin: auto
+        height: 70px
+        border-radius: 34px
+        background: transparentize($green-3, 0.71)
+        @include flex-position(initial, center)
+        font-size: 16px
+        font-weight: $font-weight-bold
+        line-height: 19px
+        color: $brown
+        padding: 0 15px
+
+        .icon
+            @include full-circle(40px, 40px)
+            @include flex-position(center, center)
+            background: transparentize($green, 0.71)
+            margin-right: 20px
+
+            svg
+                width: 20px
+
+                g
+                    stroke-width: 3
+
+                path
+                    stroke: $green-4
+
+    .success-image
+        width: 200px
+        height: 200px
+        margin: 45px auto
+
+        img
+            width: 100%
+
+    .success-message
+        max-width: 265px
+        margin: auto
+        text-align: center
+        color: $brown
+
+        .main-text
+            font-size: 21px
+            line-height: 25px
+            margin-bottom: 20px
+            font-weight: $font-weight-bold
+
+        .description
+            font-size: 18px
+            line-height: 22px
+            font-weight: $font-weight-regular
+
+            span
+                color: $yellow
+                display: inline-block
+                margin-top: 3px
+                padding-bottom: 3px
+                border-bottom: 2px dashed $yellow
+                font-weight: $font-weight-bold
+                cursor: pointer
+

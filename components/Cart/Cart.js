@@ -11,15 +11,24 @@ import { reduceArray, reduceLinearArray } from "../../utils/functions";
 class Cart extends Component {
   cartAction = (item, quantity) => {
     const { updateCart, removeFromCart } = this.props;
-    const { unitPrice, toppings } = item;
+    const { unitPrice } = item;
 
-    const toppingsPrices = toppings.map(topping => topping.unitPrice);
+    let toppings = JSON.parse(JSON.stringify(item.toppings));
+
+    toppings = toppings.map(topping => ({
+      ...topping,
+      quantity
+    }));
+
+    const toppingsPrices = toppings.map(
+      topping => parseFloat(topping.unitPrice) * quantity
+    );
 
     const toppingsTotalCost = reduceLinearArray(toppingsPrices);
     const totalCost = toppingsTotalCost + parseFloat(unitPrice) * quantity;
 
     quantity
-      ? updateCart({ ...item, quantity, totalCost })
+      ? updateCart({ ...item, quantity, toppings, totalCost })
       : removeFromCart(item);
   };
 

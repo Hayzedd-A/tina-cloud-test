@@ -1,12 +1,13 @@
 .header
     background: $brown
-    padding: 35px 20px 45px
-    height: 130px
+    padding: 0 20px
+    height: 110px
     position: relative
     z-index: 20
 
     .container
-        @include flex-position(space-between, flex-start)
+        @include flex-position(space-between, center)
+        height: 100%
 
     .header-icon-container
         width: 50px
@@ -44,8 +45,9 @@
                 right: 0
 
     .logo
-        width: 110px
-        height: 110px
+        width: 95px
+        flex: 0 0 95px
+        height: 95px
         border-radius: 50%
 
         img
@@ -55,3 +57,99 @@
         svg
             width: 20px
             height: auto
+
+.header-menu-container
+    @include full-fixed
+    width: 100%
+    height: 100vh
+    z-index: 1000000
+    background: transparentize($brown, 0.04)
+    text-align: center
+    padding: 35px 50px
+
+    .close
+        width: 32px
+        margin: auto
+        cursor: pointer
+        display: flex
+
+        svg
+            width: 100%
+
+    .header-menu-items
+        margin-top: 100px
+
+        a, .signout
+            display: block
+            font-size: 32px
+            font-weight: $font-weight-bold
+            color: $white
+            line-height: 39px
+            margin-bottom: 35px
+
+.search-input-container
+    @include full-fixed
+    @include flex-position(center, center)
+    height: 110px
+    background: $brown
+    padding: 0 20px
+    z-index: 100000
+
+    .search-input
+        background: $brown-2
+        height: 55px
+        border-radius: 9px
+        padding: 0 20px
+        width: 100%
+        max-width: 375px
+        @include flex-position(space-between, center)
+
+        input
+            border: 0
+            width: 100%
+            height: 100%
+            background: transparent
+            font-size: 18px
+            color: $white
+            @include placeholder
+                color: $brown-light
+
+        .close
+            width: 15px
+            flex: 0 0 15px
+            height: 15px
+            display: flex
+            margin-left: 15px
+
+            svg
+                width: 100%
+                height: auto
+
+
+.header-menu-animation-enter
+    opacity: 0
+
+    &.header-menu-animation-enter-active
+        opacity: 1
+        transition: opacity 500ms ease-in
+
+.header-menu-animation-leave
+    opacity: 1
+
+    &.header-menu-animation-leave-active
+        opacity: 0
+        transition: opacity 300ms ease-in
+
+.search-input-animation-enter
+    transform: translateY(-100%)
+
+    &.search-input-animation-enter-active
+        transform: translateY(0)
+        transition: transform 500ms ease-in
+
+.search-input-animation-leave
+    transform: translateY(0)
+
+    &.search-input-animation-leave-active
+        transform: translateY(-100%)
+        transition: transform 300ms ease-in

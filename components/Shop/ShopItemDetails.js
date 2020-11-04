@@ -17,7 +17,7 @@ class ShopItemDetails extends Component {
     super(props);
 
     this.state = {
-      selectedSize: "Regular",
+      selectedSize: "",
       quantity: 1,
       selectedToppings: [],
       isToppingsFormActive: false
@@ -31,8 +31,18 @@ class ShopItemDetails extends Component {
   };
 
   handleQuantity = quantity => {
-    this.setState({
+    let selectedToppings = JSON.parse(
+      JSON.stringify(this.state.selectedToppings)
+    );
+
+    selectedToppings = selectedToppings.map(topping => ({
+      ...topping,
       quantity
+    }));
+
+    this.setState({
+      quantity,
+      selectedToppings
     });
   };
 
@@ -43,12 +53,14 @@ class ShopItemDetails extends Component {
   };
 
   handleToppingsSelection = (topping, { target }) => {
+    const { quantity } = this.state;
+
     let selectedToppings = JSON.parse(
-      JSON.stringify({...this.state.selectedToppings, quantity: 1})
+      JSON.stringify(this.state.selectedToppings)
     );
 
     if (target.checked) {
-      selectedToppings.push(topping);
+      selectedToppings.push({ ...topping, quantity });
     } else {
       selectedToppings = selectedToppings.filter(({ id }) => id !== topping.id);
     }
@@ -96,12 +108,16 @@ class ShopItemDetails extends Component {
   getSelectedItemDetails = () => {
     const { selectedSize } = this.state;
     const { selectedItem } = this.props;
+    const { sizes } = selectedItem;
 
-    return selectedItem
-      ? selectedItem[selectedSize] && selectedItem[selectedSize].length
-        ? selectedItem[selectedSize][0]
-        : selectedItem
-      : {};
+    return sizes ? (sizes[selectedSize] ? sizes[selectedSize][0] : {}) : {};
+  };
+
+  getToppingsDetails = selectedTopping => {
+    const { selectedSize } = this.state;
+    const { sizes } = selectedTopping;
+
+    return sizes ? (sizes[selectedSize] ? sizes[selectedSize][0] : {}) : {};
   };
 
   getTotalCost = () => {
@@ -142,7 +158,10 @@ class ShopItemDetails extends Component {
   componentDidUpdate(prevProps) {
     const { selectedItem } = this.props;
 
-    if (!shallowequal(prevProps.selectedItem, selectedItem)) {
+    if (
+      !shallowequal(prevProps.selectedItem, selectedItem) &&
+      Object.keys(selectedItem).length
+    ) {
       const inCart = this.checkCart(selectedItem.id);
       const { quantity, toppings, size } = inCart || {};
 
@@ -155,7 +174,7 @@ class ShopItemDetails extends Component {
         : this.setState({
             quantity: 1,
             selectedToppings: [],
-            selectedSize: "Regular"
+            selectedSize: Object.keys(selectedItem.sizes)[0]
           });
     }
   }
@@ -169,23 +188,21 @@ class ShopItemDetails extends Component {
       toaster
     } = this.state;
     const { selectedItem, goBack } = this.props;
+    const { sizes, toppings } = selectedItem;
 
     const {
-      image,
+      imageUrl,
       name,
       unitPrice,
-      description,
-      toppings
+      description
     } = this.getSelectedItemDetails();
-
-    const sizes = ["Regular", "Mini", "Maxi"];
 
     const inCart = this.checkCart(selectedItem.id);
 
     return (
       <div className="shop-item-details">
         <div className="item-image">
-          <img src="/static/images/banana-bread.jpg" alt="" />
+          <img src={imageUrl} alt="" />
           <span className="back" onClick={goBack}>
             <RightArrow />
           </span>
@@ -205,18 +222,18 @@ class ShopItemDetails extends Component {
           <div className="container">
             <span className="title">SELECT SIZE</span>
             <div className="sizes">
-              {sizes.map((size, index) => (
-                <span
-                  key={`size-${index}`}
-                  className={classNames("size-selector", {
-                    active: selectedSize === size,
-                    disabled: selectedItem[selectedSize] && !selectedItem[selectedSize].length
-                  })}
-                  onClick={() => this.selectSize(size)}
-                >
-                  {size}
-                </span>
-              ))}
+              {sizes &&
+                Object.keys(sizes).map((size, index) => (
+                  <span
+                    key={`size-${index}`}
+                    className={classNames("size-selector", {
+                      active: selectedSize === size
+                    })}
+                    onClick={() => this.selectSize(size)}
+                  >
+                    {size}
+                  </span>
+                ))}
             </div>
           </div>
         </div>
@@ -228,32 +245,38 @@ class ShopItemDetails extends Component {
                 value={quantity}
                 onChange={e => this.handleQuantity(e.target.value)}
               />
-              <span
-                className={classNames("add-toppings", {
-                  active: selectedToppings.length,
-                  disabled: !toppings || (toppings && !toppings.length)
-                })}
-                onClick={this.toggleToppingsForm}
-              >
-                {selectedToppings.length
-                  ? `${selectedToppings.length} TOPPINGS`
-                  : "ADD TOPPINGS"}
-              </span>
             </div>
           </div>
         </div>
-        <div className="add-to-cart" onClick={this.cartAction}>
-          <div className="container">
-            {inCart ? (
-              <span>Update order</span>
-            ) : (
-              <span>Add {quantity} to Order</span>
-            )}
-            <div>
-              <span className="total-price">
-                ₦ {this.getTotalCost().toLocaleString()}
-              </span>
-              <RightArrow />
+        <div className="item-footer">
+          <div
+            className={classNames("add-toppings", {
+              active: selectedToppings.length,
+              disabled: !toppings || (toppings && !toppings.length)
+            })}
+            onClick={this.toggleToppingsForm}
+          >
+            {selectedToppings.length
+              ? `${
+                  selectedToppings.length === 1
+                    ? `${selectedToppings.length} TOPPING`
+                    : `${selectedToppings.length} TOPPINGS`
+                }`
+              : "ADD TOPPINGS"}
+          </div>
+          <div className="add-to-cart" onClick={this.cartAction}>
+            <div className="container">
+              {inCart ? (
+                <span>Update order</span>
+              ) : (
+                <span>Add {quantity} to Order</span>
+              )}
+              <div>
+                <span className="total-price">
+                  ₦ {this.getTotalCost().toLocaleString()}
+                </span>
+                <RightArrow />
+              </div>
             </div>
           </div>
         </div>
@@ -278,6 +301,7 @@ class ShopItemDetails extends Component {
               closeToppingsForm={this.toggleToppingsForm}
               handleToppingsSelection={this.handleToppingsSelection}
               selectedToppings={selectedToppings}
+              getToppingsDetails={this.getToppingsDetails}
             />
           )}
         </CSSTransitionGroup>

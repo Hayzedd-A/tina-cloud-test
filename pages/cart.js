@@ -1,56 +1,34 @@
-import { Component } from "react";
+import { useState } from "react";
 import classNames from "classnames";
-import { useRouter } from "next/router";
 
 import { CartConsumer } from "../providers/CartProvider";
 
 import Main from "../layouts/Main";
-import { Cart, Checkout } from "../components/Cart";
+import { Cart, Checkout, CheckoutSuccess } from "../components/Cart";
 
-class CartPage extends Component {
-  state = {
-    showCheckout: false
-  };
+const CartPage = () => {
+  const [isCheckoutActive, showCheckout] = useState(false);
+  const [isCheckoutSuccessActive, showCheckoutSuccess] = useState(false);
 
-  checkout = () => {
-    this.setState({
-      showCheckout: true
-    });
-  };
-
-  backToCart = () => {
-    this.setState({
-      showCheckout: false
-    });
-  };
-
-  goBack = () => {
-    console.log(useRouter());
-    // this.setState(
-    //   {
-    //     showDetails: false
-    //   },
-    //   () =>
-    //     setTimeout(() => {
-    //       this.setState({ selectedItem: {} });
-    //     }, 300)
-    // );
-  };
-
-  render() {
-    const { showCheckout } = this.state;
-
-    return (
-      <Main>
+  return (
+    <Main>
+      {isCheckoutSuccessActive ? (
+        <CheckoutSuccess />
+      ) : (
         <div className="swipe-container">
-          <div className={classNames("swiper", { showCheckout })}>
-            <Cart checkout={this.checkout} />
-            <Checkout goBack={this.backToCart} />
+          <div
+            className={classNames("swiper", { showCheckout: isCheckoutActive })}
+          >
+            <Cart checkout={() => showCheckout(true)} />
+            <Checkout
+              goBack={() => showCheckout(false)}
+              showCheckoutSuccess={showCheckoutSuccess}
+            />
           </div>
         </div>
-      </Main>
-    );
-  }
-}
+      )}
+    </Main>
+  );
+};
 
 export default CartConsumer(CartPage);

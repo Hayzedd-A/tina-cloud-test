@@ -7,7 +7,8 @@ const ToppingsForm = ({
   toppings,
   closeToppingsForm,
   handleToppingsSelection,
-  selectedToppings
+  selectedToppings,
+  getToppingsDetails
 }) => {
   const checkIfSelected = toppingId =>
     selectedToppings.some(topping => topping.id === toppingId);
@@ -24,7 +25,8 @@ const ToppingsForm = ({
 
         <div className="toppings-list">
           {toppings.map((topping, index) => {
-            const { id, name, unitPrice } = topping;
+            const toppingDetails = getToppingsDetails(topping);
+            const { id, name, unitPrice, imageUrl } = toppingDetails;
 
             return (
             <div
@@ -33,7 +35,7 @@ const ToppingsForm = ({
             >
               <div>
                 <div className="image">
-                  <img src="/static/images/banana-bread.jpg" alt="" />
+                  <img src={imageUrl} alt="" />
                 </div>
                 <div>
                   <span className="name">{name}</span>
@@ -45,7 +47,7 @@ const ToppingsForm = ({
               <div>
                 <Checkbox
                   checked={checkIfSelected(id)}
-                  onChange={e => handleToppingsSelection(topping, e)}
+                  onChange={e => handleToppingsSelection(toppingDetails, e)}
                 />
               </div>
             </div>

@@ -4,6 +4,7 @@ import Bag from "./Bag";
 import Bread from "./Bread";
 import Check from "./Check";
 import CircularClose from "./CircularClose";
+import Close from "./Close";
 import RightArrow from "./RightArrow";
 import Search from "./Search";
 import SelectorAdd from "./SelectorAdd";
@@ -17,6 +18,7 @@ export {
   Bread,
   Check,
   CircularClose,
+  Close,
   RightArrow,
   Search,
   SelectorAdd,
