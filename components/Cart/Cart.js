@@ -124,7 +124,7 @@ class Cart extends Component {
             <span className="value">₦ {subTotal.toLocaleString()}</span>
           </div>
         </div>
-        <div className="cart-actions">
+        <div className="cart-actions no-margin">
           <div className="delivery-fees-notice">
             <div className="container">
               <span className="icon">

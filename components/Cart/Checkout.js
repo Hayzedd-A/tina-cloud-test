@@ -2,6 +2,7 @@ import { Component } from "react";
 import Geosuggest from "react-geosuggest";
 import * as classNames from "classnames";
 
+import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
 import { CartConsumer } from "../../providers/CartProvider";
 
 import { TextField } from "../FormElements";
@@ -13,34 +14,37 @@ import {
   reduceArray,
   getFormValues,
   getRequestError,
-  paystack
+  paystack,
+  patchFormValues
 } from "../../utils/functions";
 import { deliveryPoints } from "../../utils/data";
 
+const initialFormData = {
+  name: {
+    value: "",
+    valid: false
+  },
+  phoneNumber: {
+    value: "",
+    valid: false
+  },
+  email: {
+    value: "",
+    valid: false
+  },
+  address: {
+    value: "",
+    valid: false
+  },
+  note: {
+    value: "",
+    valid: true
+  }
+};
+
 class Checkout extends Component {
   state = {
-    formData: {
-      name: {
-        value: "",
-        valid: false
-      },
-      phoneNumber: {
-        value: "",
-        valid: false
-      },
-      email: {
-        value: "",
-        valid: false
-      },
-      address: {
-        value: "",
-        valid: false
-      },
-      note: {
-        value: "",
-        valid: true
-      }
-    },
+    formData: { ...initialFormData },
     deliveryCost: 0
   };
 
@@ -153,7 +157,8 @@ class Checkout extends Component {
 
     try {
       const res = await postRequest({
-        url: "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/placed-orders",
+        url:
+          "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/placed-orders",
         data: {
           orderItems,
           customer: {
@@ -192,7 +197,7 @@ class Checkout extends Component {
   handlePaystackSuccess = response => {
     const { clearCart, showCheckoutSuccess } = this.props;
     clearCart();
-    showCheckoutSuccess(true)
+    showCheckoutSuccess(true);
   };
 
   handlePaystackClose = () => {
@@ -214,9 +219,25 @@ class Checkout extends Component {
     });
   };
 
+  componentDidMount() {
+    const currentUser = localStorage.getItem("gourmet-twist-user");
+
+    if (currentUser) {
+      const formData = patchFormValues(
+        initialFormData,
+        JSON.parse(currentUser).customer
+      );
+
+      this.setState({
+        formData: { ...formData }
+      });
+    }
+  }
+
   render() {
-    const { toaster, deliveryCost, isCheckingOut } = this.state;
+    const { toaster, deliveryCost, isCheckingOut, formData } = this.state;
     const { cart, goBack } = this.props;
+    const { name, phoneNumber, email, address, note } = formData;
 
     const subTotal = reduceArray(cart, "totalCost");
 
@@ -240,7 +261,8 @@ class Checkout extends Component {
               label="Receiver Name"
               placeholder="Enter your name"
               name="name"
-              onChange={(e, valid) => this.handleChange(e, valid)}
+              value={name.value}
+              onChange={this.handleChange}
               className="mb-40"
               required
             />
@@ -249,7 +271,8 @@ class Checkout extends Component {
               placeholder="Enter your email address"
               type="email"
               name="email"
-              onChange={(e, valid) => this.handleChange(e, valid)}
+              value={email.value}
+              onChange={this.handleChange}
               className="mb-40"
               required
             />
@@ -258,7 +281,8 @@ class Checkout extends Component {
               placeholder="Enter your phone number"
               name="phoneNumber"
               type="phone"
-              onChange={(e, valid) => this.handleChange(e, valid)}
+              value={phoneNumber.value}
+              onChange={this.handleChange}
               className="mb-40"
               required
             />
@@ -277,12 +301,13 @@ class Checkout extends Component {
               label="Delivery Note (Optional)"
               placeholder="Any special notes for delivery"
               name="note"
-              onChange={(e, valid) => this.handleChange(e, valid)}
+              value={note.value}
+              onChange={this.handleChange}
               className="mb-40"
             />
           </div>
         </div>
-        <div className="cart-actions">
+        <div className="cart-actions no-margin">
           {!!deliveryCost && (
             <div className="delivery-fees-notice">
               <div className="container">
@@ -314,4 +339,4 @@ class Checkout extends Component {
   }
 }
 
-export default CartConsumer(Checkout);
+export default CartConsumer(AuthenticationConsumer(Checkout));

@@ -18,8 +18,8 @@ export const getRequest = async ({ url, params, token }) => {
     params
   };
 
-  if (token && currentUser && currentUser.token) {
-    request["headers"] = { authorization: `Bearer ${currentUser.token}` };
+  if (token && currentUser && currentUser.jwt) {
+    request["headers"] = { authorization: `Bearer ${currentUser.jwt}` };
   }
 
   const requestResponse = await API(request);
@@ -37,8 +37,8 @@ export const postRequest = async ({ url, params, data, token }) => {
     data
   };
 
-  if (token && currentUser && currentUser.token) {
-    request["headers"] = { authorization: `Bearer ${currentUser.token}` };
+  if (token && currentUser && currentUser.jwt) {
+    request["headers"] = { authorization: `Bearer ${currentUser.jwt}` };
   }
 
   const requestResponse = await API(request);
@@ -51,13 +51,13 @@ export const patchRequest = async ({ url, params, data, token }) => {
 
   var request = {
     url,
-    method: "put",
+    method: "patch",
     params,
     data
   };
 
-  if (token && currentUser && currentUser.token) {
-    request["headers"] = { authorization: `Bearer ${currentUser.token}` };
+  if (token && currentUser && currentUser.jwt) {
+    request["headers"] = { authorization: `Bearer ${currentUser.jwt}` };
   }
 
   const requestResponse = await API(request);
@@ -75,8 +75,8 @@ export const deleteRequest = async ({ url, params, data, token }) => {
     data
   };
 
-  if (token && currentUser && currentUser.token) {
-    request["headers"] = { authorization: `Bearer ${currentUser.token}` };
+  if (token && currentUser && currentUser.jwt) {
+    request["headers"] = { authorization: `Bearer ${currentUser.jwt}` };
   }
 
   const requestResponse = await API(request);

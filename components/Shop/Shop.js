@@ -87,7 +87,7 @@ class Shop extends Component {
             </div>
           </div>
           <div className="shop-section">
-            <div className="section-title">All Breads</div>
+            <div className="section-title">All {products[currentTab].name}s</div>
             <div className="section-items">
               {products[currentTab].products.map((item, index) => {
                 const { name, sizes } = item;

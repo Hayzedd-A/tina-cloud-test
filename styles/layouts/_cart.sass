@@ -133,51 +133,55 @@
     .checkout-form
         padding: 0 20px
 
-    .cart-actions
-        position: fixed
-        bottom: 0
-        width: 100%
-        background: $white
+.cart-actions
+    position: fixed
+    bottom: 0px
+    margin: 0 -20px
+    width: 100%
+    background: $white
 
-        .delivery-fees-notice
-            background: transparentize($green-3, 0.71)
-            padding: 0 25px
-            height: 70px
-            font-size: 16px
-            font-weight: $font-weight-bold
+    &.no-margin
+        margin: 0
 
-            .container
-                @include flex-position(initial, center)
-                height: 100%
+    .delivery-fees-notice
+        background: transparentize($green-3, 0.71)
+        padding: 0 25px
+        height: 70px
+        font-size: 16px
+        font-weight: $font-weight-bold
 
-            .icon
-                @include full-circle(40px, 40px)
-                margin-right: 20px
+        .container
+            @include flex-position(initial, center)
+            height: 100%
 
-                img
-                    width: 100%
+        .icon
+            @include full-circle(40px, 40px)
+            margin-right: 20px
 
-        .checkout-button
-            background: $yellow
-            height: 90px
-            font-size: 22px
-            font-weight: $font-weight-bold
-            box-shadow: $add-cart-shadow
-            cursor: pointer
+            img
+                width: 100%
 
-            &.disabled
-                opacity: 0.5
-                pointer-events: none
+    .checkout-button
+        background: $yellow
+        height: 90px
+        font-size: 22px
+        font-weight: $font-weight-bold
+        box-shadow: $add-cart-shadow
+        cursor: pointer
 
-            .container
-                @include flex-position(center, center)
-                height: 100%
+        &.disabled
+            opacity: 0.5
+            pointer-events: none
 
-            svg
-                margin-left: 15px
+        .container
+            @include flex-position(center, center)
+            height: 100%
 
-                path
-                    stroke: transparentize($brown, 0.39)
+        svg
+            margin-left: 15px
+
+            path
+                stroke: transparentize($brown, 0.39)
 
 .checkout-success
     padding: 60px 0

@@ -1,10 +1,12 @@
 import Link from "next/link";
 
+import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
+
 import { Close } from "../../public/static/vectors";
 
 import { menu } from "./data";
 
-const HeaderMenu = ({ showMenu }) => (
+const HeaderMenu = ({ showMenu, logout, user }) => (
   <div className="header-menu-container">
     <div className="close" onClick={() => showMenu(false)}>
       <Close />
@@ -17,9 +19,23 @@ const HeaderMenu = ({ showMenu }) => (
       ))}
     </div>
     <div className="header-menu-items">
-      <span className="signout">Sign out</span>
+      {user ? (
+        <span
+          className="signout"
+          onClick={() => {
+            logout();
+            showMenu(false);
+          }}
+        >
+          Sign out
+        </span>
+      ) : (
+        <Link href="/login">
+          <a>{label}</a>
+        </Link>
+      )}
     </div>
   </div>
 );
 
-export default HeaderMenu;
+export default AuthenticationConsumer(HeaderMenu);

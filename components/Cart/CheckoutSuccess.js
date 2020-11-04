@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
 
+import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
+
 import { Check, RightArrow } from "../../public/static/vectors";
 
-const CheckoutSuccess = () => {
+const CheckoutSuccess = ({ user }) => {
   const router = useRouter();
 
   return (
@@ -21,11 +23,17 @@ const CheckoutSuccess = () => {
           Your order has been placed successfully.
         </div>
         <div className="description">
-          Track your order now by{" "}
-          <span onClick={() => router.push("/create-login")}>Creating Login</span>
+          Track your order now {!user && "by "}
+          {user ? (
+            <span onClick={() => router.push("/my-account")}>My Account</span>
+          ) : (
+            <span onClick={() => router.push("/login?new")}>
+              Creating Login
+            </span>
+          )}
         </div>
       </div>
-      <div className="cart-actions">
+      <div className="cart-actions no-margin">
         <div className="checkout-button" onClick={() => router.push("/")}>
           <div className="container">
             <span>Continue</span>
@@ -37,4 +45,4 @@ const CheckoutSuccess = () => {
   );
 };
 
-export default CheckoutSuccess;
+export default AuthenticationConsumer(CheckoutSuccess);

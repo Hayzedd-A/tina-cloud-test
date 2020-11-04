@@ -1,13 +1,17 @@
 import { Component } from "react";
 import classNames from "classnames";
 import Link from "next/link";
+import { withRouter } from "next/router";
 
 import Main from "../layouts/Main";
 
 import { TextField, Pin } from "../components/FormElements";
 import Toaster from "../components/Toaster";
 
+import { AuthenticationConsumer } from "../providers/AuthenticationProvider";
+
 import { RightArrow } from "../public/static/vectors";
+import { getFormValues } from "../utils/functions";
 
 class CreateLogin extends Component {
   state = {
@@ -47,13 +51,26 @@ class CreateLogin extends Component {
     );
   };
 
+  login = () => {
+    const { login, router } = this.props;
+    const { phoneNumber, pin } = getFormValues(this.state.formData);
+
+    login({ phoneNumber, pin }, () => router.push("/my-account"));
+  };
+
+  componentDidMount() {
+    const currentUser = localStorage.getItem("gourmet-twist-user");
+
+    currentUser && this.props.router.push("/my-account")
+  }
+
   render() {
     const { toaster } = this.state;
-    const { isCreatingPin } = this.props;
+    const { isLoggingIn } = this.props;
 
     return (
       <Main>
-        <div className="cart-container">
+        <div className="cart-container login-container">
           <div className="cart-header">
             <Link href="/">
               <a>
@@ -91,18 +108,18 @@ class CreateLogin extends Component {
                 onChange={this.handleChange}
                 required
               />
-            </div>
-          </div>
-          <div className="cart-actions">
-            <div
-              className={classNames("checkout-button", {
-                disabled: !this.checkFormValidity() || isCreatingPin
-              })}
-              onClick={this.createPin}
-            >
-              <div className="container">
-                <span>Create Pin</span>
-                <RightArrow />
+              <div className="cart-actions">
+                <div
+                  className={classNames("checkout-button", {
+                    disabled: !this.checkFormValidity() || isLoggingIn
+                  })}
+                  onClick={this.login}
+                >
+                  <div className="container">
+                    <span>Create Pin</span>
+                    <RightArrow />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -114,4 +131,4 @@ class CreateLogin extends Component {
   }
 }
 
-export default CreateLogin;
+export default withRouter(AuthenticationConsumer(CreateLogin));

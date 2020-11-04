@@ -4,7 +4,7 @@ import { Bread, Avatar, Bag } from "../../public/static/vectors";
 const Menu = () => (
   <div className="menu-container">
     <div>
-      <div className="menu-item active">
+      <div className="menu-item">
         <Link href="/">
           <a>
             <span className="icon">

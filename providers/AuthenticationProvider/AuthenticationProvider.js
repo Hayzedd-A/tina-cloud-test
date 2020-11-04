@@ -9,10 +9,8 @@ class AuthenticationProvider extends Component {
   constructor(props) {
     super(props);
 
-    const currentUser = localStorage.getItem('gourmet-twist-user');
-
     this.state = {
-      user: currentUser ? JSON.parse(currentUser) : null,
+      user: null,
       userProfile: null,
       isLoggingIn: false,
       isLoadingProfile: true,
@@ -39,15 +37,12 @@ class AuthenticationProvider extends Component {
   checkUser = () => {
     const currentUser = localStorage.getItem("gourmet-twist-user");
 
-    this.setState(
-      {
-        user: currentUser ? JSON.parse(currentUser) : null
-      }
-      // () => this.getProfile()
-    );
+    this.setState({
+      user: currentUser ? JSON.parse(currentUser) : null
+    });
   };
 
-  login = async data => {
+  login = async (data, successCallback) => {
     this.resetState();
 
     this.setState({
@@ -56,7 +51,7 @@ class AuthenticationProvider extends Component {
 
     try {
       const res = await postRequest({
-        url: "google/login",
+        url: "/auth/customer/login",
         data
       });
 
@@ -67,6 +62,8 @@ class AuthenticationProvider extends Component {
         loginOutcome: "success",
         user: res.data
       });
+
+      successCallback && successCallback();
     } catch (error) {
       const message = getRequestError(error);
 
@@ -96,7 +93,7 @@ class AuthenticationProvider extends Component {
 
       try {
         const res = await getRequest({
-          url: `users/${user.user.id}`,
+          url: `users/${user.customer.id}`,
           token: true
         });
 
@@ -116,7 +113,7 @@ class AuthenticationProvider extends Component {
     }
   };
 
-  updateProfile = async data => {
+  updateProfile = async (data, callback) => {
     this.resetState();
     let user = { ...this.state.user };
 
@@ -126,12 +123,12 @@ class AuthenticationProvider extends Component {
 
     try {
       const res = await patchRequest({
-        url: `users/${user.id}`,
+        url: `users/${user.customer.id}`,
         token: true,
         data
       });
 
-      user.user = res.data;
+      user.customer = res.data;
 
       localStorage.setItem("gourmet-twist-user", JSON.stringify(user));
 
@@ -140,6 +137,8 @@ class AuthenticationProvider extends Component {
         updateProfileStatus: true,
         user
       });
+
+      callback && callback("success", "Profile updated successfully!");
     } catch (error) {
       const message = getRequestError(error);
 
@@ -149,6 +148,8 @@ class AuthenticationProvider extends Component {
         profileOutcome: "error",
         profileMessage: message
       });
+
+      callback && callback("error", message);
     }
   };
 

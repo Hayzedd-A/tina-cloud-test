@@ -1,0 +1,44 @@
+.my-account
+    &-header
+       height: 105px
+       background: transparentize($yellow, 0.48)
+       @include flex-position(center, center)
+       font-size: 22px
+       font-weight: $font-weight-bold
+       color: $brown
+
+    .tabs-container
+        justify-content: space-between
+        background: $yellow-light
+
+        .tab-item
+            &:last-child
+                margin-right: 0
+                padding-right: 0
+
+    &-content
+        padding: 20px 20px 80px
+
+    .my-orders
+        margin: 0 -20px
+
+    .section-title
+        height: 35px
+        border-radius: 18px
+        @include flex-position(center, center)
+        padding: 0 25px
+        background: transparentize($grey, 0.82)
+        font-size: 16px
+        font-weight: $font-weight-bold
+        color: $brown
+        margin: 40px auto
+        max-width: 155px
+
+        &.filled
+            background: transparentize($yellow, 0.87)
+
+    .cart-actions
+        position: relative
+        width: auto
+        bottom: unset
+        margin: 0 -20px

@@ -134,3 +134,29 @@ export const paystack = (
 
   handler.openIframe();
 };
+
+export const patchFormValues = (formFields, data) => {
+  if (
+    !formFields ||
+    !data ||
+    !(typeof formFields === "object") ||
+    !(typeof data === "object") ||
+    !Object.keys(formFields).length ||
+    !Object.keys(data).length ||
+    formFields[0] ||
+    data[0]
+  ) {
+    return null;
+  }
+
+  let formValues = {};
+
+  Object.keys(formFields).forEach(key => {
+    formValues[key] = {
+      value: data[key] || "",
+      valid: !!data[key] || formFields[key].valid
+    };
+  });
+
+  return formValues;
+};
