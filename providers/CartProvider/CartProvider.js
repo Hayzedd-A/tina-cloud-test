@@ -35,7 +35,7 @@ class CartProvider extends Component {
     });
 
     try {
-      const storedCart = await localStorage.getItem("gourmet-twist-cart");
+      const storedCart = await localStorage.getItem("gourmettwist-cart");
       const cart = storedCart ? JSON.parse(storedCart) : [];
 
       this.setState({
@@ -121,14 +121,14 @@ class CartProvider extends Component {
   };
 
   clearCart = () => {
-    localStorage.removeItem("gourmet-twist-cart");
+    localStorage.removeItem("gourmettwist-cart");
     this.setState({
       cart: []
     });
   };
 
   updateLocalCart = (cart, success) => {
-    localStorage.setItem("gourmet-twist-cart", JSON.stringify(cart));
+    localStorage.setItem("gourmettwist-cart", JSON.stringify(cart));
     this.setState({
       cart
     }, () => success && success());

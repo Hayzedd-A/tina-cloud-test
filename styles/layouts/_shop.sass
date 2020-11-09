@@ -272,6 +272,10 @@
             box-shadow: $add-cart-shadow
             padding: 0 20px
 
+            &.disabled
+                opacity: 0.5
+                pointer-events: none
+
         .container
             @include flex-position(space-between, center)
             height: 100%

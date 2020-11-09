@@ -108,7 +108,9 @@ class ShopItemDetails extends Component {
         "success",
         `Added x${this.getTotalQuantity()} successfully to the cart`
       );
-      router.push("/", undefined, { shallow: true });
+      setTimeout(() => {
+        router.push("/", undefined, { shallow: true });
+      }, 1500);
     });
   };
 
@@ -256,7 +258,7 @@ class ShopItemDetails extends Component {
     const { name, id } = router.query;
 
     this.formatProducts(() => {
-      name && id && this.selectItem(id)
+      name && id && this.selectItem(id);
     });
   }
 
@@ -366,7 +368,12 @@ class ShopItemDetails extends Component {
           </div>
         )}
         <div className="item-footer">
-          <div className="add-to-cart" onClick={this.cartAction}>
+          <div
+            className={classNames("add-to-cart", {
+              disabled: !this.getTotalQuantity()
+            })}
+            onClick={this.cartAction}
+          >
             <div className="container">
               <span>Add {this.getTotalQuantity()} to Order</span>
               <div>
