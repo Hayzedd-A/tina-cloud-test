@@ -1,10 +1,11 @@
 import { Component } from "react";
-import classNames from "classnames";
+import { withRouter } from "next/router";
 
 import Main from "../layouts/Main";
-import { ShopItemDetails, SearchResults } from "../components/Shop";
+import { SearchResults } from "../components/Shop";
 
 import { ProductsConsumer } from "../providers/ProductsProvider";
+import { slugify } from "../utils/functions";
 
 class Home extends Component {
   state = {
@@ -12,39 +13,19 @@ class Home extends Component {
     showDetails: false
   };
 
-  selectItem = selectedItem => {
-    this.setState({
-      selectedItem,
-      showDetails: true
+  selectItem = ({ name, id }) => {
+    this.props.router.push(`/shop/${slugify(name)}/${id}`, undefined, {
+      shallow: true
     });
   };
 
-  goBack = () => {
-    this.setState(
-      {
-        showDetails: false
-      },
-      () =>
-        setTimeout(() => {
-          this.setState({ selectedItem: {} });
-        }, 300)
-    );
-  };
-
   render() {
-    const { selectedItem, showDetails } = this.state;
-
     return (
       <Main>
-        <div className="swipe-container">
-          <div className={classNames("swiper", { showDetails })}>
-            <SearchResults selectItem={this.selectItem} />
-            <ShopItemDetails goBack={this.goBack} selectedItem={selectedItem} />
-          </div>
-        </div>
+        <SearchResults selectItem={this.selectItem} />
       </Main>
     );
   }
 }
 
-export default ProductsConsumer(Home);
+export default ProductsConsumer(withRouter(Home));

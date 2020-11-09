@@ -1,5 +1,6 @@
 import { Component } from "react";
 import Link from "next/link";
+import classNames from "classnames"
 
 import { CartConsumer } from "../../providers/CartProvider";
 
@@ -32,13 +33,17 @@ class Cart extends Component {
       : removeFromCart(item);
   };
 
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
+
   render() {
     const { cart, checkout } = this.props;
 
     const subTotal = reduceArray(cart, "totalCost");
 
     return (
-      <div className="cart-container">
+      <div className="cart-container full-height">
         <div className="cart-header">
           <Link href="/">
             <a>
@@ -48,12 +53,12 @@ class Cart extends Component {
             </a>
           </Link>
           <div className="title">My Cart</div>
-          <div className="info">
+          <div className="info delivery-notice">
             <span className="icon">
-              <img src="/static/images/lightning.png" alt="" />
+              <img src="/static/images/delivery.png" alt="" />
             </span>
             <span className="text">
-              Order within 6.30 mins to guarantee delivery today
+              Delivery Fees will be calculated in the next step!
             </span>
           </div>
         </div>
@@ -129,17 +134,7 @@ class Cart extends Component {
           </div>
         </div>
         <div className="cart-actions no-margin">
-          <div className="delivery-fees-notice">
-            <div className="container">
-              <span className="icon">
-                <img src="/static/images/delivery.png" alt="" />
-              </span>
-              <span className="text">
-                Delivery Fees will be calculated in the next step!
-              </span>
-            </div>
-          </div>
-          <div className="checkout-button" onClick={checkout}>
+          <div className={classNames("checkout-button", {disabled: !cart.length})} onClick={checkout}>
             <div className="container">
               <span>Checkout</span>
               <RightArrow />

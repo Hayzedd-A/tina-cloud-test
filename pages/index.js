@@ -1,11 +1,12 @@
 import { Component } from "react";
-import classNames from "classnames";
+import { withRouter } from "next/router";
 
 import Main from "../layouts/Main";
-import Shop, { ShopItemDetails } from "../components/Shop";
+import Shop from "../components/Shop";
 import SplashScreen from "../components/SplashScreen";
 
 import { ProductsConsumer } from "../providers/ProductsProvider";
+import { slugify } from "../utils/functions";
 
 class Home extends Component {
   state = {
@@ -14,23 +15,10 @@ class Home extends Component {
     showSplash: true
   };
 
-  selectItem = selectedItem => {
-    this.setState({
-      selectedItem,
-      showDetails: true
+  selectItem = ({ name, id }) => {
+    this.props.router.push(`/shop/${slugify(name)}/${id}`, undefined, {
+      shallow: true
     });
-  };
-
-  goBack = () => {
-    this.setState(
-      {
-        showDetails: false
-      },
-      () =>
-        setTimeout(() => {
-          this.setState({ selectedItem: {} });
-        }, 300)
-    );
   };
 
   componentDidMount() {
@@ -46,7 +34,6 @@ class Home extends Component {
   }
 
   render() {
-    const { selectedItem, showDetails, showSplash } = this.state;
     const { isLoadingProducts } = this.props;
 
     return (
@@ -54,19 +41,11 @@ class Home extends Component {
         {isLoadingProducts ? (
           <SplashScreen />
         ) : (
-          <div className="swipe-container">
-            <div className={classNames("swiper", { showDetails })}>
-              <Shop selectItem={this.selectItem} />
-              <ShopItemDetails
-                goBack={this.goBack}
-                selectedItem={selectedItem}
-              />
-            </div>
-          </div>
+          <Shop selectItem={this.selectItem} />
         )}
       </Main>
     );
   }
 }
 
-export default ProductsConsumer(Home);
+export default ProductsConsumer(withRouter(Home));

@@ -43,8 +43,8 @@
             background: transparentize($yellow, 0.87)
 
             .icon
-                width: 20px
-                flex: 0 0 20px
+                width: 30px
+                flex: 0 0 30px
                 height: 30px
                 margin-right: 10px
                 display: flex
@@ -54,11 +54,16 @@
                     height: 100%
 
                 &.checkout-icon
+                    width: 20px
+                    flex: 0 0 20px
                     height: 20px
 
             .text
                 font-size: 16px
                 font-weight: $font-weight-bold
+
+            &.delivery-notice
+                background: transparentize($green-3, 0.71)
 
     .cart-content
         min-height: calc(100vh - 370px)
@@ -140,6 +145,18 @@
     .checkout-form
         padding: 0 20px
 
+    &.full-height
+        position: relative
+        min-height: 100vh
+
+        .cart-content
+            padding-bottom: 90px
+
+        .cart-actions
+            position: absolute !important
+            bottom: 0 !important
+            width: 100% !important
+
 .cart-actions
     margin: 0 -20px
     background: $white
@@ -189,6 +206,8 @@
 
 .checkout-success
     padding: 60px 0
+    min-height: 100vh
+    position: relative
 
     .success-badge
         width: 100%
@@ -252,4 +271,9 @@
                 border-bottom: 2px dashed $yellow
                 font-weight: $font-weight-bold
                 cursor: pointer
+
+    .cart-actions
+        position: absolute
+        bottom: 0
+        width: 100%
 

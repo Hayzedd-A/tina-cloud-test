@@ -47,8 +47,11 @@ class CreateLogin extends Component {
     const { formData } = this.state;
     const { router } = this.props;
     const { newUser } = router.query;
-    const { pin, confirmPin } = formData;
-    return Object.values(formData).every(
+    const { phoneNumber, pin, confirmPin } = formData;
+
+    const data = newUser ? formData : { phoneNumber, pin };
+
+    return Object.values(data).every(
       value => value.valid && (newUser ? pin.value === confirmPin.value : true)
     );
   };
@@ -82,7 +85,7 @@ class CreateLogin extends Component {
                 </div>
               </a>
             </Link>
-            <div className="title">Create Login</div>
+            <div className="title">{newUser ? "Create Login" : "Login"}</div>
           </div>
           <div className="checkout-form login-form">
             <div className="container">
@@ -94,10 +97,10 @@ class CreateLogin extends Component {
                   label="Phone Number"
                   placeholder="Enter your phone number"
                   name="phoneNumber"
-                  type="phone"
                   onChange={this.handleChange}
                   className="mb-40"
                   required
+                  mobile
                 />
                 <Pin
                   label="Enter PIN"
@@ -138,4 +141,4 @@ class CreateLogin extends Component {
   }
 }
 
-export default withRouter(AuthenticationConsumer(CreateLogin));
+export default AuthenticationConsumer(withRouter(CreateLogin));

@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { Component } from "react";
+
+import { withRouter } from "next/router";
 
 import Main from "../layouts/Main";
 
@@ -7,32 +8,48 @@ import Tabs from "../components/Tabs";
 import Menu from "../components/Menu";
 import { MyInfo, MyOrders } from "../components/MyAccount";
 
-import OrdersProvider, { OrdersConsumer } from "../providers/OrdersProvider";
+import OrdersProvider from "../providers/OrdersProvider";
 
-const MyAccount = () => {
-  const router = useRouter();
-  const [currentTab, switchTab] = useState(0);
-  const tabs = ["My Info", "My Orders"];
-  const tabContent = [<MyInfo />, <MyOrders />];
+class MyAccount extends Component {
+  state = {
+    currentTab: 0
+  };
 
-  useEffect(() => {
+  switchTab = currentTab => {
+    this.setState({
+      currentTab
+    });
+  };
+
+  componentDidMount() {
     const currentUser = localStorage.getItem("gourmet-twist-user");
 
-    !currentUser && router.push("/login");
-  });
+    !currentUser && this.props.router.push("/login");
+  }
 
-  return (
-    <Main>
-      <OrdersProvider>
-        <div className="my-account">
-          <div className="my-account-header">My Account</div>
-          <Tabs tabs={tabs} currentTab={currentTab} switchTab={switchTab} />
-          <div className="my-account-content">{tabContent[currentTab]}</div>
-          <Menu />
-        </div>
-      </OrdersProvider>
-    </Main>
-  );
-};
+  render() {
+    const { currentTab } = this.state;
 
-export default OrdersConsumer(MyAccount);
+    const tabs = ["My Info", "My Orders"];
+    const tabContent = [<MyInfo />, <MyOrders />];
+
+    return (
+      <Main>
+        <OrdersProvider>
+          <div className="my-account">
+            <div className="my-account-header">My Account</div>
+            <Tabs
+              tabs={tabs}
+              currentTab={currentTab}
+              switchTab={this.switchTab}
+            />
+            <div className="my-account-content">{tabContent[currentTab]}</div>
+            <Menu />
+          </div>
+        </OrdersProvider>
+      </Main>
+    );
+  }
+}
+
+export default withRouter(MyAccount);

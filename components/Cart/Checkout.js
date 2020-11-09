@@ -220,6 +220,7 @@ class Checkout extends Component {
   };
 
   componentDidMount() {
+    window.scrollTo(0, 0);
     const currentUser = localStorage.getItem("gourmet-twist-user");
 
     if (currentUser) {
@@ -280,11 +281,11 @@ class Checkout extends Component {
               label="Phone Number"
               placeholder="Enter your phone number"
               name="phoneNumber"
-              type="phone"
               value={phoneNumber.value}
               onChange={this.handleChange}
               className="mb-40"
               required
+              mobile
             />
             <div className="input-container">
               <label>Delivery Address</label>

@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { Bread, Avatar, Bag } from "../../public/static/vectors";
 
-const Menu = () => (
+import { CartConsumer } from "../../providers/CartProvider";
+import { reduceArray } from "../../utils/functions";
+
+const Menu = ({ cart }) => {
+  const cartQuantity = reduceArray(cart, "quantity");
+
+  return (
   <div className="menu-container">
     <div>
       <div className="menu-item">
@@ -27,6 +33,7 @@ const Menu = () => (
       <div className="menu-item">
         <Link href="/cart">
           <a>
+            <span className="cart-count">{cartQuantity}</span>
             <span className="icon">
               <Bag />
             </span>
@@ -36,6 +43,6 @@ const Menu = () => (
       </div>
     </div>
   </div>
-);
+);}
 
-export default Menu;
+export default CartConsumer(Menu);

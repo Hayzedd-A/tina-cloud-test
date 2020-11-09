@@ -30,13 +30,14 @@ const Header = () => {
       >
         {isMenuActive && <HeaderMenu showMenu={showMenu} />}
       </CSSTransitionGroup>
-      <div className="swipe-container">
-        <div
-          className={classNames("swiper header-swiper", {
-            showDetails: isSearchInputActive
-          })}
+
+      <div className="header">
+        <CSSTransitionGroup
+          transitionName="header-container-animation"
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={300}
         >
-          <div className="header">
+          {!isSearchInputActive && (
             <div className="container">
               <div
                 className="header-icon-container hamburger-menu"
@@ -56,15 +57,24 @@ const Header = () => {
                 <Search />
               </div>
             </div>
-          </div>
+          )}
+        </CSSTransitionGroup>
+      </div>
+
+      <CSSTransitionGroup
+        transitionName="search-input-animation"
+        transitionEnterTimeout={500}
+        transitionLeaveTimeout={300}
+      >
+        {isSearchInputActive && (
           <SearchInput
             q={q}
             handleSearch={handleSearch}
             showSearchInput={showSearchInput}
             isSearchInputActive={isSearchInputActive}
           />
-        </div>
-      </div>
+        )}
+      </CSSTransitionGroup>
     </>
   );
 };

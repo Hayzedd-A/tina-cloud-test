@@ -4,7 +4,6 @@
     height: 110px
     position: relative
     z-index: 20
-    min-width: 100%
 
     .container
         @include flex-position(space-between, center)
@@ -89,12 +88,12 @@
             margin-bottom: 35px
 
 .search-input-container
+    @include full-fixed
     @include flex-position(center, center)
     height: 110px
     background: $brown
     padding: 0 20px
     z-index: 100000
-    min-width: 100%
 
     .search-input
         background: $brown-2
@@ -141,16 +140,30 @@
         opacity: 0
         transition: opacity 300ms ease-in
 
+.header-container-animation-enter
+    opacity: 0
+
+    &.header-container-animation-enter-active
+        opacity: 1
+        transition: opacity 500ms ease-in
+
+.header-container-animation-leave
+    opacity: 1
+
+    &.header-container-animation-leave-active
+        opacity: 0
+        transition: opacity 300ms ease-in
+
 .search-input-animation-enter
-    transform: translateY(-100%)
+    transform: translateX(100%)
 
     &.search-input-animation-enter-active
-        transform: translateY(0)
+        transform: translateX(0)
         transition: transform 500ms ease-in
 
 .search-input-animation-leave
-    transform: translateY(0)
+    transform: translateX(0)
 
     &.search-input-animation-leave-active
-        transform: translateY(-100%)
+        transform: translateX(100%)
         transition: transform 300ms ease-in

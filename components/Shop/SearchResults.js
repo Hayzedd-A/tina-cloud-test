@@ -16,8 +16,6 @@ class SearchResults extends Component {
     const { router } = props;
     const { q } = router.query;
 
-    console.log("here", props.products);
-
     this.state = {
       q,
       allProducts: [],
@@ -157,4 +155,4 @@ class SearchResults extends Component {
   }
 }
 
-export default withRouter(ProductsConsumer(SearchResults));
+export default ProductsConsumer(withRouter(SearchResults));

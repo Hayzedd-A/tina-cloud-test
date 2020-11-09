@@ -1,12 +1,8 @@
 .shop-container
-    min-width: 100%
     height: 100%
-    white-space: nowrap
-    overflow: scroll
-    -webkit-overflow-scrolling: touch
 
     & > .container
-        padding-bottom: 120px
+        padding-bottom: 65px
 
 .shop-section
     margin-bottom: 30px
@@ -117,6 +113,7 @@
             overflow: auto
             -ms-overflow-style: none
             scrollbar-width: none
+            grid-gap: unset
 
             &::-webkit-scrollbar
                 display: none
@@ -124,9 +121,10 @@
             .shop-item
                 width: 200px
                 flex: 0 0 200px
+                margin-left: 15px
 
-                &:first-child
-                    margin-left: 15px
+                &:last-child
+                    margin-right: 15px
 
 .shop-item-details
     min-width: 100%
@@ -134,7 +132,6 @@
     white-space: nowrap
     overflow: scroll
     -webkit-overflow-scrolling: touch
-    // padding-bottom: 170px
     position: relative
 
     .item-image
@@ -146,7 +143,7 @@
 
         .back
             position: absolute
-            top: 45px
+            top: 20px
             left: 20px
             @include full-circle(45px, 45px)
             @include flex-position(center, center)
@@ -220,6 +217,7 @@
                 transition: all ease-in-out .4s
                 margin-right: 20px
                 cursor: pointer
+                position: relative
 
                 &.active
                     border-color: $yellow

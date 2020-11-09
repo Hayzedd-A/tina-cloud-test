@@ -49,11 +49,11 @@ class CartProvider extends Component {
     }
   };
 
-  addToCart = (item, success) => {
+  addToCart = (items, success) => {
     const { cart } = this.state;
-    const cartCopy = [...cart];
+    let cartCopy = JSON.parse(JSON.stringify(cart));
 
-    cartCopy.push(item);
+    cartCopy = [...cartCopy, ...items];
     this.updateLocalCart(cartCopy, success);
   };
 

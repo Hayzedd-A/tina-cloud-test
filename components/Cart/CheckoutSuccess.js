@@ -27,7 +27,7 @@ const CheckoutSuccess = ({ user }) => {
           {user ? (
             <span onClick={() => router.push("/my-account")}>My Account</span>
           ) : (
-            <span onClick={() => router.push("/login?new")}>
+            <span onClick={() => router.push("/login?newUser=true")}>
               Creating Login
             </span>
           )}

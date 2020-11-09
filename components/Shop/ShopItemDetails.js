@@ -1,15 +1,18 @@
 import { Component } from "react";
 import classNames from "classnames";
-import * as shallowequal from "shallowequal";
+import Link from "next/link";
+import { withRouter } from "next/router";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
+import * as shallowequal from "shallowequal";
 
+import { ProductsConsumer } from "../../providers/ProductsProvider";
 import { CartConsumer } from "../../providers/CartProvider";
 
 import NumberSelector from "../FormElements/NumberSelector";
 import { ToppingsForm } from "./";
 
 import { RightArrow } from "../../public/static/vectors";
-import { reduceLinearArray } from "../../utils/functions";
+import { reduceLinearArray, reduceArray } from "../../utils/functions";
 import Toaster from "../Toaster";
 
 class ShopItemDetails extends Component {
@@ -17,10 +20,10 @@ class ShopItemDetails extends Component {
     super(props);
 
     this.state = {
+      selectedItem: {},
       selectedSize: "",
-      quantity: 1,
-      selectedToppings: [],
-      isToppingsFormActive: false
+      isToppingsFormActive: false,
+      tempCart: []
     };
   }
 
@@ -31,18 +34,28 @@ class ShopItemDetails extends Component {
   };
 
   handleQuantity = quantity => {
-    let selectedToppings = JSON.parse(
-      JSON.stringify(this.state.selectedToppings)
+    let tempCart = JSON.parse(JSON.stringify(this.state.tempCart));
+
+    const tempCartItem = tempCart.find(
+      ({ size }) => size === this.state.selectedSize
     );
 
-    selectedToppings = selectedToppings.map(topping => ({
+    tempCartItem.quantity = quantity;
+    tempCartItem.toppings = tempCartItem.toppings.map(topping => ({
       ...topping,
       quantity
     }));
 
+    const toppingsPrices = tempCartItem.toppings.map(
+      ({ unitPrice }) => parseFloat(unitPrice) * quantity
+    );
+
+    tempCartItem.totalCost =
+      parseFloat(tempCartItem.unitPrice) * quantity +
+      reduceLinearArray(toppingsPrices);
+
     this.setState({
-      quantity,
-      selectedToppings
+      tempCart
     });
   };
 
@@ -53,11 +66,15 @@ class ShopItemDetails extends Component {
   };
 
   handleToppingsSelection = (topping, { target }) => {
-    const { quantity } = this.state;
+    let tempCart = JSON.parse(JSON.stringify(this.state.tempCart));
 
-    let selectedToppings = JSON.parse(
-      JSON.stringify(this.state.selectedToppings)
+    const tempCartItem = tempCart.find(
+      ({ size }) => size === this.state.selectedSize
     );
+
+    const { quantity } = tempCartItem || {};
+
+    let selectedToppings = JSON.parse(JSON.stringify(tempCartItem.toppings));
 
     if (target.checked) {
       selectedToppings.push({ ...topping, quantity });
@@ -65,52 +82,45 @@ class ShopItemDetails extends Component {
       selectedToppings = selectedToppings.filter(({ id }) => id !== topping.id);
     }
 
+    tempCartItem.toppings = selectedToppings;
+
+    const toppingsPrices = tempCartItem.toppings.map(
+      ({ unitPrice }) => parseFloat(unitPrice) * quantity
+    );
+
+    tempCartItem.totalCost =
+      parseFloat(tempCartItem.unitPrice) * quantity +
+      reduceLinearArray(toppingsPrices);
+
     this.setState({
-      selectedToppings
+      tempCart
     });
   };
 
   cartAction = () => {
-    const { selectedSize, selectedToppings, quantity } = this.state;
-    const { addToCart, updateCart, goBack } = this.props;
+    const { tempCart } = this.state;
+    const { addToCart, router } = this.props;
 
-    const { id, name, unitPrice } = this.getSelectedItemDetails();
+    const cartItems = tempCart.filter(({ quantity }) => quantity);
 
-    const cartItem = {
-      id,
-      name,
-      unitPrice,
-      size: selectedSize,
-      toppings: selectedToppings,
-      quantity,
-      totalCost: this.getTotalCost()
-    };
-
-    const inCart = this.checkCart(id);
-
-    inCart
-      ? updateCart(cartItem, () => {
-          this.openToaster(
-            "success",
-            `Updated ${name} x${quantity} in the cart successfully`
-          );
-          goBack();
-        })
-      : addToCart(cartItem, () => {
-          this.openToaster(
-            "success",
-            `Added ${name} x${quantity} successfully to the cart`
-          );
-          goBack();
-        });
+    addToCart(cartItems, () => {
+      this.openToaster(
+        "success",
+        `Added x${this.getTotalQuantity()} successfully to the cart`
+      );
+      router.push("/", undefined, { shallow: true });
+    });
   };
 
-  getSelectedItemDetails = () => {
-    const { selectedSize } = this.state;
-    const { selectedItem } = this.props;
+  getSelectedItemDetails = currentSize => {
+    const { selectedSize, selectedItem } = this.state;
     const { sizes } = selectedItem;
 
-    return sizes ? (sizes[selectedSize] ? sizes[selectedSize][0] : {}) : {};
+    return sizes
+      ? sizes[currentSize || selectedSize]
+        ? sizes[currentSize || selectedSize][0]
+        : {}
+      : {};
   };
 
   getToppingsDetails = selectedTopping => {
@@ -122,16 +132,30 @@ class ShopItemDetails extends Component {
 
   getTotalCost = () => {
     let totalCost = 0;
-    const { quantity, selectedToppings } = this.state;
+    const { tempCart } = this.state;
 
-    const { unitPrice } = this.getSelectedItemDetails();
+    const itemsPrices = tempCart.map(
+      ({ unitPrice, quantity }) => parseFloat(unitPrice) * quantity
+    );
+    let toppingsPrices = 0;
 
-    const toppingsPrices = selectedToppings.map(topping => topping.unitPrice);
+    tempCart.forEach(({ toppings }) => {
+      toppings.forEach(({ unitPrice, quantity }) => {
+        toppingsPrices += parseFloat(unitPrice) * quantity;
+      });
+    });
 
-    const toppingsTotalCost = reduceLinearArray(toppingsPrices);
-    totalCost = toppingsTotalCost + parseFloat(unitPrice) * quantity;
+    const itemsPricesTotal = reduceLinearArray(itemsPrices);
+
+    totalCost = itemsPricesTotal + toppingsPrices;
 
     return totalCost;
+  };
+
+  getTotalQuantity = () => {
+    const totalQuantity = reduceArray(this.state.tempCart, "quantity");
+
+    return totalQuantity;
   };
 
   openToaster = (status, message) => {
@@ -155,40 +179,105 @@ class ShopItemDetails extends Component {
     return inCart;
   };
 
-  componentDidUpdate(prevProps) {
-    const { selectedItem } = this.props;
+  checkQuantity = currentSize => {
+    const { selectedSize, tempCart } = this.state;
+    const currentQuantity = tempCart.find(
+      ({ size }) => size === (currentSize || selectedSize)
+    );
 
-    if (
-      !shallowequal(prevProps.selectedItem, selectedItem) &&
-      Object.keys(selectedItem).length
-    ) {
-      const inCart = this.checkCart(selectedItem.id);
-      const { quantity, toppings, size } = inCart || {};
+    return currentQuantity ? currentQuantity.quantity : 0;
+  };
 
-      inCart
-        ? this.setState({
-            quantity,
-            selectedToppings: toppings,
-            selectedSize: size
-          })
-        : this.setState({
-            quantity: 1,
-            selectedToppings: [],
-            selectedSize: Object.keys(selectedItem.sizes)[0]
+  getSelectedToppings = () => {
+    const { selectedSize, tempCart } = this.state;
+    const currentQuantity = tempCart.find(({ size }) => size === selectedSize);
+
+    return currentQuantity ? currentQuantity.toppings : [];
+  };
+
+  formatProducts = callback => {
+    const { products } = this.props;
+
+    let allProducts = [];
+
+    for (let i = 0; i < products.length; i++) {
+      const element = JSON.parse(JSON.stringify(products[i]));
+
+      element.products = element.products.map(product => ({
+        ...product,
+        toppings: element.toppings
+      }));
+
+      allProducts = allProducts.concat(element.products);
+    }
+
+    this.setState(
+      {
+        allProducts
+      },
+      () => {
+        callback && callback();
+      }
+    );
+  };
+
+  selectItem = itemId => {
+    const selectedItem = this.state.allProducts.find(({ id }) => id === itemId);
+
+    if (selectedItem) {
+      this.setState(
+        {
+          selectedItem,
+          selectedSize: Object.keys(selectedItem.sizes)[0]
+        },
+        () => {
+          this.setState({
+            tempCart: Object.keys(selectedItem.sizes).map(size => {
+              const { id, name, unitPrice } = this.getSelectedItemDetails(size);
+
+              console.log(id, name, unitPrice);
+              return {
+                id,
+                size,
+                unitPrice,
+                name,
+                quantity: 0,
+                toppings: []
+              };
+            })
           });
+        }
+      );
+    }
+  };
+
+  componentDidMount() {
+    this.formatProducts();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { router, products } = this.props;
+    const { name, id } = router.query;
+
+    if (!shallowequal(prevProps.products, products) && products.length) {
+      this.formatProducts(() => {
+        this.selectItem(id);
+      });
+    }
+
+    if (!shallowequal(prevProps.router, router) && name && id) {
+      this.selectItem(id);
     }
   }
 
   render() {
     const {
       selectedSize,
-      quantity,
       isToppingsFormActive,
-      selectedToppings,
-      toaster
+      toaster,
+      selectedItem
     } = this.state;
-    const { selectedItem, goBack } = this.props;
-    const { sizes, toppings } = selectedItem;
+    const { sizes } = selectedItem;
 
     const {
       imageUrl,
@@ -197,15 +286,17 @@ class ShopItemDetails extends Component {
       description
     } = this.getSelectedItemDetails();
 
-    const inCart = this.checkCart(selectedItem.id);
-
     return (
       <div className="shop-item-details">
         <div className="item-image">
           <img src={imageUrl} alt="" />
-          <span className="back" onClick={goBack}>
-            <RightArrow />
-          </span>
+          <Link href="/">
+            <a>
+              <span className="back">
+                <RightArrow />
+              </span>
+            </a>
+          </Link>
         </div>
         <div className="item-info">
           <div className="container">
@@ -232,6 +323,11 @@ class ShopItemDetails extends Component {
                     onClick={() => this.selectSize(size)}
                   >
                     {size}
+                    {!!this.checkQuantity(size) && (
+                      <span className="cart-count">
+                        {this.checkQuantity(size)}
+                      </span>
+                    )}
                   </span>
                 ))}
             </div>
@@ -242,35 +338,32 @@ class ShopItemDetails extends Component {
             <span className="title">QUANTITY</span>
             <div className="quantity">
               <NumberSelector
-                value={quantity}
+                value={this.checkQuantity()}
                 onChange={e => this.handleQuantity(e.target.value)}
               />
             </div>
           </div>
         </div>
-        <div
-          className={classNames("add-toppings", {
-            active: selectedToppings.length,
-            disabled: !toppings || (toppings && !toppings.length)
-          })}
-          onClick={this.toggleToppingsForm}
-        >
-          {selectedToppings.length
-            ? `${
-                selectedToppings.length === 1
-                  ? `${selectedToppings.length} TOPPING`
-                  : `${selectedToppings.length} TOPPINGS`
-              }`
-            : "ADD TOPPINGS"}
-        </div>
+        {selectedItem.toppings && selectedItem.toppings.length && (
+          <div
+            className={classNames("add-toppings", {
+              active: this.getSelectedToppings().length
+            })}
+            onClick={this.toggleToppingsForm}
+          >
+            {this.getSelectedToppings().length
+              ? `${
+                  this.getSelectedToppings().length === 1
+                    ? `${this.getSelectedToppings().length} TOPPING`
+                    : `${this.getSelectedToppings().length} TOPPINGS`
+                }`
+              : "ADD TOPPINGS"}
+          </div>
+        )}
         <div className="item-footer">
           <div className="add-to-cart" onClick={this.cartAction}>
             <div className="container">
-              {inCart ? (
-                <span>Update order</span>
-              ) : (
-                <span>Add {quantity} to Order</span>
-              )}
+              <span>Add {this.getTotalQuantity()} to Order</span>
               <div>
                 <span className="total-price">
                   ₦ {this.getTotalCost().toLocaleString()}
@@ -297,10 +390,10 @@ class ShopItemDetails extends Component {
           {isToppingsFormActive && (
             <ToppingsForm
               key={`toppings-form-1`}
-              toppings={toppings}
+              toppings={selectedItem.toppings}
               closeToppingsForm={this.toggleToppingsForm}
               handleToppingsSelection={this.handleToppingsSelection}
-              selectedToppings={selectedToppings}
+              selectedToppings={this.getSelectedToppings()}
               getToppingsDetails={this.getToppingsDetails}
             />
           )}
@@ -312,4 +405,4 @@ class ShopItemDetails extends Component {
   }
 }
 
-export default CartConsumer(ShopItemDetails);
+export default CartConsumer(ProductsConsumer(withRouter(ShopItemDetails)));

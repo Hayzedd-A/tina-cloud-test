@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+
+import classNames from "classnames";
 import { Close } from "../../public/static/vectors";
 
 const SearchInput = ({
@@ -14,7 +16,11 @@ const SearchInput = ({
   });
 
   return (
-    <div className="search-input-container">
+    <div
+      className={classNames("search-input-container", {
+        active: isSearchInputActive
+      })}
+    >
       <div className="search-input">
         <input
           ref={inputRef}

@@ -72,6 +72,7 @@ class TextField extends Component {
             className="react-code-input"
             fields={4}
             onChange={this.onChange}
+            autoFocus={false}
           />
         </div>
       </div>

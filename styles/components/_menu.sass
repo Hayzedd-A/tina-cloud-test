@@ -4,9 +4,9 @@
     right: 0
     bottom: 0
     width: 100%
-    height: 80px
+    height: 65px
     background: $white
-    box-shadow: $menu-shadow
+    border-top: 1px solid transparentize($grey-2, 0.82)
     padding: 0 40px
     font-size: 14px
     font-weight: $font-weight-bold
@@ -25,6 +25,7 @@
         transition: all ease-in-out .3s
         font-size: 11px
         line-height: 1
+        position: relative
 
         .icon
             width: 20px
@@ -42,3 +43,14 @@
 
         &.active, &:hover
             opacity: 1
+
+.cart-count
+    @include full-circle(15px, 15px)
+    @include flex-position(center, center)
+    background: $yellow
+    color: $black
+    font-size: 10px
+    font-weight: $font-weight-bold
+    position: absolute
+    right: -5px
+    top: 0

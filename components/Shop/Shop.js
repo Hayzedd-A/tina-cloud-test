@@ -30,15 +30,11 @@ class Shop extends Component {
   };
 
   componentDidMount() {
-    document
-      .getElementById("shop-container")
-      .addEventListener("scroll", this.setTabBg);
+    window.addEventListener("scroll", this.setTabBg);
   }
 
   componentWillUnmount() {
-    document
-      .getElementById("shop-container")
-      .removeEventListener("scroll", this.setTabBg);
+    window.removeEventListener("scroll", this.setTabBg);
   }
 
   render() {
@@ -80,14 +76,16 @@ class Shop extends Component {
                       name={name}
                       image={imageUrl}
                       price={unitPrice}
-                      onClick={() => selectItem({...item, toppings})}
+                      onClick={() => selectItem({ ...item, toppings })}
                     />
                   );
                 })}
             </div>
           </div>
           <div className="shop-section">
-            <div className="section-title">All {products[currentTab].name}s</div>
+            <div className="section-title">
+              All {products[currentTab].name}s
+            </div>
             <div className="section-items">
               {products[currentTab].products.map((item, index) => {
                 const { name, sizes } = item;
@@ -100,7 +98,7 @@ class Shop extends Component {
                     name={name}
                     image={imageUrl}
                     price={unitPrice}
-                    onClick={() => selectItem({...item, toppings})}
+                    onClick={() => selectItem({ ...item, toppings })}
                   />
                 );
               })}

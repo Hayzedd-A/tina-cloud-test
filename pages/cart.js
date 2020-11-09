@@ -1,5 +1,4 @@
 import { useState } from "react";
-import classNames from "classnames";
 
 import { CartConsumer } from "../providers/CartProvider";
 
@@ -14,18 +13,13 @@ const CartPage = () => {
     <Main>
       {isCheckoutSuccessActive ? (
         <CheckoutSuccess />
+      ) : isCheckoutActive ? (
+        <Checkout
+          goBack={() => showCheckout(false)}
+          showCheckoutSuccess={showCheckoutSuccess}
+        />
       ) : (
-        <div className="swipe-container">
-          <div
-            className={classNames("swiper", { showCheckout: isCheckoutActive })}
-          >
-            <Cart checkout={() => showCheckout(true)} />
-            <Checkout
-              goBack={() => showCheckout(false)}
-              showCheckoutSuccess={showCheckoutSuccess}
-            />
-          </div>
-        </div>
+        <Cart checkout={() => showCheckout(true)} />
       )}
     </Main>
   );

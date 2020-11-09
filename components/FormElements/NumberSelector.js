@@ -26,7 +26,7 @@ class NumberSelector extends Component {
   componentDidUpdate(prevProps) {
     const { value } = this.props;
 
-    if (prevProps.value !== value && value) {
+    if (prevProps.value !== value && (value || value === 0)) {
       this.setState({
         value
       });
