@@ -1,6 +1,6 @@
 import { Component } from "react";
 import dynamic from "next/dynamic";
-import { CircularClose, Success } from "../../public/static/vectors";
+import { CircularClose, Success, Close } from "../../public/static/vectors";
 
 const ReactPortal = dynamic(() => import("../ReactPortal"), {
   ssr: false
@@ -26,6 +26,7 @@ class Toaster extends Component {
           <div>
             <span className={`status ${status}`}>
               {status === "success" && <Success />}
+              {status === "error" && <Close />}
             </span>
             <span className="message">{message}</span>
           </div>

@@ -1,6 +1,5 @@
 import { Component } from "react";
 import classNames from "classnames";
-import Link from "next/link";
 import { withRouter } from "next/router";
 
 import Main from "../layouts/Main";
@@ -60,7 +59,26 @@ class CreateLogin extends Component {
     const { login, router } = this.props;
     const { phoneNumber, pin } = getFormValues(this.state.formData);
 
-    login({ phoneNumber, pin }, () => router.push("/my-account"));
+    login(
+      { phoneNumber, pin },
+      () => router.push("/my-account"),
+      error => this.openToaster("error", error || `Invalid login details`)
+    );
+  };
+
+  openToaster = (status, message) => {
+    this.setState({
+      toaster: {
+        status,
+        message
+      }
+    });
+  };
+
+  closeToaster = () => {
+    this.setState({
+      toaster: null
+    });
   };
 
   componentDidMount() {
@@ -78,13 +96,16 @@ class CreateLogin extends Component {
       <Main>
         <div className="cart-container login-container">
           <div className="cart-header">
-            <Link href="/">
-              <a>
-                <div className="back">
-                  <RightArrow />
-                </div>
-              </a>
-            </Link>
+            <div
+              className="back"
+              onClick={() =>
+                router.push(`/`, undefined, {
+                  shallow: true
+                })
+              }
+            >
+              <RightArrow />
+            </div>
             <div className="title">{newUser ? "Create Login" : "Login"}</div>
           </div>
           <div className="checkout-form login-form">

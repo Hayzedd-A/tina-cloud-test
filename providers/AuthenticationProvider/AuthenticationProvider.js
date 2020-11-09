@@ -42,7 +42,7 @@ class AuthenticationProvider extends Component {
     });
   };
 
-  login = async (data, successCallback) => {
+  login = async (data, successCallback, errorCallback) => {
     this.resetState();
 
     this.setState({
@@ -72,6 +72,8 @@ class AuthenticationProvider extends Component {
         loginOutcome: "error",
         loginMessage: message
       });
+
+      errorCallback && errorCallback(message)
     }
   };
 

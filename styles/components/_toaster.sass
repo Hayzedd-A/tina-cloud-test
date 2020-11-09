@@ -19,6 +19,11 @@
         @include full-circle(40px, 40px)
         @include flex-position(center, center)
         margin-right: 20px
+        padding: 10px
+
+        svg
+            width: 100%
+            height: auto
 
         &.success
             background: transparentize($green, 0.71)
@@ -26,6 +31,13 @@
             svg
                 path
                     stroke: $green-2
+
+        &.error
+            background: transparentize($red, 0.71)
+
+            svg
+                path
+                    stroke: $red
 
     .message
         font-size: 16px

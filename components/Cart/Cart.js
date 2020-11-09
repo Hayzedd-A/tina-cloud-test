@@ -1,6 +1,6 @@
 import { Component } from "react";
-import Link from "next/link";
-import classNames from "classnames"
+import { withRouter } from "next/router";
+import classNames from "classnames";
 
 import { CartConsumer } from "../../providers/CartProvider";
 
@@ -38,20 +38,23 @@ class Cart extends Component {
   }
 
   render() {
-    const { cart, checkout } = this.props;
+    const { cart, checkout, router } = this.props;
 
     const subTotal = reduceArray(cart, "totalCost");
 
     return (
       <div className="cart-container full-height">
         <div className="cart-header">
-          <Link href="/">
-            <a>
-              <div className="back">
-                <RightArrow />
-              </div>
-            </a>
-          </Link>
+          <div
+            className="back"
+            onClick={() =>
+              router.push(`/`, undefined, {
+                shallow: true
+              })
+            }
+          >
+            <RightArrow />
+          </div>
           <div className="title">My Cart</div>
           <div className="info delivery-notice">
             <span className="icon">
@@ -134,7 +137,12 @@ class Cart extends Component {
           </div>
         </div>
         <div className="cart-actions no-margin">
-          <div className={classNames("checkout-button", {disabled: !cart.length})} onClick={checkout}>
+          <div
+            className={classNames("checkout-button", {
+              disabled: !cart.length
+            })}
+            onClick={checkout}
+          >
             <div className="container">
               <span>Checkout</span>
               <RightArrow />
@@ -146,4 +154,4 @@ class Cart extends Component {
   }
 }
 
-export default CartConsumer(Cart);
+export default CartConsumer(withRouter(Cart));

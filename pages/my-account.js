@@ -12,7 +12,8 @@ import OrdersProvider from "../providers/OrdersProvider";
 
 class MyAccount extends Component {
   state = {
-    currentTab: 0
+    currentTab: 0,
+    isMounted: false
   };
 
   switchTab = currentTab => {
@@ -25,28 +26,34 @@ class MyAccount extends Component {
     const currentUser = localStorage.getItem("gourmet-twist-user");
 
     !currentUser && this.props.router.push("/login");
+
+    this.setState({
+      isMounted: true
+    });
   }
 
   render() {
-    const { currentTab } = this.state;
+    const { currentTab, isMounted } = this.state;
 
     const tabs = ["My Info", "My Orders"];
     const tabContent = [<MyInfo />, <MyOrders />];
 
     return (
       <Main>
-        <OrdersProvider>
-          <div className="my-account">
-            <div className="my-account-header">My Account</div>
-            <Tabs
-              tabs={tabs}
-              currentTab={currentTab}
-              switchTab={this.switchTab}
-            />
-            <div className="my-account-content">{tabContent[currentTab]}</div>
-            <Menu />
-          </div>
-        </OrdersProvider>
+        {isMounted && (
+          <OrdersProvider>
+            <div className="my-account">
+              <div className="my-account-header">My Account</div>
+              <Tabs
+                tabs={tabs}
+                currentTab={currentTab}
+                switchTab={this.switchTab}
+              />
+              <div className="my-account-content">{tabContent[currentTab]}</div>
+              <Menu />
+            </div>
+          </OrdersProvider>
+        )}
       </Main>
     );
   }

@@ -252,7 +252,12 @@ class ShopItemDetails extends Component {
   };
 
   componentDidMount() {
-    this.formatProducts();
+    const { router } = this.props;
+    const { name, id } = router.query;
+
+    this.formatProducts(() => {
+      name && id && this.selectItem(id)
+    });
   }
 
   componentDidUpdate(prevProps) {
