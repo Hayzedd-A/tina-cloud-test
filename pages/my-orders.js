@@ -5,19 +5,13 @@ import { withRouter } from "next/router";
 import Main from "../layouts/Main";
 
 import Menu from "../components/Menu";
-import { MyInfo } from "../components/MyAccount";
+import { MyOrders } from "../components/MyAccount";
 
 import OrdersProvider from "../providers/OrdersProvider";
 
 class MyAccount extends Component {
   state = {
     isMounted: false
-  };
-
-  switchTab = currentTab => {
-    this.setState({
-      currentTab
-    });
   };
 
   componentDidMount() {
@@ -38,8 +32,8 @@ class MyAccount extends Component {
         {isMounted && (
           <OrdersProvider>
             <div className="my-account">
-              <div className="my-account-header">My Info</div>
-              <div className="my-account-content">{<MyInfo />}</div>
+              <div className="my-account-header">My Orders</div>
+              <div className="my-account-content">{<MyOrders />}</div>
               <Menu />
             </div>
           </OrdersProvider>

@@ -23,7 +23,7 @@ const CheckoutSuccess = ({ user }) => {
           Your order has been placed successfully.
         </div>
         <div className="description">
-          Track your order now {!user && "by "}
+          View your order {!user && "by "}
           {user ? (
             <span onClick={() => router.push("/my-account")}>My Account</span>
           ) : (

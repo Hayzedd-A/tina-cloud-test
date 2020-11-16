@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import { HeaderMenu, SearchInput } from "./";
 
-import { Search } from "../../public/static/vectors";
+import { Search, Logo } from "../../public/static/vectors";
 
 const Header = () => {
   const router = useRouter();
@@ -47,7 +47,7 @@ const Header = () => {
               </div>
 
               <div className="logo" onClick={() => router.push("/")}>
-                <img src="/static/images/logo.png" alt="" />
+                <Logo />
               </div>
 
               <div

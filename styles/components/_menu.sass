@@ -21,35 +21,27 @@
         cursor: pointer
         text-align: center
         color: $brown
-        opacity: 0.6
         transition: all ease-in-out .3s
         font-size: 11px
         line-height: 1
         position: relative
 
         .icon
-            width: 20px
-            flex: 0 0 20px
+            height: 25px
             @include flex-position(center, center)
             transition: all ease-in-out .3s
             margin: 0 auto 10px
 
-            svg
-                height: auto
-                width: 100%
-
-                g, path
-                    stroke: $brown
-
-        &.active, &:hover
-            opacity: 1
+            svg, img
+                height: 100%
+                width: auto
 
 .cart-count
-    @include full-circle(15px, 15px)
+    @include full-circle(20px, 20px)
     @include flex-position(center, center)
-    background: $yellow
+    background: $red
     color: $black
-    font-size: 10px
+    font-size: 12px
     font-weight: $font-weight-bold
     position: absolute
     right: -5px

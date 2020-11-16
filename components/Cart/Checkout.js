@@ -38,7 +38,7 @@ const initialFormData = {
   },
   note: {
     value: "",
-    valid: true
+    valid: false
   }
 };
 
@@ -258,9 +258,10 @@ class Checkout extends Component {
         </div>
         <div className="checkout-form">
           <div className="container">
+            <div className="description">All fields are compulsory</div>
             <TextField
-              label="Receiver Name"
-              placeholder="Enter your name"
+              label="Receiver's Name"
+              placeholder="Enter the receiver's name"
               name="name"
               value={name.value}
               onChange={this.handleChange}
@@ -268,7 +269,7 @@ class Checkout extends Component {
               required
             />
             <TextField
-              label="Email Address"
+              label="Email Address (for payment receipt)"
               placeholder="Enter your email address"
               type="email"
               name="email"
@@ -278,8 +279,8 @@ class Checkout extends Component {
               required
             />
             <TextField
-              label="Phone Number"
-              placeholder="Enter your phone number"
+              label="Receiver's Phone Number"
+              placeholder="Enter the receiver's phone number"
               name="phoneNumber"
               value={phoneNumber.value}
               onChange={this.handleChange}
@@ -287,24 +288,28 @@ class Checkout extends Component {
               required
               mobile
             />
-            <div className="input-container">
+            <div className="input-container mb-40">
               <label>Delivery Address</label>
               <Geosuggest
-                className="mb-40"
                 placeholder="Enter your address"
                 country="ng"
                 onSuggestSelect={this.onSuggestSelect}
                 onSuggestNoResults={this.onSuggestNoResults}
                 queryDelay={600}
               />
+              <span className="hint">
+                {" "}
+                If your delivery address is not auto-detected, enter your city
+              </span>
             </div>
             <TextField
-              label="Delivery Note (Optional)"
+              label="Special Note"
               placeholder="Any special notes for delivery"
               name="note"
               value={note.value}
               onChange={this.handleChange}
               className="mb-40"
+              required
             />
           </div>
         </div>
@@ -316,7 +321,7 @@ class Checkout extends Component {
                   <img src="/static/images/delivery.png" alt="" />
                 </span>
                 <span className="text">
-                  ₦{deliveryCost.toLocaleString()} will be charged for delivery!
+                  ₦{deliveryCost.toLocaleString()} will be charged for delivery
                 </span>
               </div>
             </div>

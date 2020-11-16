@@ -4,11 +4,11 @@ export const menu = [
         value: "/cart"
     },
     {
-        label: "My Account",
+        label: "My Info",
         value: "/my-account"
     },
     {
-        label: "Learn More",
-        value: "#"
-    },
+        label: "My Orders",
+        value: "/my-orders"
+    }
 ]

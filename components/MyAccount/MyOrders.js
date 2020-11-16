@@ -1,10 +1,14 @@
+import { useRouter } from "next/router";
 import * as moment from "moment";
 
 import Table from "../Table";
 
 import { OrdersConsumer } from "../../providers/OrdersProvider";
+import { EmptyOrders } from "../../public/static/vectors";
 
-const MyOrders = ({ orders }) => {
+const MyOrders = ({ orders, isLoadingOrders }) => {
+  const router = useRouter();
+
   const columns = [
     {
       label: "Date",
@@ -28,18 +32,33 @@ const MyOrders = ({ orders }) => {
   return (
     <div className="my-orders">
       <div className="container">
-        {!!activeOrders.length && (
-          <div className="orders-section">
-            <div className="section-title filled">Active Orders</div>
-            <Table columns={columns} rows={activeOrders} />
-          </div>
-        )}
-        {!!pastOrders.length && (
-          <div className="orders-section">
-            <div className="section-title">Past Orders</div>
-            <Table columns={columns} rows={pastOrders} />
-          </div>
-        )}
+        {!isLoadingOrders &&
+          (!!activeOrders.length || !!pastOrders.length ? (
+            <>
+              {!!activeOrders.length && (
+                <div className="orders-section">
+                  <div className="section-title filled">Active Orders</div>
+                  <Table columns={columns} rows={activeOrders} />
+                </div>
+              )}
+              {!!pastOrders.length && (
+                <div className="orders-section">
+                  <div className="section-title">Past Orders</div>
+                  <Table columns={columns} rows={pastOrders} />
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="cart-empty-state">
+              <div className="icon">
+                <EmptyOrders />
+              </div>
+              <div className="message">No order has been sent yet.</div>
+              <div className="action" onClick={() => router.push("/")}>
+                Shop now
+              </div>
+            </div>
+          ))}
       </div>
     </div>
   );

@@ -17,6 +17,7 @@
     "react-geosuggest": "2.12.1",
     "react-transition-group": "1.x",
     "sass": "1.26.3",
-    "shallowequal": "^1.1.0"
+    "shallowequal": "^1.1.0",
+    "smoothscroll-polyfill": "^0.4.4"
   }
 }

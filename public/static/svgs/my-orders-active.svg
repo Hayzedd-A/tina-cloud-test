@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>Icons / Active / Orders</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons-/-Active-/-Orders" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" stroke="#F2C131" stroke-width="2.26086957" fill="#F2C131" x="3.86956522" y="2.86956522" width="25.2608696" height="27.2608696" rx="2"></rect>
+        <path d="M11,10.5 L23,10.5" id="Path-27" stroke="#1B1617" stroke-width="2.26086957" stroke-linecap="round"></path>
+        <path d="M11,16 L23,16" id="Path-27" stroke="#1B1617" stroke-width="2.26086957" stroke-linecap="round"></path>
+        <path d="M11,22 L16,22" id="Path-27" stroke="#1B1617" stroke-width="2.26086957" stroke-linecap="round"></path>
+    </g>
+</svg>

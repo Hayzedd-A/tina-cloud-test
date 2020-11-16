@@ -11,9 +11,10 @@ import { CartConsumer } from "../../providers/CartProvider";
 import NumberSelector from "../FormElements/NumberSelector";
 import { ToppingsForm } from "./";
 
-import { RightArrow } from "../../public/static/vectors";
+import { RightArrow, ModalBread } from "../../public/static/vectors";
 import { reduceLinearArray, reduceArray } from "../../utils/functions";
 import Toaster from "../Toaster";
+import Modal from "../Modal";
 
 class ShopItemDetails extends Component {
   constructor(props) {
@@ -23,7 +24,8 @@ class ShopItemDetails extends Component {
       selectedItem: {},
       selectedSize: "",
       isToppingsFormActive: false,
-      tempCart: []
+      tempCart: [],
+      toaster: {}
     };
   }
 
@@ -99,18 +101,17 @@ class ShopItemDetails extends Component {
 
   cartAction = () => {
     const { tempCart } = this.state;
-    const { addToCart, router } = this.props;
+    const { addToCart } = this.props;
 
     const cartItems = tempCart.filter(({ quantity }) => quantity);
 
     addToCart(cartItems, () => {
       this.openToaster(
         "success",
-        `Added x${this.getTotalQuantity()} successfully to the cart`
+        `Added x${this.getTotalQuantity()} ${
+          this.getTotalQuantity() === 1 ? "item" : "items"
+        } successfully to the cart`
       );
-      setTimeout(() => {
-        router.push("/", undefined, { shallow: true });
-      }, 1500);
     });
   };
 
@@ -171,7 +172,7 @@ class ShopItemDetails extends Component {
 
   closeToaster = () => {
     this.setState({
-      toaster: null
+      toaster: {}
     });
   };
 
@@ -278,6 +279,7 @@ class ShopItemDetails extends Component {
   }
 
   render() {
+    const { router } = this.props;
     const {
       selectedSize,
       isToppingsFormActive,
@@ -411,7 +413,31 @@ class ShopItemDetails extends Component {
           )}
         </CSSTransitionGroup>
 
-        {toaster && <Toaster {...toaster} closeToaster={this.closeToaster} />}
+        {toaster.status === "success" && (
+          <Modal closeModal={this.closeToaster}>
+            <div className="add-cart-success">
+              <div className="icon">
+                <ModalBread />
+              </div>
+              <div className="message">{toaster.message}</div>
+              <div className="actions">
+                <div className="continue" onClick={() => router.push("/")}>
+                  Continue Shopping
+                </div>
+                <div
+                  className="go-checkout"
+                  onClick={() => router.push("/cart")}
+                >
+                  Checkout
+                </div>
+              </div>
+            </div>
+          </Modal>
+        )}
+
+        {toaster.status === "error" && (
+          <Toaster {...toaster} closeToaster={this.closeToaster} />
+        )}
       </div>
     );
   }

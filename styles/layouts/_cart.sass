@@ -65,6 +65,10 @@
             &.delivery-notice
                 background: transparentize($green-3, 0.71)
 
+    .description
+        @include flex-position(initial, center)
+        margin-bottom: 20px
+
     .cart-content
         min-height: calc(100vh - 370px)
 
@@ -156,6 +160,33 @@
             position: absolute !important
             bottom: 0 !important
             width: 100% !important
+
+.cart-empty-state
+    @include flex-position(center, center)
+    flex-direction: column
+    height: calc( 100vh - 90px )
+
+    .icon
+        display: flex
+        width: 235px
+        margin-bottom: 35px
+
+        svg
+            width: 100%
+            height: auto
+
+    .message
+        font-size: 21px
+        font-weight: $font-weight-bold
+        color: $brown
+        margin-bottom: 15px
+
+    .action
+        color: $yellow
+        font-size: 18px
+        font-weight: $font-weight-bold
+        border-bottom: 2px dashed $yellow
+        display: inline-block
 
 .cart-actions
     margin: 0 -20px
