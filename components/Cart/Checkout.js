@@ -5,7 +5,7 @@ import * as classNames from "classnames";
 import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
 import { CartConsumer } from "../../providers/CartProvider";
 
-import { TextField } from "../FormElements";
+import { TextField, Radio } from "../FormElements";
 import Toaster from "../Toaster";
 
 import { postRequest } from "../../api";
@@ -39,6 +39,10 @@ const initialFormData = {
   note: {
     value: "",
     valid: false
+  },
+  shippingMethod: {
+    value: "delivery",
+    valid: true
   }
 };
 
@@ -230,7 +234,13 @@ class Checkout extends Component {
       );
 
       this.setState({
-        formData: { ...formData }
+        formData: {
+          ...formData,
+          shippingMethod: {
+            value: "delivery",
+            valid: true
+          }
+        }
       });
     }
   }
@@ -238,7 +248,7 @@ class Checkout extends Component {
   render() {
     const { toaster, deliveryCost, isCheckingOut, formData } = this.state;
     const { cart, goBack } = this.props;
-    const { name, phoneNumber, email, address, note } = formData;
+    const { name, phoneNumber, email, shippingMethod, note } = formData;
 
     const subTotal = reduceArray(cart, "totalCost");
 
@@ -288,29 +298,59 @@ class Checkout extends Component {
               required
               mobile
             />
-            <div className="input-container mb-40">
-              <label>Delivery Address</label>
-              <Geosuggest
-                placeholder="Enter your address"
-                country="ng"
-                onSuggestSelect={this.onSuggestSelect}
-                onSuggestNoResults={this.onSuggestNoResults}
-                queryDelay={600}
+          </div>
+          <div className="shipping-method">
+            <div className="container">
+              <div className="radio-group mb-40">
+                <Radio
+                  label="Delivery"
+                  name="shippingMethod"
+                  value="delivery"
+                  onChange={this.handleChange}
+                  checked={shippingMethod.value === "delivery"}
+                />
+                <Radio
+                  label="Pickup"
+                  name="shippingMethod"
+                  value="pickup"
+                  onChange={this.handleChange}
+                  checked={shippingMethod.value === "pickup"}
+                />
+              </div>
+              {shippingMethod.value === "delivery" ? (
+                <div className="input-container mb-40">
+                  <label>Delivery Address</label>
+                  <Geosuggest
+                    placeholder="Enter your address"
+                    country="ng"
+                    onSuggestSelect={this.onSuggestSelect}
+                    onSuggestNoResults={this.onSuggestNoResults}
+                    queryDelay={600}
+                  />
+                  <span className="hint">
+                    {" "}
+                    If your delivery address is not auto-detected, enter your
+                    city
+                  </span>
+                </div>
+              ) : (
+                <TextField
+                  label="Pickup Address"
+                  value="123 Brown St."
+                  disabled
+                  className="mb-40"
+                />
+              )}
+              <TextField
+                label="Special Note"
+                placeholder="Any special notes for delivery"
+                name="note"
+                value={note.value}
+                onChange={this.handleChange}
+                className="mb-40"
+                required
               />
-              <span className="hint">
-                {" "}
-                If your delivery address is not auto-detected, enter your city
-              </span>
             </div>
-            <TextField
-              label="Special Note"
-              placeholder="Any special notes for delivery"
-              name="note"
-              value={note.value}
-              onChange={this.handleChange}
-              className="mb-40"
-              required
-            />
           </div>
         </div>
         <div className="cart-actions no-margin">

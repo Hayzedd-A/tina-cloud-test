@@ -149,6 +149,17 @@
     .checkout-form
         padding: 0 20px
 
+        .shipping-method
+            border-top: 1px solid transparentize($brown, 0.45)
+            padding: 40px 20px 0
+            margin: 0 -20px
+            
+            .radio-group
+                @include flex-position(initial, center)
+            
+            .radio-container
+                margin-right: 70px
+
     &.full-height
         position: relative
         min-height: 100vh

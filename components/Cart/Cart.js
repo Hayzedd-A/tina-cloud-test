@@ -38,7 +38,7 @@ class Cart extends Component {
   }
 
   render() {
-    const { cart, checkout, router } = this.props;
+    const { isLoadingCart, cart, checkout, router } = this.props;
 
     const subTotal = reduceArray(cart, "totalCost");
 
@@ -67,102 +67,105 @@ class Cart extends Component {
             </div>
           )}
         </div>
-        {cart.length ? (
-          <>
-            <div className="cart-content">
-              <div className="cart-items">
-                <div className="title">
-                  <div className="container">ITEM</div>
-                </div>
-                {cart.map((cartItem, index) => {
-                  const {
-                    id,
-                    name,
-                    size,
-                    quantity,
-                    unitPrice,
-                    totalCost,
-                    toppings
-                  } = cartItem;
+        {!isLoadingCart &&
+          (cart.length ? (
+            <>
+              <div className="cart-content">
+                <div className="cart-items">
+                  <div className="title">
+                    <div className="container">ITEM</div>
+                  </div>
+                  {cart.map((cartItem, index) => {
+                    const {
+                      id,
+                      name,
+                      size,
+                      quantity,
+                      unitPrice,
+                      totalCost,
+                      toppings
+                    } = cartItem;
 
-                  return (
-                    <div key={`cart-item-${index}`} className="cart-item">
-                      <div className="container">
-                        <div className="image">
-                          <img src="/static/images/banana-bread.jpg" alt="" />
-                        </div>
-                        <div className="info">
-                          <div className="main-description">
-                            <span className="name ellipsis">{name}</span>
-                            <span className="price">
-                              ₦ {(totalCost || 0).toLocaleString()}
-                            </span>
+                    return (
+                      <div key={`cart-item-${index}`} className="cart-item">
+                        <div className="container">
+                          <div className="image">
+                            <img src="/static/images/banana-bread.jpg" alt="" />
                           </div>
-                          <div className="mini-description">
-                            <span className="name ellipsis">
-                              {size} (x{quantity})
-                            </span>
-                            <span className="price">
-                              ₦{unitPrice.toLocaleString()} x {quantity}
-                            </span>
-                          </div>
-                          {toppings.map((topping, index) => (
-                            <div
-                              key={`topping-${index}`}
-                              className="mini-description"
-                            >
-                              <span className="name ellipsis">
-                                {topping.name} (x{topping.quantity})
-                              </span>
+                          <div className="info">
+                            <div className="main-description">
+                              <span className="name ellipsis">{name}</span>
                               <span className="price">
-                                ₦{topping.unitPrice.toLocaleString()} x{" "}
-                                {topping.quantity}
+                                ₦ {(totalCost || 0).toLocaleString()}
                               </span>
                             </div>
-                          ))}
-                          <NumberSelector
-                            value={quantity}
-                            onChange={e =>
-                              this.cartAction(cartItem, e.target.value)
-                            }
-                            className="small"
-                          />
+                            <div className="mini-description">
+                              <span className="name ellipsis">
+                                {size} (x{quantity})
+                              </span>
+                              <span className="price">
+                                ₦{unitPrice.toLocaleString()} x {quantity}
+                              </span>
+                            </div>
+                            {toppings.map((topping, index) => (
+                              <div
+                                key={`topping-${index}`}
+                                className="mini-description"
+                              >
+                                <span className="name ellipsis">
+                                  {topping.name} (x{topping.quantity})
+                                </span>
+                                <span className="price">
+                                  ₦{topping.unitPrice.toLocaleString()} x{" "}
+                                  {topping.quantity}
+                                </span>
+                              </div>
+                            ))}
+                            <NumberSelector
+                              value={quantity}
+                              onChange={e =>
+                                this.cartAction(cartItem, e.target.value)
+                              }
+                              className="small"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="sub-total">
-                <div className="container">
-                  <span className="title">Sub Total</span>
-                  <span className="value">₦ {subTotal.toLocaleString()}</span>
+                    );
+                  })}
+                </div>
+                <div className="sub-total">
+                  <div className="container">
+                    <span className="title">Sub Total</span>
+                    <span className="value">₦ {subTotal.toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="cart-actions no-margin">
-              <div
-                className={classNames("checkout-button", {
-                  disabled: !cart.length
-                })}
-                onClick={checkout}
-              >
-                <div className="container">
-                  <span>Checkout</span>
-                  <RightArrow />
+              <div className="cart-actions no-margin">
+                <div
+                  className={classNames("checkout-button", {
+                    disabled: !cart.length
+                  })}
+                  onClick={checkout}
+                >
+                  <div className="container">
+                    <span>Checkout</span>
+                    <RightArrow />
+                  </div>
                 </div>
               </div>
+            </>
+          ) : (
+            <div className="cart-empty-state">
+              <div className="icon">
+                <EmptyCart />
+              </div>
+              <div className="message">Your cart is currently empty</div>
+              <div className="action" onClick={() => router.push("/")}>
+                Shop now
+              </div>
             </div>
-          </>
-        ) : (
-          <div className="cart-empty-state">
-            <div className="icon">
-              <EmptyCart />
-            </div>
-            <div className="message">Your cart is currently empty</div>
-            <div className="action" onClick={() => router.push("/")}>Shop now</div>
-          </div>
-        )}
+          ))}
       </div>
     );
   }
