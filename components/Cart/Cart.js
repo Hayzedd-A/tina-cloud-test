@@ -141,7 +141,9 @@ class Cart extends Component {
                   </div>
                 </div>
               </div>
-              <div className="cart-actions no-margin">
+              <div
+                className="cart-actions no-margin fixed"
+              >
                 <div
                   className={classNames("checkout-button", {
                     disabled: !cart.length

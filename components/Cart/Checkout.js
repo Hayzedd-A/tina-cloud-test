@@ -8,7 +8,7 @@ import { CartConsumer } from "../../providers/CartProvider";
 import { TextField, Radio } from "../FormElements";
 import Toaster from "../Toaster";
 
-import { postRequest } from "../../api";
+import { postRequest, getRequest } from "../../api";
 import { RightArrow } from "../../public/static/vectors";
 import {
   reduceArray,
@@ -65,10 +65,16 @@ class Checkout extends Component {
   };
 
   checkFormValidity = () => {
-    return Object.values(this.state.formData).every(value => value.valid);
+    const { address, ...rest } = this.state.formData;
+
+    return Object.values(rest).every(
+      value =>
+        value.valid &&
+        (rest.shippingMethod.value === "delivery" ? address.valid : true)
+    );
   };
 
-  onSuggestSelect = suggest => {
+  onSuggestSelect = async suggest => {
     console.log(suggest);
     this.setState(
       {
@@ -79,36 +85,45 @@ class Checkout extends Component {
             valid: false
           }
         },
-        deliveryCost: 0
+        deliveryCost: 0,
+        isLoadingDeliveryPrice: true
       },
-      () => {
+      async () => {
         if (suggest) {
-          const deliveryArray = deliveryPoints.map(({ price, lat, lon }) => {
-            const distance = this.computeDistance(suggest, { lat, lon });
-
-            return {
-              price,
-              distance
-            };
-          });
-
-          const nearest = deliveryArray.reduce(
-            (min, p) => (p.distance < min.distance ? p : min),
-            deliveryArray[0]
-          );
-
-          console.log(nearest);
-
-          this.setState({
-            formData: {
-              ...this.state.formData,
-              address: {
-                value: suggest.gmaps.formatted_address,
-                valid: true
+          try {
+            const res = await getRequest({
+              url:
+                "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/get-delivery-type",
+              params: {
+                address: encodeURIComponent(suggest.gmaps.formatted_address),
+                latitude: encodeURIComponent(suggest.location.lat),
+                longitude: encodeURIComponent(suggest.location.lng)
               }
-            },
-            deliveryCost: parseInt(nearest.price)
-          });
+            });
+
+            this.setState({
+              formData: {
+                ...this.state.formData,
+                address: {
+                  value: suggest.gmaps.formatted_address,
+                  valid: true
+                }
+              },
+              deliveryCost: parseInt(0),
+              isLoadingDeliveryPrice: false
+            });
+          } catch (error) {
+            console.log(error);
+
+            this.openToaster(
+              "error",
+              "An error occured while fetching delivery price"
+            );
+
+            this.setState({
+              isLoadingDeliveryPrice: false
+            });
+          }
         }
       }
     );
@@ -306,14 +321,14 @@ class Checkout extends Component {
                   label="Delivery"
                   name="shippingMethod"
                   value="delivery"
-                  onChange={this.handleChange}
+                  onChange={e => this.handleChange(e, !!e.target.value)}
                   checked={shippingMethod.value === "delivery"}
                 />
                 <Radio
                   label="Pickup"
                   name="shippingMethod"
                   value="pickup"
-                  onChange={this.handleChange}
+                  onChange={e => this.handleChange(e, !!e.target.value)}
                   checked={shippingMethod.value === "pickup"}
                 />
               </div>
@@ -353,7 +368,7 @@ class Checkout extends Component {
             </div>
           </div>
         </div>
-        <div className="cart-actions no-margin">
+        <div className="cart-actions no-margin fixed">
           {!!deliveryCost && (
             <div className="delivery-fees-notice">
               <div className="container">

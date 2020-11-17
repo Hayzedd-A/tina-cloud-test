@@ -147,7 +147,10 @@
             font-size: 24px
 
     .checkout-form
-        padding: 0 20px
+        padding: 0 20px 90px
+
+        &.login-form
+            padding: 0 20px
 
         .shipping-method
             border-top: 1px solid transparentize($brown, 0.45)
@@ -168,7 +171,7 @@
             padding-bottom: 90px
 
         .cart-actions
-            position: absolute !important
+            position: fixed !important
             bottom: 0 !important
             width: 100% !important
 
@@ -202,9 +205,17 @@
 .cart-actions
     margin: 0 -20px
     background: $white
+    position: fixed !important
+    bottom: 0 !important
+    width: 100%
 
     &.no-margin
         margin: 0
+
+    &.fixed
+        position: fixed !important
+        bottom: 0 !important
+        width: 100%
 
     .delivery-fees-notice
         background: transparentize($green-3, 0.71)
@@ -304,6 +315,7 @@
             font-size: 18px
             line-height: 22px
             font-weight: $font-weight-regular
+            flex-direction: column
 
             span
                 color: $yellow

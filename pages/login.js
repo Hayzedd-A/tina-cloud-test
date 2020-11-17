@@ -1,11 +1,13 @@
 import { Component } from "react";
 import classNames from "classnames";
 import { withRouter } from "next/router";
+import shallowequal from "shallowequal";
 
 import Main from "../layouts/Main";
 
 import { TextField, Pin } from "../components/FormElements";
 import Toaster from "../components/Toaster";
+import Tabs from "../components/Tabs";
 
 import { AuthenticationConsumer } from "../providers/AuthenticationProvider";
 
@@ -13,22 +15,32 @@ import { RightArrow } from "../public/static/vectors";
 import { getFormValues } from "../utils/functions";
 
 class CreateLogin extends Component {
-  state = {
-    formData: {
-      phoneNumber: {
-        value: "",
-        valid: false
+  constructor(props) {
+    super(props);
+
+    const { router } = props;
+    const { newUser } = router.query;
+
+    this.state = {
+      formData: {
+        phoneNumber: {
+          value: "",
+          valid: false
+        },
+        pin: {
+          value: "",
+          valid: false
+        },
+        confirmPin: {
+          value: "",
+          valid: false
+        }
       },
-      pin: {
-        value: "",
-        valid: false
-      },
-      confirmPin: {
-        value: "",
-        valid: false
-      }
-    }
-  };
+      currentTab: newUser ? 1 : 0,
+      isTabActive: false,
+      isSignUp: !!newUser
+    };
+  }
 
   handleChange = ({ target }, valid) => {
     this.setState({
@@ -42,16 +54,22 @@ class CreateLogin extends Component {
     });
   };
 
+  switchTab = currentTab => {
+    this.setState({
+      currentTab,
+      isSignUp: !!currentTab
+    });
+  };
+
   checkFormValidity = () => {
-    const { formData } = this.state;
+    const { formData, isSignUp } = this.state;
     const { router } = this.props;
-    const { newUser } = router.query;
     const { phoneNumber, pin, confirmPin } = formData;
 
-    const data = newUser ? formData : { phoneNumber, pin };
+    const data = isSignUp ? formData : { phoneNumber, pin };
 
     return Object.values(data).every(
-      value => value.valid && (newUser ? pin.value === confirmPin.value : true)
+      value => value.valid && (isSignUp ? pin.value === confirmPin.value : true)
     );
   };
 
@@ -81,21 +99,50 @@ class CreateLogin extends Component {
     });
   };
 
+  setTabBg = () => {
+    const tab = document
+      .getElementById("tab-container-ref")
+      .getBoundingClientRect();
+
+    this.setState({
+      isTabActive: tab && tab.top <= 0
+    });
+  };
+
   componentDidMount() {
+    window.addEventListener("scroll", this.setTabBg);
     const currentUser = localStorage.getItem("gourmet-twist-user");
 
     currentUser && this.props.router.push("/my-account");
   }
 
+  componentDidUpdate(prevProps) {
+    const { router } = this.props;
+
+    if (!shallowequal(prevProps.router, router)) {
+      const { newUser } = router.query;
+
+      this.setState({
+        currentTab: newUser ? 1 : 0,
+        isSignUp: !!newUser
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.setTabBg);
+  }
+
   render() {
-    const { toaster } = this.state;
+    const { currentTab, toaster, isTabActive, isSignUp } = this.state;
     const { isLoggingIn, router } = this.props;
-    const { newUser } = router.query;
+
+    const tabs = ["Login", "Sign up"];
 
     return (
       <Main>
         <div className="cart-container login-container">
-          <div className="cart-header">
+          <div className="cart-header login-header">
             <div
               className="back"
               onClick={() =>
@@ -106,14 +153,18 @@ class CreateLogin extends Component {
             >
               <RightArrow />
             </div>
-            <div className="title">{newUser ? "Create Login" : "Login"}</div>
+            <div className="title">{isSignUp ? "Sign Up" : "Login"}</div>
           </div>
+          <Tabs
+            active={isTabActive}
+            tabs={tabs}
+            currentTab={currentTab}
+            switchTab={this.switchTab}
+            className="space-between"
+          />
           <div className="checkout-form login-form">
             <div className="container">
               <div className="login-form-content">
-                <div className="description">
-                  Create a 4 digit pin for easy sign up
-                </div>
                 <TextField
                   label="Phone Number"
                   placeholder="Enter your phone number"
@@ -130,7 +181,7 @@ class CreateLogin extends Component {
                   className="mb-40"
                   required
                 />
-                {newUser && (
+                {isSignUp && (
                   <Pin
                     label="Confirm PIN"
                     name="confirmPin"
@@ -147,7 +198,7 @@ class CreateLogin extends Component {
                   onClick={this.login}
                 >
                   <div className="container">
-                    <span>Create Pin</span>
+                    <span>{isSignUp ? "Create Pin" : "Login"}</span>
                     <RightArrow />
                   </div>
                 </div>

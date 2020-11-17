@@ -43,7 +43,6 @@ class Shop extends Component {
 
     const tabs = products.map(({ name }) => name);
     const toppings = products[currentTab].toppings;
-    const recommendedProducts = JSON.parse(JSON.stringify(products));
 
     return (
       <div className="shop-container" id="shop-container">
@@ -63,23 +62,21 @@ class Shop extends Component {
               <span className="text">Most Recommended</span>
             </div>
             <div className="section-items">
-              {recommendedProducts[currentTab].products
-                .slice(0, 5)
-                .map((item, index) => {
-                  const { name, sizes } = item;
-                  const firstSize = Object.keys(sizes)[0];
-                  const { imageUrl, unitPrice } = sizes[firstSize][0];
+              {products[currentTab].topProducts.map((item, index) => {
+                const { name, sizes } = item;
+                const firstSize = Object.keys(sizes)[0];
+                const { imageUrl, unitPrice } = sizes[firstSize][0];
 
-                  return (
-                    <ShopItem
-                      key={`item-${index}`}
-                      name={name}
-                      image={imageUrl}
-                      price={unitPrice}
-                      onClick={() => selectItem({ ...item, toppings })}
-                    />
-                  );
-                })}
+                return (
+                  <ShopItem
+                    key={`item-${index}`}
+                    name={name}
+                    image={imageUrl}
+                    price={unitPrice}
+                    onClick={() => selectItem({ ...item, toppings })}
+                  />
+                );
+              })}
             </div>
           </div>
           <div className="shop-section">

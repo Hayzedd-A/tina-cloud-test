@@ -1,8 +1,28 @@
 .login-container
     padding-bottom: 0
-    
+
+    .login-header
+        height: 105px
+        background: transparentize($yellow, 0.48)
+        @include flex-position(center, center)
+        font-size: 22px
+        font-weight: $font-weight-bold
+        color: $brown
+
+    .tabs-container
+        justify-content: space-between
+        background: $yellow-light
+
+        .tab-item
+            &:last-child
+                margin-right: 0
+                padding-right: 0
+
+                &::after
+                    left: calc(50% - 5px)
+
 .login-form
-    margin-top: 60px
+    margin-top: 20px
 
     &-content
         min-height: calc(100vh - 255px)
