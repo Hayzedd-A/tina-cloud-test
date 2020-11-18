@@ -6,7 +6,7 @@ import Table from "../Table";
 import { OrdersConsumer } from "../../providers/OrdersProvider";
 import { EmptyOrders } from "../../public/static/vectors";
 
-const MyOrders = ({ orders, isLoadingOrders }) => {
+const MyOrders = ({ orders, isLoadingOrders, showOrderDetails }) => {
   const router = useRouter();
 
   const columns = [
@@ -38,13 +38,21 @@ const MyOrders = ({ orders, isLoadingOrders }) => {
               {!!activeOrders.length && (
                 <div className="orders-section">
                   <div className="section-title filled">Active Orders</div>
-                  <Table columns={columns} rows={activeOrders} />
+                  <Table
+                    columns={columns}
+                    rows={activeOrders}
+                    // onClick={row => showOrderDetails(row)}
+                  />
                 </div>
               )}
               {!!pastOrders.length && (
                 <div className="orders-section">
                   <div className="section-title">Past Orders</div>
-                  <Table columns={columns} rows={pastOrders} />
+                  <Table
+                    columns={columns}
+                    rows={pastOrders}
+                    // onClick={row => showOrderDetails(row)}
+                  />
                 </div>
               )}
             </>

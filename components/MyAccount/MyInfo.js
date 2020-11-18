@@ -148,26 +148,6 @@ class MyInfo extends Component {
             className="mb-40"
             required
           />
-          <div className="section-title">Address</div>
-          <div className="input-container">
-            <label>Delivery Address</label>
-            <Geosuggest
-              className="mb-40"
-              placeholder="Enter your address"
-              country="ng"
-              onSuggestSelect={this.onSuggestSelect}
-              onSuggestNoResults={this.onSuggestNoResults}
-              queryDelay={600}
-            />
-          </div>
-          <TextField
-            label="Delivery Note (Optional)"
-            placeholder="Any special notes for delivery"
-            name="note"
-            value={note.value}
-            onChange={this.handleChange}
-            className="mb-40"
-          />
           <div className="cart-actions">
             <div
               className={classNames("checkout-button", {

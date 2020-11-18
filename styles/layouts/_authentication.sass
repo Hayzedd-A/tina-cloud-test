@@ -3,11 +3,14 @@
 
     .login-header
         height: 105px
-        background: transparentize($yellow, 0.48)
+        background: $yellow
         @include flex-position(center, center)
         font-size: 22px
         font-weight: $font-weight-bold
         color: $brown
+
+        .back
+            top: 30px !important
 
     .tabs-container
         justify-content: space-between

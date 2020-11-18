@@ -7,6 +7,10 @@ import { Check, RightArrow } from "../../public/static/vectors";
 const CheckoutSuccess = ({ user }) => {
   const router = useRouter();
 
+  useEffect(() => {
+    window.scro
+  })
+
   return (
     <div className="cart-container checkout-success">
       <div className="success-badge">

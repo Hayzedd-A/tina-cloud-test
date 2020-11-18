@@ -100,10 +100,12 @@ class TextField extends Component {
           error: !isValid && isBlurred
         })}
       >
-        {label && <label>{label}</label>}
-        <div
-          onClick={e => e.stopPropagation()}
-        >
+        {label && (
+          <label>
+            {label} {required && <sup className="marked">*</sup>}
+          </label>
+        )}
+        <div onClick={e => e.stopPropagation()}>
           <input
             ref={this.textFieldRef}
             className="input"

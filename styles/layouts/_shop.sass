@@ -243,7 +243,7 @@
         background: $yellow-light
         white-space: nowrap
         border-radius: 33px
-        margin: 0 20px 20px
+        margin: 0 0 20px
 
         &.active
             background: transparentize($yellow, 0.48)
@@ -438,7 +438,7 @@
     flex-direction: column
 
     .icon
-        width: 110px
+        width: 70px
         display: flex
         margin-bottom: 20px
 
@@ -447,22 +447,23 @@
             height: auto
 
     .message
-        font-size: 16px
+        font-size: 14px
         font-weight: $font-weight-bold
         color: $brown
         line-height: 25px
 
     .actions
         margin-top: 25px
-        @include flex-position(space-evenly, center)
+        @include flex-position(center, center)
+        flex-direction: column
         font-size: 13px
-        font-weight: $font-weight-bold
         color: $brown
         width: 100%
 
-        div
+        button
             white-space: nowrap
             line-height: 1
+            font-weight: $font-weight-bold
 
         .continue
             height: 45px
@@ -470,3 +471,4 @@
             @include flex-position(center, center)
             background: $yellow
             border-radius: 100px
+            margin-bottom: 15px

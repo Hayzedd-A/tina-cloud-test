@@ -5,13 +5,21 @@ import { withRouter } from "next/router";
 import Main from "../layouts/Main";
 
 import Menu from "../components/Menu";
-import { MyOrders } from "../components/MyAccount";
+import { MyOrders, OrderDetails } from "../components/MyAccount";
 
 import OrdersProvider from "../providers/OrdersProvider";
+import { RightArrow } from "../public/static/vectors";
 
 class MyAccount extends Component {
   state = {
-    isMounted: false
+    isMounted: false,
+    orderDetails: null
+  };
+
+  showOrderDetails = orderDetails => {
+    this.setState({
+      orderDetails
+    });
   };
 
   componentDidMount() {
@@ -25,17 +33,29 @@ class MyAccount extends Component {
   }
 
   render() {
-    const { isMounted } = this.state;
+    const { isMounted, orderDetails } = this.state;
+    const { router } = this.props;
 
     return (
       <Main>
         {isMounted && (
           <OrdersProvider>
-            <div className="my-account">
-              <div className="my-account-header">My Orders</div>
-              <div className="my-account-content">{<MyOrders />}</div>
-              <Menu />
-            </div>
+            {orderDetails ? (
+              <OrderDetails goBack={() => this.showOrderDetails()} />
+            ) : (
+              <div className="my-account">
+                <div className="my-account-header">
+                  <div className="back" onClick={() => router.push("/")}>
+                    <RightArrow />
+                  </div>
+                  My Orders
+                </div>
+                <div className="my-account-content">
+                  {<MyOrders showOrderDetails={this.showOrderDetails} />}
+                </div>
+                <Menu />
+              </div>
+            )}
           </OrdersProvider>
         )}
       </Main>

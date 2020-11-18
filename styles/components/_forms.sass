@@ -34,14 +34,14 @@
 
     &.small
         border-radius: 22px
-        max-width: 110px
+        max-width: 125px
 
         .selector
-            @include full-circle(25px, 25px)
+            @include full-circle(35px, 35px)
 
         input
             font-size: 16px
-            width: 25px
+            width: 35px
 
 .input-container
     label
@@ -117,8 +117,8 @@
 
             & ~ .checkbox-display
                 @include flex-position(center, center)
-                width: 20px
-                height: 20px
+                width: 30px
+                height: 30px
                 border: 2px solid transparentize($brown, 0.4)
                 border-radius: 5px
                 background: transparent
@@ -161,8 +161,8 @@
 
             & ~ .radio-display
                 @include flex-position(center, center)
-                width: 20px
-                height: 20px
+                width: 30px
+                height: 30px
                 border: 2px solid rgba(3,14,24,0.35)
                 border-radius: 50%
                 background: transparent
@@ -209,3 +209,8 @@
       text-align: center
       font-size: 18px
       -webkit-appearance: none
+
+sup.marked
+    color: $red
+    position: relative
+    top: 3px

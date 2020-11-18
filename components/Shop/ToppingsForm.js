@@ -54,9 +54,9 @@ const ToppingsForm = ({
           )})}
         </div>
         <div className="toppings-action">
-          <span className="continue" onClick={closeToppingsForm}>
+          <button className="continue" onClick={closeToppingsForm}>
             Continue
-          </span>
+          </button>
         </div>
       </div>
     </div>

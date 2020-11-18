@@ -27,7 +27,7 @@ const HeaderMenu = ({ showMenu, logout, user }) => (
             showMenu(false);
           }}
         >
-          Sign out
+          Sign Out
         </span>
       ) : (
         <Link href="/login">

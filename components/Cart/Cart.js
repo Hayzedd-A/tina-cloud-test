@@ -28,9 +28,9 @@ class Cart extends Component {
     const toppingsTotalCost = reduceLinearArray(toppingsPrices);
     const totalCost = toppingsTotalCost + parseFloat(unitPrice) * quantity;
 
-    quantity
-      ? updateCart({ ...item, quantity, toppings, totalCost })
-      : removeFromCart(item);
+    quantity === 0
+      ? removeFromCart(item)
+      : updateCart({ ...item, quantity, toppings, totalCost });
   };
 
   componentDidMount() {
@@ -141,9 +141,7 @@ class Cart extends Component {
                   </div>
                 </div>
               </div>
-              <div
-                className="cart-actions no-margin fixed"
-              >
+              <div className="cart-actions no-margin fixed">
                 <div
                   className={classNames("checkout-button", {
                     disabled: !cart.length

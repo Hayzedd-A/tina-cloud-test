@@ -38,7 +38,7 @@ const initialFormData = {
   },
   note: {
     value: "",
-    valid: false
+    valid: true
   },
   shippingMethod: {
     value: "delivery",
@@ -90,14 +90,18 @@ class Checkout extends Component {
       },
       async () => {
         if (suggest) {
+          const address = encodeURIComponent(suggest.gmaps.formatted_address);
+          const latitude = encodeURIComponent(suggest.location.lat);
+          const longitude = encodeURIComponent(suggest.location.lng);
+
           try {
             const res = await getRequest({
               url:
                 "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/get-delivery-type",
               params: {
-                address: encodeURIComponent(suggest.gmaps.formatted_address),
-                latitude: encodeURIComponent(suggest.location.lat),
-                longitude: encodeURIComponent(suggest.location.lng)
+                address,
+                latitude,
+                longitude
               }
             });
 
@@ -105,11 +109,16 @@ class Checkout extends Component {
               formData: {
                 ...this.state.formData,
                 address: {
-                  value: suggest.gmaps.formatted_address,
+                  value: address,
                   valid: true
                 }
               },
-              deliveryCost: parseInt(0),
+              deliveryLocation: {
+                address,
+                latitude,
+                longitude
+              },
+              deliveryCost: parseInt(res.data.price),
               isLoadingDeliveryPrice: false
             });
           } catch (error) {
@@ -157,8 +166,10 @@ class Checkout extends Component {
   }
 
   checkout = async () => {
-    const { formData, deliveryCost } = this.state;
-    const { name, phoneNumber, address, email } = getFormValues(formData);
+    const { formData, deliveryCost, deliveryLocation } = this.state;
+    const { name, phoneNumber, address, email, shippingMethod } = getFormValues(
+      formData
+    );
     const { cart } = this.props;
 
     const orderItems = cart.map(({ id, quantity, toppings }) => ({
@@ -184,7 +195,9 @@ class Checkout extends Component {
             name,
             phoneNumber,
             address
-          }
+          },
+          deliveryLocation:
+            shippingMethod === "delivery" ? deliveryLocation : null
         }
       });
 
@@ -261,7 +274,13 @@ class Checkout extends Component {
   }
 
   render() {
-    const { toaster, deliveryCost, isCheckingOut, formData } = this.state;
+    const {
+      toaster,
+      deliveryCost,
+      isCheckingOut,
+      formData,
+      isLoadingDeliveryPrice
+    } = this.state;
     const { cart, goBack } = this.props;
     const { name, phoneNumber, email, shippingMethod, note } = formData;
 
@@ -283,7 +302,7 @@ class Checkout extends Component {
         </div>
         <div className="checkout-form">
           <div className="container">
-            <div className="description">All fields are compulsory</div>
+            <div className="description">Marked fields are compulsory</div>
             <TextField
               label="Receiver's Name"
               placeholder="Enter the receiver's name"
@@ -334,7 +353,9 @@ class Checkout extends Component {
               </div>
               {shippingMethod.value === "delivery" ? (
                 <div className="input-container mb-40">
-                  <label>Delivery Address</label>
+                  <label>
+                    Delivery Address <sup className="marked">*</sup>
+                  </label>
                   <Geosuggest
                     placeholder="Enter your address"
                     country="ng"
@@ -351,7 +372,7 @@ class Checkout extends Component {
               ) : (
                 <TextField
                   label="Pickup Address"
-                  value="123 Brown St."
+                  value="RT Lawal Street, Behind Meadow Hall School, Ikate"
                   disabled
                   className="mb-40"
                 />
@@ -363,7 +384,6 @@ class Checkout extends Component {
                 value={note.value}
                 onChange={this.handleChange}
                 className="mb-40"
-                required
               />
             </div>
           </div>
@@ -383,7 +403,10 @@ class Checkout extends Component {
           )}
           <div
             className={classNames("checkout-button", {
-              disabled: !this.checkFormValidity() || isCheckingOut
+              disabled:
+                !this.checkFormValidity() ||
+                isCheckingOut ||
+                isLoadingDeliveryPrice
             })}
             onClick={this.checkout}
           >

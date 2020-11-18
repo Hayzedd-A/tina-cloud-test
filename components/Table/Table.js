@@ -1,4 +1,4 @@
-const Table = ({ columns, rows }) => (
+const Table = ({ columns, rows, onClick }) => (
   <div className="table-container">
     <div className="table-header">
       {columns.map(({ label, className }, index) => (
@@ -12,7 +12,13 @@ const Table = ({ columns, rows }) => (
     </div>
     <div className="table-body">
       {rows.map((row, index) => (
-        <div key={`table-row-${index}`} className="table-row">
+        <div
+          key={`table-row-${index}`}
+          className="table-row"
+          onClick={() => {
+            onClick ? onClick(row) : null;
+          }}
+        >
           {columns.map(({ id, render, className }, index2) => (
             <div
               key={`table-row-item-${index2}`}

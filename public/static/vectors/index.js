@@ -8,6 +8,7 @@ import Close from "./Close";
 import EmptyCart from "./EmptyCart";
 import EmptyOrders from "./EmptyOrders";
 import EmptySearch from "./EmptySearch";
+import EmptyStore from "./EmptyStore";
 import Logo from "./Logo";
 import ModalBread from "./ModalBread";
 import RightArrow from "./RightArrow";
@@ -27,6 +28,7 @@ export {
   EmptyCart,
   EmptyOrders,
   EmptySearch,
+  EmptyStore,
   Logo,
   ModalBread,
   RightArrow,

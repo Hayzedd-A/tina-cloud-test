@@ -147,13 +147,13 @@
             font-size: 24px
 
     .checkout-form
-        padding: 0 20px 90px
+        padding: 0 20px 160px
 
         &.login-form
             padding: 0 20px
 
         .shipping-method
-            border-top: 1px solid transparentize($brown, 0.45)
+            border-top: 1px solid transparentize($grey-2, 0.88)
             padding: 40px 20px 0
             margin: 0 -20px
             
@@ -178,7 +178,7 @@
 .cart-empty-state
     @include flex-position(center, center)
     flex-direction: column
-    height: calc( 100vh - 90px )
+    height: calc( 100vh - 150px )
 
     .icon
         display: flex
@@ -194,6 +194,8 @@
         font-weight: $font-weight-bold
         color: $brown
         margin-bottom: 15px
+        line-height: 32px
+        text-align: center
 
     .action
         color: $yellow

@@ -35,7 +35,7 @@ class CartProvider extends Component {
     });
 
     try {
-      const storedCart = await localStorage.getItem("gourmettwist-cart");
+      const storedCart = await localStorage.getItem("gourmettwistcart");
       const cart = storedCart ? JSON.parse(storedCart) : [];
 
       this.setState({
@@ -104,7 +104,7 @@ class CartProvider extends Component {
     const { cart } = this.state;
     const cartCopy = [...cart];
 
-    const currentItem = cartCopy.find(cartItem => cartItem.id === item.id);
+    const currentItem = cartCopy.find(cartItem => cartItem.uuid === item.uuid);
     const index = cartCopy.indexOf(currentItem);
 
     cartCopy[index] = item;
@@ -112,23 +112,23 @@ class CartProvider extends Component {
     this.updateLocalCart(cartCopy, success);
   };
 
-  removeFromCart = ({ id }, success) => {
+  removeFromCart = ({ uuid }, success) => {
     const { cart } = this.state;
     let cartCopy = [...cart];
-    cartCopy = cartCopy.filter(cartItem => cartItem.id !== id);
+    cartCopy = cartCopy.filter(cartItem => cartItem.uuid !== uuid);
 
     this.updateLocalCart(cartCopy, success);
   };
 
   clearCart = () => {
-    localStorage.removeItem("gourmettwist-cart");
+    localStorage.removeItem("gourmettwistcart");
     this.setState({
       cart: []
     });
   };
 
   updateLocalCart = (cart, success) => {
-    localStorage.setItem("gourmettwist-cart", JSON.stringify(cart));
+    localStorage.setItem("gourmettwistcart", JSON.stringify(cart));
     this.setState({
       cart
     }, () => success && success());

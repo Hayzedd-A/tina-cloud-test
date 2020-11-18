@@ -4,6 +4,7 @@ import Link from "next/link";
 import { withRouter } from "next/router";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 import * as shallowequal from "shallowequal";
+import { v4 as uuidv4 } from 'uuid';
 
 import { ProductsConsumer } from "../../providers/ProductsProvider";
 import { CartConsumer } from "../../providers/CartProvider";
@@ -240,6 +241,7 @@ class ShopItemDetails extends Component {
 
               console.log(id, name, unitPrice);
               return {
+                uuid: uuidv4(),
                 id,
                 size,
                 unitPrice,
@@ -354,19 +356,24 @@ class ShopItemDetails extends Component {
           </div>
         </div>
         {selectedItem.toppings && selectedItem.toppings.length && (
-          <div
-            className={classNames("add-toppings", {
-              active: this.getSelectedToppings().length
-            })}
-            onClick={this.toggleToppingsForm}
-          >
-            {this.getSelectedToppings().length
-              ? `${
-                  this.getSelectedToppings().length === 1
-                    ? `${this.getSelectedToppings().length} TOPPING`
-                    : `${this.getSelectedToppings().length} TOPPINGS`
-                }`
-              : "ADD TOPPINGS"}
+          <div className="select-section">
+            <div className="container">
+              <span className="title">EXTRAS</span>
+              <div
+                className={classNames("add-toppings", {
+                  active: this.getSelectedToppings().length
+                })}
+                onClick={this.toggleToppingsForm}
+              >
+                {this.getSelectedToppings().length
+                  ? `${
+                      this.getSelectedToppings().length === 1
+                        ? `${this.getSelectedToppings().length} TOPPING`
+                        : `${this.getSelectedToppings().length} TOPPINGS`
+                    }`
+                  : "ADD TOPPINGS"}
+              </div>
+            </div>
           </div>
         )}
         <div className="item-footer">
@@ -421,15 +428,15 @@ class ShopItemDetails extends Component {
               </div>
               <div className="message">{toaster.message}</div>
               <div className="actions">
-                <div className="continue" onClick={() => router.push("/")}>
-                  Continue Shopping
-                </div>
-                <div
-                  className="go-checkout"
-                  onClick={() => router.push("/cart")}
-                >
+                <button className="continue" onClick={() => router.push("/cart")}>
                   Checkout
-                </div>
+                </button>
+                <button
+                  className="go-checkout"
+                  onClick={() => router.push("/")}
+                >
+                  Continue Shopping
+                </button>
               </div>
             </div>
           </Modal>

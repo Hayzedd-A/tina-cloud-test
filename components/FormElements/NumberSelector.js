@@ -14,7 +14,8 @@ class NumberSelector extends Component {
   }
 
   handleChange = ({ target }) => {
-    const value = target.value;
+    let value = target.value;
+    value = value || value === 0 ? parseInt(value) : value;
 
     this.setState({
       value
@@ -46,7 +47,7 @@ class NumberSelector extends Component {
           <SelectorSubtract />
         </span>
         <input
-          type="text"
+          type="number"
           name=""
           id=""
           value={value}

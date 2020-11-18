@@ -6,6 +6,7 @@ import Tabs from "../Tabs";
 import Menu from "../Menu";
 
 import { ProductsConsumer } from "../../providers/ProductsProvider";
+import { EmptyStore } from "../../public/static/vectors";
 
 class Shop extends Component {
   state = {
@@ -54,53 +55,68 @@ class Shop extends Component {
           switchTab={this.switchTab}
         />
         <div className="container">
-          <div className="shop-section carousel">
-            <div className="section-title favorite">
-              <span className="icon">
-                <img src="/static/images/diamond.png" alt="" />
-              </span>
-              <span className="text">Most Recommended</span>
-            </div>
-            <div className="section-items">
-              {products[currentTab].topProducts.map((item, index) => {
-                const { name, sizes } = item;
-                const firstSize = Object.keys(sizes)[0];
-                const { imageUrl, unitPrice } = sizes[firstSize][0];
+          {products[currentTab].topProducts.length &&
+          products[currentTab].products.length ? (
+            <>
+              <div className="shop-section carousel">
+                <div className="section-title favorite">
+                  <span className="icon">
+                    <img src="/static/images/diamond.png" alt="" />
+                  </span>
+                  <span className="text">Most Recommended</span>
+                </div>
+                <div className="section-items">
+                  {products[currentTab].topProducts.map((item, index) => {
+                    const { name, sizes } = item;
+                    const firstSize = Object.keys(sizes)[0];
+                    const { imageUrl, unitPrice } = sizes[firstSize][0];
 
-                return (
-                  <ShopItem
-                    key={`item-${index}`}
-                    name={name}
-                    image={imageUrl}
-                    price={unitPrice}
-                    onClick={() => selectItem({ ...item, toppings })}
-                  />
-                );
-              })}
-            </div>
-          </div>
-          <div className="shop-section">
-            <div className="section-title">
-              All {products[currentTab].name}s
-            </div>
-            <div className="section-items">
-              {products[currentTab].products.map((item, index) => {
-                const { name, sizes } = item;
-                const firstSize = Object.keys(sizes)[0];
-                const { imageUrl, unitPrice } = sizes[firstSize][0];
+                    return (
+                      <ShopItem
+                        key={`item-${index}`}
+                        name={name}
+                        image={imageUrl}
+                        price={unitPrice}
+                        onClick={() => selectItem({ ...item, toppings })}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="shop-section">
+                <div className="section-title">
+                  All {products[currentTab].name}s
+                </div>
+                <div className="section-items">
+                  {products[currentTab].products.map((item, index) => {
+                    const { name, sizes } = item;
+                    const firstSize = Object.keys(sizes)[0];
+                    const { imageUrl, unitPrice } = sizes[firstSize][0];
 
-                return (
-                  <ShopItem
-                    key={`item-${index}`}
-                    name={name}
-                    image={imageUrl}
-                    price={unitPrice}
-                    onClick={() => selectItem({ ...item, toppings })}
-                  />
-                );
-              })}
+                    return (
+                      <ShopItem
+                        key={`item-${index}`}
+                        name={name}
+                        image={imageUrl}
+                        price={unitPrice}
+                        onClick={() => selectItem({ ...item, toppings })}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="cart-empty-state" style={{padding: "0 30px"}}>
+              <div className="icon">
+                <EmptyStore />
+              </div>
+              <div className="message">
+                No products at the moment.
+                <br /> Please check back later
+              </div>
             </div>
-          </div>
+          )}
           <Menu />
         </div>
       </div>

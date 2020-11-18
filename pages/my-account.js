@@ -8,6 +8,7 @@ import Menu from "../components/Menu";
 import { MyInfo } from "../components/MyAccount";
 
 import OrdersProvider from "../providers/OrdersProvider";
+import { RightArrow } from "../public/static/vectors";
 
 class MyAccount extends Component {
   state = {
@@ -32,13 +33,19 @@ class MyAccount extends Component {
 
   render() {
     const { isMounted } = this.state;
+    const { router } = this.props;
 
     return (
       <Main>
         {isMounted && (
           <OrdersProvider>
             <div className="my-account">
-              <div className="my-account-header">My Info</div>
+              <div className="my-account-header">
+                <div className="back" onClick={() => router.push("/")}>
+                  <RightArrow />
+                </div>
+                My Info
+              </div>
               <div className="my-account-content">{<MyInfo />}</div>
               <Menu />
             </div>

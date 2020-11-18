@@ -1,11 +1,26 @@
 .my-account
     &-header
-       height: 105px
-       background: transparentize($yellow, 0.48)
-       @include flex-position(center, center)
-       font-size: 22px
-       font-weight: $font-weight-bold
-       color: $brown
+        height: 105px
+        background: $yellow
+        @include flex-position(center, center)
+        font-size: 22px
+        font-weight: $font-weight-bold
+        color: $brown
+        
+        .back
+            position: absolute
+            top: 30px
+            left: 20px
+            @include full-circle(45px, 45px)
+            @include flex-position(center, center)
+            background: $brown-2
+            cursor: pointer
+            padding: 10px
+            transform: rotate(180deg)
+
+            svg
+                path
+                    stroke: $white
 
     .tabs-container
         justify-content: space-between
@@ -41,7 +56,5 @@
             background: transparentize($yellow, 0.87)
 
     .cart-actions
-        position: relative !important
-        width: auto
-        bottom: unset !important
+        bottom: 65px !important
         margin: 0 -20px
