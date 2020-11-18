@@ -8,8 +8,8 @@ const CheckoutSuccess = ({ user }) => {
   const router = useRouter();
 
   useEffect(() => {
-    window.scro
-  })
+    window.scrollTo(0, 0);
+  });
 
   return (
     <div className="cart-container checkout-success">
