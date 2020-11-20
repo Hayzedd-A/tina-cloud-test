@@ -59,8 +59,17 @@ class Checkout extends Component {
         [target.name]: {
           value: target.value,
           valid
-        }
-      }
+        },
+        address:
+          target.name === "shippingMethod"
+            ? {
+                value: "",
+                valid: false
+              }
+            : this.state.formData.address
+      },
+      deliveryCost:
+        target.name === "shippingMethod" ? 0 : this.state.deliveryCost
     });
   };
 
@@ -185,26 +194,29 @@ class Checkout extends Component {
       isCheckingOut: true
     });
 
+    const payload = {
+      orderItems,
+      customer: user
+        ? user.customer
+        : {
+            name,
+            phoneNumber,
+            address
+          },
+      recipient: {
+        name,
+        phoneNumber
+      },
+      deliveryLocation
+    };
+
+    shippingMethod === "pickup" && delete payload.deliveryLocation;
+
     try {
       const res = await postRequest({
         url:
           "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/placed-orders",
-        data: {
-          orderItems,
-          customer: user
-            ? user.customer
-            : {
-                name,
-                phoneNumber,
-                address
-              },
-          recipient: {
-            name,
-            phoneNumber
-          },
-          deliveryLocation:
-            shippingMethod === "delivery" ? deliveryLocation : null
-        }
+        data: payload
       });
 
       const { paymentReference, amount } = res.data;
@@ -380,12 +392,12 @@ class Checkout extends Component {
                   </span>
                 </div>
               ) : (
-                <TextField
-                  label="Pickup Address"
-                  value="RT Lawal Street, Behind Meadow Hall School, Ikate"
-                  disabled
-                  className="mb-40"
-                />
+                <div className="input-container mb-40">
+                  <label>Pickup Address</label>
+                  <div className="pickup-address mb-40">
+                    RT Lawal Street, Behind Meadow Hall School, Ikate
+                  </div>
+                </div>
               )}
               <TextField
                 label="Special Note"
@@ -399,7 +411,7 @@ class Checkout extends Component {
           </div>
         </div>
         <div className="cart-actions no-margin fixed">
-          {!!deliveryCost && (
+          {!!deliveryCost && shippingMethod.value === "delivery" && (
             <div className="delivery-fees-notice">
               <div className="container">
                 <span className="icon">
