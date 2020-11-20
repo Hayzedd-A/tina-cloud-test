@@ -21,13 +21,19 @@ const MyOrders = ({ orders, isLoadingOrders, showOrderDetails }) => {
     },
     {
       label: "Price",
-      render: ({grandTotal}) => <span className="price">₦ {grandTotal?.toLocaleString()}</span>,
-      className: "text-right"
+      render: ({ grandTotal }) => (
+        <span className="price">₦ {grandTotal?.toLocaleString()}</span>
+      ),
+      className: "my-order-price text-right"
     }
   ];
 
-  const activeOrders = orders.filter(({ status }) => status === "pending");
-  const pastOrders = orders.filter(({ status }) => status !== "pending");
+  const activeOrders = orders
+    .filter(({ status }) => status === "pending")
+    .sort((a, b) => moment(b.createdAt).diff(moment(a.createdAt)));
+  const pastOrders = orders
+    .filter(({ status }) => status !== "pending")
+    .sort((a, b) => moment(b.createdAt).diff(moment(a.createdAt)));
 
   return (
     <div className="my-orders">

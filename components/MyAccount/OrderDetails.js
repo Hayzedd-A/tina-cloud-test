@@ -88,17 +88,22 @@ class OrderDetails extends Component {
               );
             })}
           </div>
-          <div className="sub-total">
-            <div
-              className="container"
-              style={{ flexDirection: "column", alignItems: "flex-start" }}
-            >
-              <span className="title">Delivery address:</span>
-              <span className="title" style={{ wordBreak: "break-word" }}>
-                {deliveryLocation?.address}
-              </span>
+          {deliveryLocation && deliveryLocation.address && (
+            <div className="sub-total">
+              <div
+                className="container"
+                style={{ flexDirection: "column", alignItems: "flex-start" }}
+              >
+                <span className="title">Delivery address:</span>
+                <span
+                  className="delivery-value"
+                  style={{ wordBreak: "break-word" }}
+                >
+                  {deliveryLocation?.address}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
           <div className="sub-total">
             <div className="container">
               <span className="title">Sub Total</span>
