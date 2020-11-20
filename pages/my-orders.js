@@ -13,12 +13,35 @@ import { RightArrow } from "../public/static/vectors";
 class MyAccount extends Component {
   state = {
     isMounted: false,
-    orderDetails: null
+    orderDetails: null,
+    allProducts: []
   };
 
   showOrderDetails = orderDetails => {
     this.setState({
       orderDetails
+    });
+  };
+
+  formatProducts = () => {
+    const { orderDetails } = this.state;
+    const { products } = this.props;
+
+    let allProducts = [];
+
+    for (let i = 0; i < products.length; i++) {
+      const element = JSON.parse(JSON.stringify(products[i]));
+
+      element.products = element.products.map(product => ({
+        ...product,
+        toppings: element.toppings
+      }));
+
+      allProducts = allProducts.concat(element.products);
+    }
+
+    this.setState({
+      allProducts
     });
   };
 
@@ -41,7 +64,10 @@ class MyAccount extends Component {
         {isMounted && (
           <OrdersProvider>
             {orderDetails ? (
-              <OrderDetails goBack={() => this.showOrderDetails()} />
+              <OrderDetails
+                orderDetails={orderDetails}
+                goBack={() => this.showOrderDetails()}
+              />
             ) : (
               <div className="my-account">
                 <div className="my-account-header">

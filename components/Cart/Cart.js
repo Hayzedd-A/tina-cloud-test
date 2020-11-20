@@ -78,6 +78,7 @@ class Cart extends Component {
                   {cart.map((cartItem, index) => {
                     const {
                       id,
+                      imageUrl,
                       name,
                       size,
                       quantity,
@@ -90,7 +91,7 @@ class Cart extends Component {
                       <div key={`cart-item-${index}`} className="cart-item">
                         <div className="container">
                           <div className="image">
-                            <img src="/static/images/banana-bread.jpg" alt="" />
+                            <img src={imageUrl} alt="" />
                           </div>
                           <div className="info">
                             <div className="main-description">
@@ -104,7 +105,7 @@ class Cart extends Component {
                                 {size} (x{quantity})
                               </span>
                               <span className="price">
-                                ₦{unitPrice.toLocaleString()} x {quantity}
+                                ₦{unitPrice?.toLocaleString()} x {quantity}
                               </span>
                             </div>
                             {toppings.map((topping, index) => (
@@ -116,7 +117,7 @@ class Cart extends Component {
                                   {topping.name} (x{topping.quantity})
                                 </span>
                                 <span className="price">
-                                  ₦{topping.unitPrice.toLocaleString()} x{" "}
+                                  ₦{topping.unitPrice?.toLocaleString()} x{" "}
                                   {topping.quantity}
                                 </span>
                               </div>

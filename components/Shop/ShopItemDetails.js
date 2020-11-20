@@ -314,7 +314,7 @@ class ShopItemDetails extends Component {
             <div className="name-price">
               <span className="name">{name}</span>
               <span className="price">
-                ₦ {unitPrice && unitPrice.toLocaleString()}
+                ₦ {unitPrice?.toLocaleString()}
               </span>
             </div>
             <div className="description">{description}</div>

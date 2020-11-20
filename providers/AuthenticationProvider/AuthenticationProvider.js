@@ -125,12 +125,12 @@ class AuthenticationProvider extends Component {
 
     try {
       const res = await patchRequest({
-        url: `users/${user.customer.id}`,
+        url: `/auth/customer/profile`,
         token: true,
         data
       });
 
-      user.customer = res.data;
+      user.customer = res.data.customer;
 
       localStorage.setItem("gourmet-twist-user", JSON.stringify(user));
 

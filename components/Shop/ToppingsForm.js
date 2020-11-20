@@ -29,29 +29,30 @@ const ToppingsForm = ({
             const { id, name, unitPrice, imageUrl } = toppingDetails;
 
             return (
-            <div
-              key={`topping-item-${index}`}
-              className={classNames("item", { active: checkIfSelected(id) })}
-            >
-              <div>
-                <div className="image">
-                  <img src={imageUrl} alt="" />
+              <div
+                key={`topping-item-${index}`}
+                className={classNames("item", { active: checkIfSelected(id) })}
+              >
+                <div>
+                  <div className="image">
+                    <img src={imageUrl} alt="" />
+                  </div>
+                  <div>
+                    <span className="name">{name}</span>
+                    <span className="price">
+                      ₦ {unitPrice && parseFloat(unitPrice).toLocaleString()}
+                    </span>
+                  </div>
                 </div>
                 <div>
-                  <span className="name">{name}</span>
-                  <span className="price">
-                    ₦ {parseFloat(unitPrice).toLocaleString()}
-                  </span>
+                  <Checkbox
+                    checked={checkIfSelected(id)}
+                    onChange={e => handleToppingsSelection(toppingDetails, e)}
+                  />
                 </div>
               </div>
-              <div>
-                <Checkbox
-                  checked={checkIfSelected(id)}
-                  onChange={e => handleToppingsSelection(toppingDetails, e)}
-                />
-              </div>
-            </div>
-          )})}
+            );
+          })}
         </div>
         <div className="toppings-action">
           <button className="continue" onClick={closeToppingsForm}>

@@ -90,9 +90,9 @@ class Checkout extends Component {
       },
       async () => {
         if (suggest) {
-          const address = encodeURIComponent(suggest.gmaps.formatted_address);
-          const latitude = encodeURIComponent(suggest.location.lat);
-          const longitude = encodeURIComponent(suggest.location.lng);
+          const address = suggest.gmaps.formatted_address;
+          const latitude = suggest.location.lat;
+          const longitude = suggest.location.lng;
 
           try {
             const res = await getRequest({
@@ -170,7 +170,7 @@ class Checkout extends Component {
     const { name, phoneNumber, address, email, shippingMethod } = getFormValues(
       formData
     );
-    const { cart } = this.props;
+    const { cart, user } = this.props;
 
     const orderItems = cart.map(({ id, quantity, toppings }) => ({
       productId: id,
@@ -191,10 +191,16 @@ class Checkout extends Component {
           "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/placed-orders",
         data: {
           orderItems,
-          customer: {
+          customer: user
+            ? user.customer
+            : {
+                name,
+                phoneNumber,
+                address
+              },
+          recipient: {
             name,
-            phoneNumber,
-            address
+            phoneNumber
           },
           deliveryLocation:
             shippingMethod === "delivery" ? deliveryLocation : null
@@ -267,6 +273,10 @@ class Checkout extends Component {
           shippingMethod: {
             value: "delivery",
             valid: true
+          },
+          address: {
+            value: "",
+            valid: false
           }
         }
       });

@@ -16,12 +16,12 @@ const MyOrders = ({ orders, isLoadingOrders, showOrderDetails }) => {
     },
     {
       label: "Items",
-      render: ({}) => <span>05</span>,
+      render: ({ order_items }) => <span>{order_items?.length}</span>,
       className: "text-center"
     },
     {
       label: "Price",
-      render: ({}) => <span className="price">₦ 6,000</span>,
+      render: ({grandTotal}) => <span className="price">₦ {grandTotal?.toLocaleString()}</span>,
       className: "text-right"
     }
   ];
@@ -41,7 +41,7 @@ const MyOrders = ({ orders, isLoadingOrders, showOrderDetails }) => {
                   <Table
                     columns={columns}
                     rows={activeOrders}
-                    // onClick={row => showOrderDetails(row)}
+                    onClick={row => showOrderDetails(row)}
                   />
                 </div>
               )}
@@ -51,7 +51,7 @@ const MyOrders = ({ orders, isLoadingOrders, showOrderDetails }) => {
                   <Table
                     columns={columns}
                     rows={pastOrders}
-                    // onClick={row => showOrderDetails(row)}
+                    onClick={row => showOrderDetails(row)}
                   />
                 </div>
               )}

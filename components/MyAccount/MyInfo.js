@@ -22,14 +22,6 @@ const initialFormData = {
   email: {
     value: "",
     valid: false
-  },
-  address: {
-    value: "",
-    valid: false
-  },
-  note: {
-    value: "",
-    valid: true
   }
 };
 
@@ -114,7 +106,7 @@ class MyInfo extends Component {
   render() {
     const { toaster, formData } = this.state;
     const { isUpdatingProfile } = this.props;
-    const { name, phoneNumber, email, address, note } = formData;
+    const { name, phoneNumber, email } = formData;
 
     return (
       <>
