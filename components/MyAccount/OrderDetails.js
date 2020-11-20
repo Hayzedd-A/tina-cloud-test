@@ -28,35 +28,44 @@ class OrderDetails extends Component {
               <div className="container">ITEM</div>
             </div>
             {order_items.map((cartItem, index) => {
-              const {
-                id,
-                name,
-                size,
-                quantity,
-                unitPrice,
-                totalCost,
-                toppings
-              } = cartItem;
+              const { quantity, toppings, product } = cartItem;
+
+              let toppingsPrices = 0;
+
+              toppings.forEach(topping => {
+                toppingsPrices +=
+                  parseFloat(topping.product.unitPrice) * quantity;
+              });
+
+              const productCost = product.unitPrice * quantity;
+
+              const totalCost = productCost + toppingsPrices;
 
               return (
                 <div key={`cart-item-${index}`} className="cart-item">
                   <div className="container">
                     <div className="image">
-                      <img src="/static/images/banana-bread.jpg" alt="" />
+                      <img
+                        src={
+                          product.imageUrl ||
+                          "/static/svgs/image-placeholder.svg"
+                        }
+                        alt=""
+                      />
                     </div>
                     <div className="info">
                       <div className="main-description">
-                        <span className="name ellipsis">{name}</span>
+                        <span className="name ellipsis">{product.name}</span>
                         <span className="price">
                           ₦ {(totalCost || 0).toLocaleString()}
                         </span>
                       </div>
                       <div className="mini-description">
                         <span className="name ellipsis">
-                          {size || "Size"} (x{quantity})
+                          {product.categorySize.name} (x{quantity})
                         </span>
                         <span className="price">
-                          ₦{(unitPrice || 0)?.toLocaleString()} x {quantity}
+                          ₦{product.unitPrice.toLocaleString()} x {quantity}
                         </span>
                       </div>
                       {(toppings || []).map((topping, index) => (
@@ -65,11 +74,11 @@ class OrderDetails extends Component {
                           className="mini-description"
                         >
                           <span className="name ellipsis">
-                            {topping.name} (x{topping.quantity})
+                            {topping.product.name} (x{quantity})
                           </span>
                           <span className="price">
-                            ₦{topping.unitPrice?.toLocaleString()} x{" "}
-                            {topping.quantity}
+                            ₦{topping.product.unitPrice.toLocaleString()} x{" "}
+                            {quantity}
                           </span>
                         </div>
                       ))}
@@ -85,10 +94,7 @@ class OrderDetails extends Component {
               style={{ flexDirection: "column", alignItems: "flex-start" }}
             >
               <span className="title">Delivery address:</span>
-              <span
-                className="title"
-                style={{ wordBreak: "break-word" }}
-              >
+              <span className="title" style={{ wordBreak: "break-word" }}>
                 {deliveryLocation?.address}
               </span>
             </div>

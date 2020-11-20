@@ -300,7 +300,7 @@ class ShopItemDetails extends Component {
     return (
       <div className="shop-item-details">
         <div className="item-image">
-          <img src={imageUrl} alt="" />
+          <img src={imageUrl || "/static/svgs/image-placeholder.svg"} alt="" />
           <Link href="/">
             <a>
               <span className="back">
