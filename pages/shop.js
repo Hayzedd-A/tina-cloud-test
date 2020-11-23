@@ -1,10 +1,15 @@
-import { ShopItemDetails } from "../components/Shop";
 import Main from "../layouts/Main";
 
-const ItemDetails = () => (
+import { ShopItemDetails } from "../components/Shop";
+import Loader from "../components/Loader";
+
+import { ProductsConsumer } from "../providers/ProductsProvider";
+
+const ItemDetails = ({ isLoadingProducts }) => (
   <Main>
+    {isLoadingProducts && <Loader />}
     <ShopItemDetails />
   </Main>
 );
 
-export default ItemDetails;
+export default ProductsConsumer(ItemDetails);

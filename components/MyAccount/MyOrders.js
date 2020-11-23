@@ -5,6 +5,7 @@ import Table from "../Table";
 
 import { OrdersConsumer } from "../../providers/OrdersProvider";
 import { EmptyOrders } from "../../public/static/vectors";
+import Loader from "../Loader";
 
 const MyOrders = ({ orders, isLoadingOrders, showOrderDetails }) => {
   const router = useRouter();
@@ -38,41 +39,42 @@ const MyOrders = ({ orders, isLoadingOrders, showOrderDetails }) => {
   return (
     <div className="my-orders">
       <div className="container">
-        {!isLoadingOrders &&
-          (!!activeOrders.length || !!pastOrders.length ? (
-            <>
-              {!!activeOrders.length && (
-                <div className="orders-section">
-                  <div className="section-title filled">Active Orders</div>
-                  <Table
-                    columns={columns}
-                    rows={activeOrders}
-                    onClick={row => showOrderDetails(row)}
-                  />
-                </div>
-              )}
-              {!!pastOrders.length && (
-                <div className="orders-section">
-                  <div className="section-title">Past Orders</div>
-                  <Table
-                    columns={columns}
-                    rows={pastOrders}
-                    onClick={row => showOrderDetails(row)}
-                  />
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="cart-empty-state">
-              <div className="icon">
-                <EmptyOrders />
+        {isLoadingOrders ? (
+          <Loader />
+        ) : !!activeOrders.length || !!pastOrders.length ? (
+          <>
+            {!!activeOrders.length && (
+              <div className="orders-section">
+                <div className="section-title filled">Active Orders</div>
+                <Table
+                  columns={columns}
+                  rows={activeOrders}
+                  onClick={row => showOrderDetails(row)}
+                />
               </div>
-              <div className="message">No order has been sent yet.</div>
-              <div className="action" onClick={() => router.push("/")}>
-                Shop now
+            )}
+            {!!pastOrders.length && (
+              <div className="orders-section">
+                <div className="section-title">Past Orders</div>
+                <Table
+                  columns={columns}
+                  rows={pastOrders}
+                  onClick={row => showOrderDetails(row)}
+                />
               </div>
+            )}
+          </>
+        ) : (
+          <div className="cart-empty-state">
+            <div className="icon">
+              <EmptyOrders />
             </div>
-          ))}
+            <div className="message">No order has been sent yet.</div>
+            <div className="action" onClick={() => router.push("/")}>
+              Shop now
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -6,14 +6,21 @@
     @include full-fixed
     @include flex-position(center, center)
     height: 100vh
-    width: 100
+    width: 100%
     background: url('/static/images/splash-bg.png') center no-repeat
     background-color: $yellow
     background-size: cover
+    z-index: 10000
 
     img
         width: 230px
         animation: splash 2s cubic-bezier(0.63, 0.01, 0.4, 1.02) infinite alternate
+
+    &.no-bg
+        background: transparentize($brown, 0.2)
+
+        img
+            width: 150px
 
     .banner-carousel-swiper
         position: relative

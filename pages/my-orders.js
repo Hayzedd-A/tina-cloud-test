@@ -6,8 +6,10 @@ import Main from "../layouts/Main";
 
 import Menu from "../components/Menu";
 import { MyOrders, OrderDetails } from "../components/MyAccount";
+import Loader from "../components/Loader";
 
 import OrdersProvider from "../providers/OrdersProvider";
+
 import { RightArrow } from "../public/static/vectors";
 
 class MyAccount extends Component {
@@ -61,29 +63,28 @@ class MyAccount extends Component {
 
     return (
       <Main>
-        {isMounted && (
-          <OrdersProvider>
-            {orderDetails ? (
-              <OrderDetails
-                orderDetails={orderDetails}
-                goBack={() => this.showOrderDetails()}
-              />
-            ) : (
-              <div className="my-account">
-                <div className="my-account-header">
-                  <div className="back" onClick={() => router.push("/")}>
-                    <RightArrow />
-                  </div>
-                  My Orders
+        {!isMounted && <Loader />}
+        <OrdersProvider>
+          {orderDetails ? (
+            <OrderDetails
+              orderDetails={orderDetails}
+              goBack={() => this.showOrderDetails()}
+            />
+          ) : (
+            <div className="my-account">
+              <div className="my-account-header">
+                <div className="back" onClick={() => router.push("/")}>
+                  <RightArrow />
                 </div>
-                <div className="my-account-content">
-                  {<MyOrders showOrderDetails={this.showOrderDetails} />}
-                </div>
-                <Menu />
+                My Orders
               </div>
-            )}
-          </OrdersProvider>
-        )}
+              <div className="my-account-content">
+                {<MyOrders showOrderDetails={this.showOrderDetails} />}
+              </div>
+              <Menu />
+            </div>
+          )}
+        </OrdersProvider>
       </Main>
     );
   }

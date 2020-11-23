@@ -6,8 +6,10 @@ import Main from "../layouts/Main";
 
 import Menu from "../components/Menu";
 import { MyInfo } from "../components/MyAccount";
+import Loader from "../components/Loader";
 
 import OrdersProvider from "../providers/OrdersProvider";
+
 import { RightArrow } from "../public/static/vectors";
 
 class MyAccount extends Component {
@@ -37,7 +39,7 @@ class MyAccount extends Component {
 
     return (
       <Main>
-        {isMounted && (
+        {!isMounted && <Loader />}
           <OrdersProvider>
             <div className="my-account">
               <div className="my-account-header">
@@ -50,7 +52,6 @@ class MyAccount extends Component {
               <Menu />
             </div>
           </OrdersProvider>
-        )}
       </Main>
     );
   }
