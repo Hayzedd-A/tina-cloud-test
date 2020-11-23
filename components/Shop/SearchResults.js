@@ -96,7 +96,7 @@ class SearchResults extends Component {
                   {productsResult.map((item, index) => {
                     const { name, sizes } = item;
                     const firstSize = Object.keys(sizes)[0];
-                    const { imageUrl, unitPrice } = sizes[firstSize][0];
+                    const { imageUrl, unitPrice } = sizes[firstSize][0] || {};
 
                     return (
                       <ShopItem
@@ -129,7 +129,7 @@ class SearchResults extends Component {
                     {products[0].products.slice(0, 4).map((item, index) => {
                       const { name, sizes } = item;
                       const firstSize = Object.keys(sizes)[0];
-                      const { imageUrl, unitPrice } = sizes[firstSize][0];
+                      const { imageUrl, unitPrice } = sizes[firstSize][0] || {};
 
                       return (
                         <ShopItem
