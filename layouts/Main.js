@@ -1,13 +1,25 @@
+import { Component } from "react";
+
 import Head from "next/head";
 
-const Main = ({ children }) => (
-  <>
-    <Head>
-      <title>Gourmet Twist App</title>
-    </Head>
+class Main extends Component {
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
 
-    <div className="app">{children}</div>
-  </>
-);
+  render() {
+    const { children } = this.props;
+
+    return (
+      <>
+        <Head>
+          <title>Gourmet Twist App</title>
+        </Head>
+
+        <div className="app">{children}</div>
+      </>
+    );
+  }
+}
 
 export default Main;
