@@ -74,14 +74,25 @@ class CreateLogin extends Component {
   };
 
   login = () => {
-    const { login, router } = this.props;
+    const { isSignUp } = this.state;
+    const { login, register, router } = this.props;
     const { phoneNumber, pin } = getFormValues(this.state.formData);
 
-    login(
-      { phoneNumber, pin },
-      () => router.push("/my-account"),
-      error => this.openToaster("error", error || `Invalid login details`)
-    );
+    isSignUp
+      ? register(
+          { phoneNumber, pin, storeId: "ba629b0f-9749-4097-bfc7-825fdcfe6811" },
+          () => router.push("/my-account"),
+          error =>
+            this.openToaster(
+              "error",
+              error || `An error occurred. Please try again.`
+            )
+        )
+      : login(
+          { phoneNumber, pin },
+          () => router.push("/my-account"),
+          error => this.openToaster("error", error || `Invalid login details`)
+        );
   };
 
   openToaster = (status, message) => {

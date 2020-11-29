@@ -42,6 +42,41 @@ class AuthenticationProvider extends Component {
     });
   };
 
+  register = async (data, successCallback, errorCallback) => {
+    this.resetState();
+
+    this.setState({
+      isLoggingIn: true
+    });
+
+    try {
+      const res = await postRequest({
+        url: "/auth/customer/register",
+        data
+      });
+
+      localStorage.setItem("gourmet-twist-user", JSON.stringify(res.data));
+
+      this.setState({
+        isLoggingIn: false,
+        loginOutcome: "success",
+        user: res.data
+      });
+
+      successCallback && successCallback();
+    } catch (error) {
+      const message = getRequestError(error);
+
+      this.setState({
+        isLoggingIn: false,
+        loginOutcome: "error",
+        loginMessage: message
+      });
+
+      errorCallback && errorCallback(message)
+    }
+  };
+
   login = async (data, successCallback, errorCallback) => {
     this.resetState();
 
@@ -165,6 +200,7 @@ class AuthenticationProvider extends Component {
         value={{
           ...this.state,
           checkUser: this.checkUser,
+          register: this.register,
           login: this.login,
           logout: this.logout,
           getProfile: this.getProfile,
