@@ -106,7 +106,7 @@ class Checkout extends Component {
           try {
             const res = await getRequest({
               url:
-                "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/get-delivery-type",
+                "/customer-requests/stores/8a7a28dc-b54d-4841-b949-efe60dbae709/get-delivery-type",
               params: {
                 address,
                 latitude,
@@ -215,7 +215,7 @@ class Checkout extends Component {
     try {
       const res = await postRequest({
         url:
-          "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/placed-orders",
+          "/customer-requests/stores/8a7a28dc-b54d-4841-b949-efe60dbae709/placed-orders",
         data: payload
       });
 

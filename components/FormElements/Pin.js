@@ -67,7 +67,7 @@ class TextField extends Component {
         {label && <label>{label}</label>}
         <div onClick={e => e.stopPropagation()}>
           <ReactCodeInput
-            type="number"
+            type="password"
             style={{ display: "grid" }}
             className="react-code-input"
             fields={4}

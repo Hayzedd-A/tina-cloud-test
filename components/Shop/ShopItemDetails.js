@@ -237,14 +237,14 @@ class ShopItemDetails extends Component {
         () => {
           this.setState({
             tempCart: Object.keys(selectedItem.sizes).map(size => {
-              const { id, name, unitPrice } = this.getSelectedItemDetails(size);
+              const { id, name, unitPrice, imageUrl } = this.getSelectedItemDetails(size);
 
-              console.log(id, name, unitPrice);
               return {
                 uuid: uuidv4(),
                 id,
                 size,
                 unitPrice,
+                imageUrl,
                 name,
                 quantity: 0,
                 toppings: []
@@ -355,7 +355,7 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         </div>
-        {selectedItem.toppings && selectedItem.toppings.length && (
+        {selectedItem.toppings && !!selectedItem.toppings.length && (
           <div className="select-section">
             <div className="container">
               <span className="title">EXTRAS</span>

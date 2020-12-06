@@ -22,7 +22,7 @@ class OrdersProvider extends Component {
 
     try {
       const res = await getRequest({
-        url: "/customer-requests/stores/ba629b0f-9749-4097-bfc7-825fdcfe6811/orders",
+        url: "/customer-requests/stores/8a7a28dc-b54d-4841-b949-efe60dbae709/orders",
         token: true
       })
 

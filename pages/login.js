@@ -80,7 +80,7 @@ class CreateLogin extends Component {
 
     isSignUp
       ? register(
-          { phoneNumber, pin, storeId: "ba629b0f-9749-4097-bfc7-825fdcfe6811" },
+          { phoneNumber, pin, storeId: "8a7a28dc-b54d-4841-b949-efe60dbae709" },
           () => router.push("/my-account"),
           error =>
             this.openToaster(
@@ -164,7 +164,7 @@ class CreateLogin extends Component {
             >
               <RightArrow />
             </div>
-            <div className="title">{isSignUp ? "Sign Up" : "Login"}</div>
+            <div className="title">My Account</div>
           </div>
           <Tabs
             active={isTabActive}
