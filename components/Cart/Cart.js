@@ -91,7 +91,7 @@ class Cart extends Component {
                       <div key={`cart-item-${index}`} className="cart-item">
                         <div className="container">
                           <div className="image">
-                            <img src={imageUrl} alt="" />
+                            <img src={imageUrl || "/static/svgs/image-placeholder.svg"} alt="" />
                           </div>
                           <div className="info">
                             <div className="main-description">

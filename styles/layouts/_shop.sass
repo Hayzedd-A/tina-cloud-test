@@ -72,7 +72,7 @@
                 overflow: hidden
 
                 img
-                    @include image-full-fit(cover, top)
+                    @include image-full-fit(cover, center)
 
                 .item-name
                     @include flex-position(initial, flex-end)
@@ -128,13 +128,15 @@
 
 .shop-item-details
     position: relative
+    min-height: 100vh
+    padding-bottom: 85px
 
     .item-image
         height: 315px
         position: relative
 
         img
-            @include image-full-fit(cover, top)
+            @include image-full-fit(cover, center)
 
         .back
             position: absolute
@@ -259,6 +261,8 @@
         // position: sticky
         // position: -webkit-sticky
         // bottom: 0
+        position: absolute
+        bottom: 0
         width: 100%
         // height: 85px
         font-size: 22px
@@ -350,7 +354,7 @@
                     margin-right: 15px
 
                     img
-                        @include image-full-fit(cover, top)
+                        @include image-full-fit(cover, center)
 
                 .name
                     display: block
@@ -457,7 +461,7 @@
         margin-top: 25px
         @include flex-position(center, center)
         flex-direction: column
-        font-size: 16px
+        font-size: 18px
         color: $brown
         width: 100%
 
@@ -465,10 +469,10 @@
             white-space: nowrap
             line-height: 1
             font-weight: $font-weight-bold
-            font-size: 16px
+            font-size: 18px
 
         .continue
-            height: 45px
+            height: 50px
             padding: 0 20px
             @include flex-position(center, center)
             background: $yellow

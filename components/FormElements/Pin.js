@@ -14,11 +14,7 @@ class TextField extends Component {
   onChange = (value, isBlurred) => {
     let { isValid } = this.state;
     const {
-      type,
       required,
-      min,
-      mobile,
-      max,
       name,
       onBlur,
       onChange
@@ -55,6 +51,7 @@ class TextField extends Component {
     const {
       className,
       label,
+      hint
     } = this.props;
 
     return (
@@ -75,6 +72,7 @@ class TextField extends Component {
             autoFocus={false}
           />
         </div>
+        {hint && <span className="hint red">{hint}</span>}
       </div>
     );
   }

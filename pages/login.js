@@ -145,8 +145,10 @@ class CreateLogin extends Component {
   }
 
   render() {
-    const { currentTab, toaster, isTabActive, isSignUp } = this.state;
+    const { currentTab, toaster, isTabActive, isSignUp, formData } = this.state;
     const { isLoggingIn, router } = this.props;
+
+    const { phoneNumber, pin, confirmPin } = formData;
 
     const tabs = ["Login", "Sign up"];
 
@@ -181,6 +183,7 @@ class CreateLogin extends Component {
                   placeholder="Enter your phone number"
                   name="phoneNumber"
                   onChange={this.handleChange}
+                  value={phoneNumber.value}
                   className="mb-40"
                   required
                   mobile
@@ -198,6 +201,12 @@ class CreateLogin extends Component {
                     name="confirmPin"
                     onChange={this.handleChange}
                     required
+                    hint={
+                      confirmPin.value &&
+                      pin.value !== confirmPin.value && (
+                        <span className="hint red">The pins don't match</span>
+                      )
+                    }
                   />
                 )}
               </div>

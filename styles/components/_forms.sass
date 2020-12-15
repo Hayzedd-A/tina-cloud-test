@@ -9,7 +9,7 @@
 
     .selector
         @include flex-position(center, center)
-        @include full-circle(50px, 50px)
+        @include full-circle(60px, 60px)
         background: $white
         box-shadow: $number-selector-shadow
         cursor: pointer
@@ -31,6 +31,13 @@
         text-align: center
         width: 40px
         -webkit-appearance: none
+
+        &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+            -webkit-appearance: none
+            margin: 0
+
+        &[type=number]
+            -moz-appearance: textfield
 
     &.small
         border-radius: 22px
@@ -97,6 +104,9 @@
         font-size: 12px
         display: flex
         margin-top: 5px
+
+        &.red
+            color: $red
 
 
 .checkbox-container
@@ -196,7 +206,6 @@
     display: grid !important
     grid-template-columns: repeat(4, 1fr)
     grid-gap: 10px
-    margin-bottom: 30px
     border: 0
     max-width: 270px
 
