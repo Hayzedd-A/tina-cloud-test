@@ -44,7 +44,7 @@ class TextField extends Component {
     if (mobile) {
       const re = /^[0-9\b]+$/;
 
-      if (value === "" || (re.test(value) && value.length <= 11)) {
+      if (value === "" || (re.test(value) && value.length === 11)) {
         onChange({ target: { name, value } }, isValid);
       }
     } else if (type === "custom-number") {
