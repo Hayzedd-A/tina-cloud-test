@@ -10,5 +10,9 @@ export const menu = [
     {
         label: "My Orders",
         value: "/my-orders"
+    },
+    {
+        label: "FAQ",
+        value: "/faq"
     }
 ]

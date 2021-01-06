@@ -133,10 +133,24 @@
 
     .item-image
         height: 315px
+        padding: 10px 40px
         position: relative
+        display: flex
+        justify-content: center
+        background: #F2C131
+        background: url('https://cdn.wallpapersafari.com/26/83/oM9jON.jpg')
+        background-size: cover
+        background: #FFE000
+        background: -webkit-linear-gradient(to right, #FFE000, #F2C131)
+        background: linear-gradient(to right, #FFE000, #F2C131)
+
+
 
         img
-            @include image-full-fit(cover, center)
+            height: 100%
+            border-radius: 10px
+            border: 5px solid #3a3134cc
+            object-fit: cover
 
         .back
             position: absolute
@@ -188,14 +202,20 @@
             letter-spacing: 1px
 
         &.sizes-section
-            padding: 20px 0
+            padding: 20px 20px
 
+        
+        &.qty-section
             .title
-                margin-left: 20px
+                margin-left: 0px
+            .quantity
+                margin-left: 0px
 
         .sizes
             width: 100%
+            padding: 0px 0px
             overflow: auto
+            flex-wrap: wrap
             @include flex-position(initial, center)
             -ms-overflow-style: none
             scrollbar-width: none
@@ -213,15 +233,13 @@
                 border-radius: 22px
                 transition: all ease-in-out .4s
                 margin-right: 20px
+                margin-top: 10px
                 cursor: pointer
                 position: relative
 
                 &.active
                     border-color: $yellow
                     background: $white
-
-                &:first-child
-                    margin-left: 20px
 
                 &:last-child
                     margin-right: 0

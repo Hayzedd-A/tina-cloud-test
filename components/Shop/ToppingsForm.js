@@ -12,7 +12,7 @@ const ToppingsForm = ({
 }) => {
   const checkIfSelected = toppingId =>
     selectedToppings.some(topping => topping.id === toppingId);
-
+  console.log(toppings);
   return (
     <div className="toppings-form-container">
       <div className="toppings-form">
@@ -26,7 +26,7 @@ const ToppingsForm = ({
         <div className="toppings-list">
           {toppings.map((topping, index) => {
             const toppingDetails = getToppingsDetails(topping);
-            const { id, name, unitPrice, imageUrl } = toppingDetails;
+            const { id, name, unitPrice, imageUrl } = toppingDetails || {};
 
             return (
               <div

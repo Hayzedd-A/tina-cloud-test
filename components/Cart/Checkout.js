@@ -135,7 +135,7 @@ class Checkout extends Component {
 
             this.openToaster(
               "error",
-              "An error occured while fetching delivery price"
+              "An error occured while fetching delivery price, please enter again"
             );
 
             this.setState({
@@ -224,7 +224,7 @@ class Checkout extends Component {
       paystack(
         email,
         paymentReference,
-        (parseFloat(amount) + parseFloat(deliveryCost)) * 100,
+        (parseFloat(amount)) * 100,
         this.handlePaystackSuccess,
         this.handlePaystackClose
       );
@@ -433,7 +433,7 @@ class Checkout extends Component {
             onClick={this.checkout}
           >
             <div className="container">
-              <span>Pay ₦{(subTotal + deliveryCost).toLocaleString()}</span>
+              <span>{ isCheckingOut ? 'Paying...' :  'Pay' } ₦{(subTotal + deliveryCost).toLocaleString()}</span>
               <RightArrow />
             </div>
           </div>

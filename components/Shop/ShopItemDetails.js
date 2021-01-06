@@ -102,11 +102,13 @@ class ShopItemDetails extends Component {
 
   cartAction = () => {
     const { tempCart } = this.state;
-    const { addToCart } = this.props;
+    const { addToCart, router } = this.props;
+    const { name, id } = router.query;
 
     const cartItems = tempCart.filter(({ quantity }) => quantity);
 
     addToCart(cartItems, () => {
+      name && id && this.selectItem(id);
       this.openToaster(
         "success",
         `Added x${this.getTotalQuantity()} ${
@@ -131,6 +133,7 @@ class ShopItemDetails extends Component {
     const { selectedSize } = this.state;
     const { sizes } = selectedTopping;
 
+    console.log(selectedTopping, sizes[selectedSize][0]);
     return sizes ? (sizes[selectedSize] ? sizes[selectedSize][0] : {}) : {};
   };
 
@@ -152,6 +155,8 @@ class ShopItemDetails extends Component {
     const itemsPricesTotal = reduceLinearArray(itemsPrices);
 
     totalCost = itemsPricesTotal + toppingsPrices;
+
+    console.log(totalCost, itemsPrices, itemsPricesTotal, toppingsPrices)
 
     return totalCost;
   };
@@ -229,15 +234,19 @@ class ShopItemDetails extends Component {
     const selectedItem = this.state.allProducts.find(({ id }) => id === itemId);
 
     if (selectedItem) {
+      const activeSizes = selectedItem.sizes ? Object.keys(selectedItem.sizes).filter((item) => selectedItem.sizes[item] && selectedItem.sizes[item].length > 0) : [];
       this.setState(
         {
           selectedItem,
-          selectedSize: Object.keys(selectedItem.sizes)[0]
+          selectedSize: activeSizes ? activeSizes[0] : ''
         },
         () => {
+          console.log(selectedItem.sizes)
           this.setState({
-            tempCart: Object.keys(selectedItem.sizes).map(size => {
-              const { id, name, unitPrice, imageUrl } = this.getSelectedItemDetails(size);
+            tempCart: Object.keys(selectedItem.sizes).filter((item) => {
+              return selectedItem.sizes[item].length > 0;
+            }).map(size => {
+              const { id, name, unitPrice, imageUrl } = this.getSelectedItemDetails(size) || {};
 
               return {
                 uuid: uuidv4(),
@@ -289,13 +298,16 @@ class ShopItemDetails extends Component {
       selectedItem
     } = this.state;
     const { sizes } = selectedItem;
+    const activeSizes = sizes ? Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0) : [];
 
     const {
       imageUrl,
       name,
       unitPrice,
       description
-    } = this.getSelectedItemDetails();
+    } = this.getSelectedItemDetails() || {};
+
+    console.log("Hello: ", this.getSelectedItemDetails())
 
     return (
       <div className="shop-item-details">
@@ -324,8 +336,8 @@ class ShopItemDetails extends Component {
           <div className="container">
             <span className="title">SELECT SIZE</span>
             <div className="sizes">
-              {sizes &&
-                Object.keys(sizes).map((size, index) => (
+              {activeSizes &&
+                activeSizes.map((size, index) => (
                   <span
                     key={`size-${index}`}
                     className={classNames("size-selector", {
@@ -344,7 +356,7 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         </div>
-        <div className="select-section">
+        <div className="select-section qty-section">
           <div className="container">
             <span className="title">QUANTITY</span>
             <div className="quantity">

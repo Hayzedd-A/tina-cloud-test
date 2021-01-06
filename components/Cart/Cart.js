@@ -39,9 +39,11 @@ class Cart extends Component {
 
   render() {
     const { isLoadingCart, cart, checkout, router } = this.props;
+    console.log(cart)
 
     const subTotal = reduceArray(cart, "totalCost");
 
+    // return <div>Hello</div>
     return (
       <div className="cart-container full-height">
         <div className="cart-header">

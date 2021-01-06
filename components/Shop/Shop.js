@@ -43,8 +43,16 @@ class Shop extends Component {
     const { currentTab, isTabActive } = this.state;
     const { selectItem, products } = this.props;
 
-    const tabs = products.map(({ name }) => name);
-    const toppings = products[currentTab].toppings;
+    console.log("products: ", products);
+    const tabs = products ? products.sort((a, b) => 
+      (a.position && b.position) 
+        ? (parseInt(a.position) > parseInt(b.position)) 
+          ? 1 : -1
+        : (a.name > b.name) 
+          ? 1 : -1
+      )
+      .map(({ name }) => name) : [];
+    const toppings = products && products[currentTab] && products[currentTab].toppings;
 
     return (
       <div className="shop-container" id="shop-container">
@@ -56,10 +64,10 @@ class Shop extends Component {
           switchTab={this.switchTab}
         />
         <div className="container">
-          {products[currentTab].topProducts.length ||
-          products[currentTab].products.length ? (
+          {products && products[currentTab].topProducts.length ||
+          products && products[currentTab].products.length ? (
             <>
-              {!!products[currentTab].topProducts.length && (
+              {!!(products && products[currentTab].topProducts.length) && (
                 <div className="shop-section carousel">
                   <div className="section-title favorite">
                     <span className="icon">
@@ -68,9 +76,10 @@ class Shop extends Component {
                     <span className="text">Most Recommended</span>
                   </div>
                   <div className="section-items">
-                    {products[currentTab].topProducts.map((item, index) => {
+                    {products && products[currentTab].topProducts.map((item, index) => {
                       const { name, sizes } = item;
-                      const firstSize = Object.keys(sizes)[0];
+                      const activeSizes = Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0);
+                      const firstSize = activeSizes && activeSizes[0];
                       const { imageUrl, unitPrice } = sizes[firstSize][0] || {};
 
                       return (
@@ -86,7 +95,7 @@ class Shop extends Component {
                   </div>
                 </div>
               )}
-              {!!products[currentTab].products.length && (
+              {!!( products && products[currentTab].products.length) && (
                 <div className="shop-section">
                   <div className="section-title">
                     All {products[currentTab].name}s
@@ -94,7 +103,8 @@ class Shop extends Component {
                   <div className="section-items">
                     {products[currentTab].products.map((item, index) => {
                       const { name, sizes } = item;
-                      const firstSize = Object.keys(sizes)[0];
+                      const activeSizes = Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0);
+                      const firstSize = activeSizes && activeSizes[0];
                       const { imageUrl, unitPrice } = sizes[firstSize][0] || {};
 
                       return (
