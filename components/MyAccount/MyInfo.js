@@ -140,17 +140,17 @@ class MyInfo extends Component {
             className="mb-40"
             required
           />
-          <div className="cart-actions">
-            <div
-              className={classNames("checkout-button", {
-                disabled: !this.checkFormValidity() || isUpdatingProfile
-              })}
-              onClick={this.submit}
-            >
-              <div className="container">
-                <span>Submit</span>
-                <RightArrow />
-              </div>
+        </div>
+        <div className="cart-actions">
+          <div
+            className={classNames("checkout-button", {
+              disabled: !this.checkFormValidity() || isUpdatingProfile
+            })}
+            onClick={this.submit}
+          >
+            <div className="container">
+              <span>Submit</span>
+              <RightArrow />
             </div>
           </div>
         </div>

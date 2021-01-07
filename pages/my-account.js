@@ -40,18 +40,20 @@ class MyAccount extends Component {
     return (
       <Main>
         {!isMounted && <Loader />}
-          <OrdersProvider>
-            <div className="my-account">
-              <div className="my-account-header">
+        <OrdersProvider>
+          <div className="my-account">
+            <div className="my-account-header">
+              <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
                 <div className="back" onClick={() => router.push("/")}>
                   <RightArrow />
                 </div>
-                My Info
-              </div>
-              <div className="my-account-content">{<MyInfo />}</div>
-              <Menu />
+                    My Info
+                  </div>
             </div>
-          </OrdersProvider>
+            <div className="my-account-content">{<MyInfo />}</div>
+            <Menu />
+          </div>
+        </OrdersProvider>
       </Main>
     );
   }

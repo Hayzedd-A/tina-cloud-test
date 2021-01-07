@@ -156,17 +156,19 @@ class CreateLogin extends Component {
       <Main>
         <div className="cart-container login-container">
           <div className="cart-header login-header">
-            <div
-              className="back"
-              onClick={() =>
-                router.push(`/`, undefined, {
-                  shallow: true
-                })
-              }
-            >
-              <RightArrow />
+            <div className="container login-header-inner" style={{position: 'relative'}}>
+              <div
+                className="back"
+                onClick={() =>
+                  router.push(`/`, undefined, {
+                    shallow: true
+                  })
+                }
+              >
+                <RightArrow />
+              </div>
+              <div className="title">My Account</div>
             </div>
-            <div className="title">My Account</div>
           </div>
           <Tabs
             active={isTabActive}
@@ -210,17 +212,17 @@ class CreateLogin extends Component {
                   />
                 )}
               </div>
-              <div className="cart-actions">
-                <div
-                  className={classNames("checkout-button", {
-                    disabled: !this.checkFormValidity() || isLoggingIn
-                  })}
-                  onClick={this.login}
-                >
-                  <div className="container">
-                    <span>{isSignUp ? "Create Pin" : "Login"}</span>
-                    <RightArrow />
-                  </div>
+            </div>
+            <div className="cart-actions">
+              <div
+                className={classNames("checkout-button", {
+                  disabled: !this.checkFormValidity() || isLoggingIn
+                })}
+                onClick={this.login}
+              >
+                <div className="container">
+                  <span>{isSignUp ? "Create Pin" : "Login"}</span>
+                  <RightArrow />
                 </div>
               </div>
             </div>

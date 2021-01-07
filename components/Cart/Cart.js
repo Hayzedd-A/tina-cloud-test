@@ -47,17 +47,19 @@ class Cart extends Component {
     return (
       <div className="cart-container full-height">
         <div className="cart-header">
-          <div
-            className="back"
-            onClick={() =>
-              router.push(`/`, undefined, {
-                shallow: true
-              })
-            }
-          >
-            <RightArrow />
+          <div className="container login-header-inner" style={{position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            <div
+              className="back"
+              onClick={() =>
+                router.push(`/`, undefined, {
+                  shallow: true
+                })
+              }
+            >
+              <RightArrow />
+            </div>
+            <div className="title">My Cart</div>
           </div>
-          <div className="title">My Cart</div>
           {!!cart.length && (
             <div className="info delivery-notice">
               <span className="icon">

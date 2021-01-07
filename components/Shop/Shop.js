@@ -60,12 +60,13 @@ class Shop extends Component {
         <Tabs
           active={isTabActive}
           tabs={tabs}
+          forCategories={true}
           currentTab={currentTab}
           switchTab={this.switchTab}
         />
         <div className="container">
-          {products && products[currentTab].topProducts.length ||
-          products && products[currentTab].products.length ? (
+          {products && products[currentTab] && products[currentTab].topProducts && products[currentTab].topProducts.length ||
+          products && products[currentTab] && products[currentTab].products && products[currentTab].products.length ? (
             <>
               {!!(products && products[currentTab].topProducts.length) && (
                 <div className="shop-section carousel">
@@ -124,7 +125,7 @@ class Shop extends Component {
               )}
             </>
           ) : (
-            <div className="cart-empty-state" style={{ padding: "0 30px" }}>
+            <div className="cart-empty-state" style={{ padding: "70px 30px" }}>
               <div className="icon">
                 <EmptyStore />
               </div>

@@ -99,6 +99,7 @@ class Checkout extends Component {
       },
       async () => {
         if (suggest) {
+
           const address = suggest.gmaps.formatted_address;
           const latitude = suggest.location.lat;
           const longitude = suggest.location.lng;
@@ -311,10 +312,12 @@ class Checkout extends Component {
     return (
       <div className="cart-container">
         <div className="cart-header">
+        <div className="container login-header-inner" style={{position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
           <div className="back" onClick={goBack}>
             <RightArrow />
           </div>
           <div className="title">Checkout</div>
+        </div>
           <div className="info">
             <span className="icon checkout-icon">
               <img src="/static/images/star.png" alt="" />
@@ -377,6 +380,7 @@ class Checkout extends Component {
                 <div className="input-container mb-40">
                   <label>
                     Delivery Address <sup className="marked">*</sup>
+                    {isLoadingDeliveryPrice && <i style={{textTransform: 'capitalize', color: '#333', fontWeight: 'bold'}}> Calculating Price... </i>}
                   </label>
                   <Geosuggest
                     placeholder="Enter your address"

@@ -1,8 +1,8 @@
-const EmptyStore = () => (
+const EmptyStore = ({ width, height }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="235"
-    height="235"
+    width={ width || "235" }
+    height={ height || "235" }
     viewBox="0 0 235 235"
   >
     <g fill="none" fillRule="evenodd" stroke="none" strokeWidth="1">

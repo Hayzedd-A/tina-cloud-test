@@ -111,8 +111,7 @@ class ShopItemDetails extends Component {
       name && id && this.selectItem(id);
       this.openToaster(
         "success",
-        `Added x${this.getTotalQuantity()} ${
-          this.getTotalQuantity() === 1 ? "item" : "items"
+        `Added x${this.getTotalQuantity()} ${this.getTotalQuantity() === 1 ? "item" : "items"
         } successfully to the cart`
       );
     });
@@ -129,7 +128,7 @@ class ShopItemDetails extends Component {
       : {};
   };
 
-  getToppingsDetails = selectedTopping => {
+  getToppingsDetails = (selectedTopping) => {
     const { selectedSize } = this.state;
     const { sizes } = selectedTopping;
 
@@ -312,14 +311,16 @@ class ShopItemDetails extends Component {
     return (
       <div className="shop-item-details">
         <div className="item-image">
-          <img src={imageUrl || "/static/svgs/image-placeholder.svg"} alt="" />
-          <Link href="/">
-            <a>
-              <span className="back">
-                <RightArrow />
-              </span>
-            </a>
-          </Link>
+          <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+            <img src={imageUrl || "/static/svgs/image-placeholder.svg"} alt="" />
+            <Link href="/">
+              <a>
+                <span className="back">
+                  <RightArrow />
+                </span>
+              </a>
+            </Link>
+          </div>
         </div>
         <div className="item-info">
           <div className="container">
@@ -378,11 +379,10 @@ class ShopItemDetails extends Component {
                 onClick={this.toggleToppingsForm}
               >
                 {this.getSelectedToppings().length
-                  ? `${
-                      this.getSelectedToppings().length === 1
-                        ? `${this.getSelectedToppings().length} TOPPING`
-                        : `${this.getSelectedToppings().length} TOPPINGS`
-                    }`
+                  ? `${this.getSelectedToppings().length === 1
+                    ? `${this.getSelectedToppings().length} TOPPING`
+                    : `${this.getSelectedToppings().length} TOPPINGS`
+                  }`
                   : "ADD TOPPINGS"}
               </div>
             </div>

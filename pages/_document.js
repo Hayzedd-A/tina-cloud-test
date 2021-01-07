@@ -1,4 +1,4 @@
-import Document, { Head, Main, NextScript } from "next/document";
+import Document, { Html, Head, Main, NextScript } from "next/document";
 
 const APP_NAME = "Gourmet Twist App";
 const APP_DESCRIPTION = "Gourmet Twist App";
@@ -6,7 +6,7 @@ const APP_DESCRIPTION = "Gourmet Twist App";
 export default class MyDocument extends Document {
   render() {
     return (
-      <html>
+      <Html>
         <Head>
           <meta name="application-name" content={APP_NAME} />
           <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -58,7 +58,7 @@ export default class MyDocument extends Document {
           <div id="react-portal" />
           <NextScript />
         </body>
-      </html>
+      </Html>
     );
   }
 }
