@@ -63,9 +63,9 @@ class Checkout extends Component {
         address:
           target.name === "shippingMethod"
             ? {
-                value: "",
-                valid: false
-              }
+              value: "",
+              valid: false
+            }
             : this.state.formData.address
       },
       deliveryCost:
@@ -197,13 +197,11 @@ class Checkout extends Component {
 
     const payload = {
       orderItems,
-      customer: user
-        ? user.customer
-        : {
-            name,
-            phoneNumber,
-            address
-          },
+      customer: {
+        name,
+        phoneNumber,
+        address
+      },
       recipient: {
         name,
         phoneNumber
@@ -312,12 +310,12 @@ class Checkout extends Component {
     return (
       <div className="cart-container">
         <div className="cart-header">
-        <div className="container login-header-inner" style={{position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-          <div className="back" onClick={goBack}>
-            <RightArrow />
+          <div className="container login-header-inner" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="back" onClick={goBack}>
+              <RightArrow />
+            </div>
+            <div className="title">Checkout</div>
           </div>
-          <div className="title">Checkout</div>
-        </div>
           <div className="info">
             <span className="icon checkout-icon">
               <img src="/static/images/star.png" alt="" />
@@ -380,7 +378,7 @@ class Checkout extends Component {
                 <div className="input-container mb-40">
                   <label>
                     Delivery Address <sup className="marked">*</sup>
-                    {isLoadingDeliveryPrice && <i style={{textTransform: 'capitalize', color: '#333', fontWeight: 'bold'}}> Calculating Price... </i>}
+                    {isLoadingDeliveryPrice && <i style={{ textTransform: 'capitalize', color: '#333', fontWeight: 'bold' }}> Calculating Price... </i>}
                   </label>
                   <Geosuggest
                     placeholder="Enter your address"
@@ -396,13 +394,13 @@ class Checkout extends Component {
                   </span>
                 </div>
               ) : (
-                <div className="input-container mb-40">
-                  <label>Pickup Address</label>
-                  <div className="pickup-address mb-40">
-                    RT Lawal Street, Behind Meadow Hall School, Ikate
+                  <div className="input-container mb-40">
+                    <label>Pickup Address</label>
+                    <div className="pickup-address mb-40">
+                      RT Lawal Street, Behind Meadow Hall School, Ikate
                   </div>
-                </div>
-              )}
+                  </div>
+                )}
               <TextField
                 label="Special Note"
                 placeholder="Any special notes for delivery"
@@ -437,7 +435,7 @@ class Checkout extends Component {
             onClick={this.checkout}
           >
             <div className="container">
-              <span>{ isCheckingOut ? 'Paying...' :  'Pay' } ₦{(subTotal + deliveryCost).toLocaleString()}</span>
+              <span>{isCheckingOut ? 'Paying...' : 'Pay'} ₦{(subTotal + deliveryCost).toLocaleString()}</span>
               <RightArrow />
             </div>
           </div>
