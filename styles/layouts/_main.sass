@@ -76,10 +76,48 @@
         transition: transform 300ms ease-in
 
 .faq-content
-    margin-top: 100px
-    h3
-        margin-bottom: 8px
-        font-size: 25px
-        font-weight: 600
-    p
-        margin-bottom: 22px
+    margin: 50px 0px 100px
+    .logo
+        width: 95px
+        margin: auto
+        flex: 0 0 95px
+        height: 95px
+        border-radius: 50%
+        margin-bottom: 20px
+
+        img, svg
+            width: 100%
+            height: auto
+    .about-faq
+        margin: auto
+        margin-bottom: 20px
+        max-width: 800px
+        line-height: 35px
+        font-size: 20px
+        font-weight: 700
+        text-align: center
+    .question
+        background: $yellow
+        padding: 15px 20px
+        border-radius: 8px
+        &.active
+            margin-bottom: 8px
+        h3
+            font-size: 20px
+            line-height: 25px
+            font-weight: 600
+    .answer
+        padding: 0px 20px
+        margin-bottom: 20px
+        visibility: hidden
+        opacity: 0
+        height: 0px
+        transition: visibility 0s, opacity 0.4s cubic-bezier(0.93, 0.6, 0.04, 0.18)
+        &.active
+            visibility: visible
+            height: auto
+            opacity: 1
+            transition: visibility 0s, opacity 0.4s cubic-bezier(0.93, 0.6, 0.04, 0.18)
+        p
+            line-height: 25px
+            margin-bottom: 0px

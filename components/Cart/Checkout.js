@@ -133,10 +133,11 @@ class Checkout extends Component {
             });
           } catch (error) {
             console.log(error);
+            const errorMessage = error && error.response && error.response.data && error.response.data.message ? error.response.data.message : "An error occured while fetching delivery price, please enter again";
 
             this.openToaster(
               "error",
-              "An error occured while fetching delivery price, please enter again"
+              errorMessage
             );
 
             this.setState({

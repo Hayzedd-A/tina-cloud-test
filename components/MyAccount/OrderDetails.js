@@ -17,10 +17,12 @@ class OrderDetails extends Component {
     return (
       <div className="cart-container full-height">
         <div className="cart-header">
-          <div className="back" onClick={goBack}>
-            <RightArrow />
+          <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+            <div className="back" onClick={goBack}>
+              <RightArrow />
+            </div>
+            <div className="title">{moment(createdAt).format("DD/MM/YY")}</div>
           </div>
-          <div className="title">{moment(createdAt).format("DD/MM/YY")}</div>
         </div>
         <div className="cart-content">
           <div className="cart-items">

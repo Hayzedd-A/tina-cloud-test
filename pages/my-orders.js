@@ -73,10 +73,12 @@ class MyAccount extends Component {
           ) : (
             <div className="my-account">
               <div className="my-account-header">
-                <div className="back" onClick={() => router.push("/")}>
-                  <RightArrow />
+                <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                  <div className="back" onClick={() => router.push("/")}>
+                    <RightArrow />
+                  </div>
+                  My Orders
                 </div>
-                My Orders
               </div>
               <div className="my-account-content">
                 {<MyOrders showOrderDetails={this.showOrderDetails} />}
