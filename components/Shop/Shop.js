@@ -43,7 +43,6 @@ class Shop extends Component {
     const { currentTab, isTabActive } = this.state;
     const { selectItem, products } = this.props;
 
-    console.log("products: ", products);
     const tabs = products ? products.sort((a, b) => 
       (a.position && b.position) 
         ? (parseInt(a.position) > parseInt(b.position)) 
