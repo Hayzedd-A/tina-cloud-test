@@ -19,6 +19,7 @@ import Modal from "../Modal";
 import { HeaderMenu } from "../Header";
 
 class ShopItemDetails extends Component {
+  
   constructor(props) {
     super(props);
 
@@ -330,9 +331,6 @@ class ShopItemDetails extends Component {
       <div className="shop-item-details">
         <div className="item-image">
           <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
-              {/* <GuardLazyComponentToSSR>
-                <img src={imageUrl || "/static/svgs/image-placeholder.svg"} alt="" />
-              </GuardLazyComponentToSSR> */}
               <img 
                 src={imageUrl ? imageUrl : "/static/svgs/image-placeholder.svg"} 
                 alt=""

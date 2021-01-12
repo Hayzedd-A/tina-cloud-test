@@ -15,9 +15,9 @@ const ShopItem = ({ key, name, image, price, onClick }) => {
     <div className="shop-item" onClick={onClick}>
       <div className="item-image">
         {
-          loading && <div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%'}}>
+          loading && (<div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%'}}>
             <ClipLoader color={'#000'} loading={true} size={50} />
-          </div>
+          </div>)
         }
         <img 
           key={`${key}-img`} 
