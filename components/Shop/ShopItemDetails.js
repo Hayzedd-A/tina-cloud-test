@@ -1,4 +1,4 @@
-import { Component, useEffect, useState } from "react";
+import { Component, createRef, useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import Link from "next/link";
 import { withRouter } from "next/router";
@@ -17,34 +17,6 @@ import { reduceLinearArray, reduceArray } from "../../utils/functions";
 import Toaster from "../Toaster";
 import Modal from "../Modal";
 import { HeaderMenu } from "../Header";
-import { Img, resource } from 'react-suspense-img';
-import ClipLoader from "react-spinners/ClipLoader";
-import { ErrorBoundary } from "./ShopItem";
-
-
-const GuardLazyComponentToSSR = (props) => {
-  const [isFront, setIsFront] = useState(false);
-
-  useEffect(() => {
-    process.nextTick(() => {
-        if (globalThis.window ?? false) {
-          setIsFront(true);
-        }
-    });
-  }, []);
-
-  if (!isFront) return null;
-
-  return (
-    <ErrorBoundary>
-      <React.Suspense fallback={<div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%'}}>
-        <ClipLoader color={'#000'} loading={true} size={50} />
-      </div>}>
-        {props.children}
-      </React.Suspense>
-    </ErrorBoundary> 
-  )
-}
 
 class ShopItemDetails extends Component {
   constructor(props) {
@@ -56,8 +28,21 @@ class ShopItemDetails extends Component {
       isToppingsFormActive: false,
       tempCart: [],
       toaster: {},
+      loadingImg: true,
       isMenuActive: false
     };
+    this.counter = createRef(0);
+  }
+
+  setLoading = (value) => {
+    this.setState({ isMenuActive: value })
+  }
+
+  imageLoaded = () => {
+    this.counter += 1;
+    if (this.counter >= 1) {
+      setLoading(false);
+    }
   }
 
   selectSize = selectedSize => {
@@ -341,16 +326,19 @@ class ShopItemDetails extends Component {
       description
     } = this.getSelectedItemDetails() || {};
 
-
-    const img = imageUrl ? imageUrl : "/static/svgs/image-placeholder.svg";
-    resource.preloadImage(img);
     return (
       <div className="shop-item-details">
         <div className="item-image">
           <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
-              <GuardLazyComponentToSSR>
+              {/* <GuardLazyComponentToSSR>
                 <img src={imageUrl || "/static/svgs/image-placeholder.svg"} alt="" />
-              </GuardLazyComponentToSSR>
+              </GuardLazyComponentToSSR> */}
+              <img 
+                src={imageUrl ? imageUrl : "/static/svgs/image-placeholder.svg"} 
+                alt=""
+                rel="preload"
+                onLoad={this.imageLoaded}
+              />
             <Link href="/">
               <a>
                 <span className="back">
