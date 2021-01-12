@@ -43,16 +43,18 @@ class Shop extends Component {
     const { currentTab, isTabActive } = this.state;
     const { selectItem, products } = this.props;
 
-    const tabs = products ? products
-    .filter((item) => item.active)
-    .sort((a, b) => 
-      (a.position && b.position) 
-        ? (parseInt(a.position) > parseInt(b.position)) 
-          ? 1 : -1
-        : (a.name > b.name) 
-          ? 1 : -1
-      )
-      .map(({ name }) => name) : [];
+    const allProducts = products ? products
+      .filter((item) => item.active)
+      .sort((a, b) => 
+        (a.position && b.position) 
+          ? (parseInt(a.position) > parseInt(b.position)) 
+            ? 1 : -1
+          : (a.name > b.name) 
+            ? 1 : -1
+        )
+      : [];
+
+    const tabs = allProducts.map(({ name }) => name);
     const toppings = products && products[currentTab] && products[currentTab].toppings;
 
     return (
@@ -66,10 +68,10 @@ class Shop extends Component {
           switchTab={this.switchTab}
         />
         <div className="container">
-          {products && products[currentTab] && products[currentTab].topProducts && products[currentTab].topProducts.length ||
-          products && products[currentTab] && products[currentTab].products && products[currentTab].products.length ? (
+          {allProducts && allProducts[currentTab] && allProducts[currentTab].topProducts && allProducts[currentTab].topProducts.length ||
+          allProducts && allProducts[currentTab] && allProducts[currentTab].products && allProducts[currentTab].products.length ? (
             <>
-              {!!(products && products[currentTab].topProducts.length) && (
+              {!!(allProducts && allProducts[currentTab].topProducts.length) && (
                 <div className="shop-section carousel">
                   <div className="section-title favorite">
                     <span className="icon">
@@ -78,7 +80,7 @@ class Shop extends Component {
                     <span className="text">Current Best Sellers</span>
                   </div>
                   <div className="section-items">
-                    {products && products[currentTab].topProducts.map((item, index) => {
+                    {allProducts && allProducts[currentTab].topProducts.map((item, index) => {
                       const { name, sizes } = item;
                       const activeSizes = Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0);
                       const firstSize = activeSizes && activeSizes[0];
@@ -97,13 +99,13 @@ class Shop extends Component {
                   </div>
                 </div>
               )}
-              {!!( products && products[currentTab].products.length) && (
+              {!!( allProducts && allProducts[currentTab].products.length) && (
                 <div className="shop-section">
                   <div className="section-title">
-                    All {products[currentTab].name}s
+                    All {allProducts[currentTab].name}s
                   </div>
                   <div className="section-items">
-                    {products[currentTab].products.map((item, index) => {
+                    {allProducts[currentTab].products.map((item, index) => {
                       const { name, sizes } = item;
                       const activeSizes = Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0);
                       const firstSize = activeSizes && activeSizes[0];
