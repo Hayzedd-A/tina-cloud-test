@@ -41,10 +41,13 @@ class Shop extends Component {
 
   render() {
     const { currentTab, isTabActive } = this.state;
-    const { selectItem, products } = this.props;
+    const { selectItem, products, productCategories } = this.props;
 
+    const activeCategories = productCategories ? productCategories.filter((item) => item.active).map((item) => item.name) : [];
     const allProducts = products ? products
-      .filter((item) => item.active)
+      .filter((item) => {
+        return activeCategories.includes(item.name);
+      })
       .sort((a, b) => 
         (a.position && b.position) 
           ? (parseInt(a.position) > parseInt(b.position)) 
