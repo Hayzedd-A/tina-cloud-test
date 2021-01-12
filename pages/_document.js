@@ -1,7 +1,7 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
-const APP_NAME = "Gourmet Twist App";
-const APP_DESCRIPTION = "Gourmet Twist App";
+const APP_NAME = "Gourmet Twist Website";
+const APP_DESCRIPTION = "Best Banana Bread in Lagos";
 
 export default class MyDocument extends Document {
   render() {

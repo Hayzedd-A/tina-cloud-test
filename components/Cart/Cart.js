@@ -1,6 +1,8 @@
 import { Component } from "react";
 import { withRouter } from "next/router";
 import classNames from "classnames";
+import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
+
 
 import { CartConsumer } from "../../providers/CartProvider";
 
@@ -8,8 +10,14 @@ import { NumberSelector } from "../FormElements";
 
 import { RightArrow, EmptyCart } from "../../public/static/vectors";
 import { reduceArray, reduceLinearArray } from "../../utils/functions";
+import { HeaderMenu } from "../Header";
 
 class Cart extends Component {
+
+  state = {
+    isMenuActive: false
+  }
+
   cartAction = (item, quantity) => {
     const { updateCart, removeFromCart } = this.props;
     const { unitPrice } = item;
@@ -33,12 +41,17 @@ class Cart extends Component {
       : updateCart({ ...item, quantity, toppings, totalCost });
   };
 
+  showMenu = (isMenuActive) => {
+    this.setState({ isMenuActive })
+  }
+
   componentDidMount() {
     window.scrollTo(0, 0);
   }
 
   render() {
     const { isLoadingCart, cart, checkout, router } = this.props;
+    const { isMenuActive } = this.state;
     console.log(cart)
 
     const subTotal = reduceArray(cart, "totalCost");
@@ -47,7 +60,7 @@ class Cart extends Component {
     return (
       <div className="cart-container full-height">
         <div className="cart-header">
-          <div className="container login-header-inner" style={{position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div className="container login-header-inner" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div
               className="back"
               onClick={() =>
@@ -59,6 +72,20 @@ class Cart extends Component {
               <RightArrow />
             </div>
             <div className="title">My Cart</div>
+            <div
+              className="header-icon-container hamburger-menu right-menu"
+              style={{top: '-12px'}}
+              onClick={() => this.showMenu(true)}
+            >
+              <span></span>
+            </div>
+            <CSSTransitionGroup
+              transitionName="header-menu-animation"
+              transitionEnterTimeout={500}
+              transitionLeaveTimeout={300}
+            >
+              {isMenuActive && <HeaderMenu showMenu={this.showMenu} />}
+            </CSSTransitionGroup>
           </div>
           {!!cart.length && (
             <div className="info delivery-notice">
@@ -161,16 +188,16 @@ class Cart extends Component {
               </div>
             </>
           ) : (
-            <div className="cart-empty-state">
-              <div className="icon">
-                <EmptyCart />
+              <div className="cart-empty-state">
+                <div className="icon">
+                  <EmptyCart />
+                </div>
+                <div className="message">Your cart is currently empty</div>
+                <div className="action" onClick={() => router.push("/")}>
+                  Shop now
               </div>
-              <div className="message">Your cart is currently empty</div>
-              <div className="action" onClick={() => router.push("/")}>
-                Shop now
               </div>
-            </div>
-          ))}
+            ))}
       </div>
     );
   }

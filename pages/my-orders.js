@@ -11,10 +11,13 @@ import Loader from "../components/Loader";
 import OrdersProvider from "../providers/OrdersProvider";
 
 import { RightArrow } from "../public/static/vectors";
+import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
+import { HeaderMenu } from "./../components/Header";
 
 class MyAccount extends Component {
   state = {
     isMounted: false,
+    isMenuActive: false,
     orderDetails: null,
     allProducts: []
   };
@@ -47,6 +50,10 @@ class MyAccount extends Component {
     });
   };
 
+  showMenu = (isMenuActive) => {
+    this.setState({ isMenuActive })
+  }
+
   componentDidMount() {
     const currentUser = localStorage.getItem("gourmet-twist-user");
 
@@ -58,7 +65,7 @@ class MyAccount extends Component {
   }
 
   render() {
-    const { isMounted, orderDetails } = this.state;
+    const { isMounted, orderDetails, isMenuActive } = this.state;
     const { router } = this.props;
 
     return (
@@ -71,21 +78,35 @@ class MyAccount extends Component {
               goBack={() => this.showOrderDetails()}
             />
           ) : (
-            <div className="my-account">
-              <div className="my-account-header">
-                <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
-                  <div className="back" onClick={() => router.push("/")}>
-                    <RightArrow />
-                  </div>
+              <div className="my-account">
+                <div className="my-account-header">
+                  <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                    <div className="back" onClick={() => router.push("/")}>
+                      <RightArrow />
+                    </div>
                   My Orders
+                  <div
+                      className="header-icon-container hamburger-menu right-menu"
+                      style={{ top: '30px' }}
+                      onClick={() => this.showMenu(true)}
+                    >
+                      <span></span>
+                    </div>
+                    <CSSTransitionGroup
+                      transitionName="header-menu-animation"
+                      transitionEnterTimeout={500}
+                      transitionLeaveTimeout={300}
+                    >
+                      {isMenuActive && <HeaderMenu showMenu={this.showMenu} />}
+                    </CSSTransitionGroup>
+                  </div>
                 </div>
+                <div className="my-account-content">
+                  {<MyOrders showOrderDetails={this.showOrderDetails} />}
+                </div>
+                <Menu />
               </div>
-              <div className="my-account-content">
-                {<MyOrders showOrderDetails={this.showOrderDetails} />}
-              </div>
-              <Menu />
-            </div>
-          )}
+            )}
         </OrdersProvider>
       </Main>
     );

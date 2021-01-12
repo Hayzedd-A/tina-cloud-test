@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, useEffect, useState } from "react";
 import classNames from "classnames";
 import Link from "next/link";
 import { withRouter } from "next/router";
@@ -16,6 +16,35 @@ import { RightArrow, ModalBread } from "../../public/static/vectors";
 import { reduceLinearArray, reduceArray } from "../../utils/functions";
 import Toaster from "../Toaster";
 import Modal from "../Modal";
+import { HeaderMenu } from "../Header";
+import { Img, resource } from 'react-suspense-img';
+import ClipLoader from "react-spinners/ClipLoader";
+import { ErrorBoundary } from "./ShopItem";
+
+
+const GuardLazyComponentToSSR = (props) => {
+  const [isFront, setIsFront] = useState(false);
+
+  useEffect(() => {
+    process.nextTick(() => {
+        if (globalThis.window ?? false) {
+          setIsFront(true);
+        }
+    });
+  }, []);
+
+  if (!isFront) return null;
+
+  return (
+    <ErrorBoundary>
+      <React.Suspense fallback={<div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%'}}>
+        <ClipLoader color={'#000'} loading={true} size={50} />
+      </div>}>
+        {props.children}
+      </React.Suspense>
+    </ErrorBoundary> 
+  )
+}
 
 class ShopItemDetails extends Component {
   constructor(props) {
@@ -26,7 +55,8 @@ class ShopItemDetails extends Component {
       selectedSize: "",
       isToppingsFormActive: false,
       tempCart: [],
-      toaster: {}
+      toaster: {},
+      isMenuActive: false
     };
   }
 
@@ -264,6 +294,10 @@ class ShopItemDetails extends Component {
     }
   };
 
+  showMenu = (isMenuActive) => {
+    this.setState({ isMenuActive })
+  }
+
   componentDidMount() {
     const { router } = this.props;
     const { name, id } = router.query;
@@ -294,7 +328,8 @@ class ShopItemDetails extends Component {
       selectedSize,
       isToppingsFormActive,
       toaster,
-      selectedItem
+      selectedItem,
+      isMenuActive
     } = this.state;
     const { sizes } = selectedItem;
     const activeSizes = sizes ? Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0) : [];
@@ -306,13 +341,16 @@ class ShopItemDetails extends Component {
       description
     } = this.getSelectedItemDetails() || {};
 
-    console.log("Hello: ", this.getSelectedItemDetails())
 
+    const img = imageUrl ? imageUrl : "/static/svgs/image-placeholder.svg";
+    resource.preloadImage(img);
     return (
       <div className="shop-item-details">
         <div className="item-image">
           <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
-            <img src={imageUrl || "/static/svgs/image-placeholder.svg"} alt="" />
+              <GuardLazyComponentToSSR>
+                <img src={imageUrl || "/static/svgs/image-placeholder.svg"} alt="" />
+              </GuardLazyComponentToSSR>
             <Link href="/">
               <a>
                 <span className="back">
@@ -320,6 +358,19 @@ class ShopItemDetails extends Component {
                 </span>
               </a>
             </Link>
+            <div
+                className="header-icon-container hamburger-menu right-menu"
+                onClick={() => this.showMenu(true)}
+              >
+                <span></span>
+            </div>
+            <CSSTransitionGroup
+              transitionName="header-menu-animation"
+              transitionEnterTimeout={500}
+              transitionLeaveTimeout={300}
+            >
+              {isMenuActive && <HeaderMenu showMenu={this.showMenu} />}
+            </CSSTransitionGroup>
           </div>
         </div>
         <div className="item-info">

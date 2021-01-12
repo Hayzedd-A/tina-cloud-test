@@ -74,7 +74,7 @@ class FAQ extends Component {
 
     return (
       <Main>
-        <div className="cart-container login-container">
+        <div className="cart-container login-container" style={{ overflow: 'visible' }}>
           <div className="cart-header login-header">
             <div className="container login-header-inner" style={{position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
               <div
@@ -87,7 +87,7 @@ class FAQ extends Component {
               >
                 <RightArrow />
               </div>
-              <div className="title">FAQ</div>
+              <div className="title">FAQs</div>
             </div>
           </div>
           <div className="checkout-form login-form">

@@ -8,14 +8,14 @@ export default ({ title, url, description, ogImage }) => (
   <Head>
     <meta charSet="utf-8" />
     <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-    <title>{title || "Gourmet Twist"} </title>
+    <title>{title || "Best Banana Bread in Lagos"} </title>
     <meta name="description" content={description || defaultDescription} />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
     <meta property="og:url" content={url || defaultOGURL} />
-    <meta property="og:title" content={title || "Gourmet Twist"} />
+    <meta property="og:title" content={title || "Best Banana Bread in Lagos"} />
     <meta
       property="og:description"
       content={description || defaultDescription}

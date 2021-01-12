@@ -11,10 +11,13 @@ import Loader from "../components/Loader";
 import OrdersProvider from "../providers/OrdersProvider";
 
 import { RightArrow } from "../public/static/vectors";
+import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
+import { HeaderMenu } from "./../components/Header";
 
 class MyAccount extends Component {
   state = {
-    isMounted: false
+    isMounted: false,
+    isMenuActive: false
   };
 
   switchTab = currentTab => {
@@ -22,6 +25,10 @@ class MyAccount extends Component {
       currentTab
     });
   };
+
+  showMenu = (isMenuActive) => {
+    this.setState({ isMenuActive })
+  }
 
   componentDidMount() {
     const currentUser = localStorage.getItem("gourmet-twist-user");
@@ -34,7 +41,7 @@ class MyAccount extends Component {
   }
 
   render() {
-    const { isMounted } = this.state;
+    const { isMounted, isMenuActive } = this.state;
     const { router } = this.props;
 
     return (
@@ -47,7 +54,21 @@ class MyAccount extends Component {
                 <div className="back" onClick={() => router.push("/")}>
                   <RightArrow />
                 </div>
-                    My Info
+                  My Info
+                  <div
+                      className="header-icon-container hamburger-menu right-menu"
+                      style={{ top: '30px' }}
+                      onClick={() => this.showMenu(true)}
+                    >
+                      <span></span>
+                    </div>
+                    <CSSTransitionGroup
+                      transitionName="header-menu-animation"
+                      transitionEnterTimeout={500}
+                      transitionLeaveTimeout={300}
+                    >
+                      {isMenuActive && <HeaderMenu showMenu={this.showMenu} />}
+                    </CSSTransitionGroup>
                   </div>
             </div>
             <div className="my-account-content">{<MyInfo />}</div>

@@ -74,7 +74,7 @@ class Shop extends Component {
                     <span className="icon">
                       <img src="/static/images/diamond.png" alt="" />
                     </span>
-                    <span className="text">Most Recommended</span>
+                    <span className="text">Current Best Sellers</span>
                   </div>
                   <div className="section-items">
                     {products && products[currentTab].topProducts.map((item, index) => {
@@ -106,7 +106,7 @@ class Shop extends Component {
                       const { name, sizes } = item;
                       const activeSizes = Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0);
                       const firstSize = activeSizes && activeSizes[0];
-                      const { imageUrl, unitPrice } = sizes[firstSize][0] || {};
+                      const { imageUrl, unitPrice } = sizes[firstSize] ? sizes[firstSize][0] : {};
 
                       return (
                         <ShopItem

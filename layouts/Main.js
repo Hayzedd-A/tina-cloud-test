@@ -13,7 +13,7 @@ class Main extends Component {
     return (
       <>
         <Head>
-          <title>Gourmet Twist App</title>
+          <title>Best Banana Bread in Lagos</title>
         </Head>
 
         <div className="app">{children}</div>

@@ -1,6 +1,7 @@
 import { Component } from "react";
 import Geosuggest from "react-geosuggest";
 import * as classNames from "classnames";
+import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 
 import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
 import { CartConsumer } from "../../providers/CartProvider";
@@ -18,6 +19,7 @@ import {
   patchFormValues
 } from "../../utils/functions";
 import { deliveryPoints } from "../../utils/data";
+import { HeaderMenu } from "../Header";
 
 const initialFormData = {
   name: {
@@ -49,7 +51,8 @@ const initialFormData = {
 class Checkout extends Component {
   state = {
     formData: { ...initialFormData },
-    deliveryCost: 0
+    deliveryCost: 0,
+    isMenuActive: false
   };
 
   handleChange = ({ target }, valid) => {
@@ -268,6 +271,10 @@ class Checkout extends Component {
     });
   };
 
+  showMenu = (isMenuActive) => {
+    this.setState({ isMenuActive })
+  }
+
   componentDidMount() {
     window.scrollTo(0, 0);
     const currentUser = localStorage.getItem("gourmet-twist-user");
@@ -300,7 +307,8 @@ class Checkout extends Component {
       deliveryCost,
       isCheckingOut,
       formData,
-      isLoadingDeliveryPrice
+      isLoadingDeliveryPrice,
+      isMenuActive
     } = this.state;
     const { cart, goBack } = this.props;
     const { name, phoneNumber, email, shippingMethod, note } = formData;
@@ -315,6 +323,20 @@ class Checkout extends Component {
               <RightArrow />
             </div>
             <div className="title">Checkout</div>
+            <div
+              className="header-icon-container hamburger-menu right-menu"
+              style={{top: '-12px'}}
+              onClick={() => this.showMenu(true)}
+            >
+              <span></span>
+            </div>
+            <CSSTransitionGroup
+              transitionName="header-menu-animation"
+              transitionEnterTimeout={500}
+              transitionLeaveTimeout={300}
+            >
+              {isMenuActive && <HeaderMenu showMenu={this.showMenu} />}
+            </CSSTransitionGroup>
           </div>
           <div className="info">
             <span className="icon checkout-icon">
