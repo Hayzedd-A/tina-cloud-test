@@ -12,7 +12,7 @@ export const menu = [
         value: "/my-orders"
     },
     {
-        label: "FAQ",
+        label: "FAQs",
         value: "/faq"
     }
 ]

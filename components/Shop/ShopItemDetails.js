@@ -19,7 +19,7 @@ import Modal from "../Modal";
 import { HeaderMenu } from "../Header";
 
 class ShopItemDetails extends Component {
-  
+
   constructor(props) {
     super(props);
 
@@ -33,6 +33,7 @@ class ShopItemDetails extends Component {
       isMenuActive: false
     };
     this.counter = createRef(0);
+    this.scrollContainerRef = createRef(null);
   }
 
   setLoading = (value) => {
@@ -308,6 +309,20 @@ class ShopItemDetails extends Component {
     }
   }
 
+  leftClick = () => {
+    const element = this.scrollContainerRef.current;
+    const elemDimensions = element && element.getBoundingClientRect();
+    // setScrollContainerDimensions(elemDimensions);
+    element.scrollLeft -= 300;
+  }
+
+  rightClick = () => {
+    const element = this.scrollContainerRef.current;
+    const elemDimensions = element && element.getBoundingClientRect();
+    // setScrollContainerDimensions(elemDimensions);
+    element.scrollLeft += 300;
+  }
+
   render() {
     const { router } = this.props;
     const {
@@ -331,12 +346,12 @@ class ShopItemDetails extends Component {
       <div className="shop-item-details">
         <div className="item-image">
           <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
-              <img 
-                src={imageUrl ? imageUrl : "/static/svgs/image-placeholder.svg"} 
-                alt=""
-                rel="preload"
-                onLoad={this.imageLoaded}
-              />
+            <img
+              src={imageUrl ? imageUrl : "/static/svgs/image-placeholder.svg"}
+              alt=""
+              rel="preload"
+              onLoad={this.imageLoaded}
+            />
             <Link href="/">
               <a>
                 <span className="back">
@@ -345,10 +360,10 @@ class ShopItemDetails extends Component {
               </a>
             </Link>
             <div
-                className="header-icon-container hamburger-menu right-menu"
-                onClick={() => this.showMenu(true)}
-              >
-                <span></span>
+              className="header-icon-container hamburger-menu right-menu"
+              onClick={() => this.showMenu(true)}
+            >
+              <span></span>
             </div>
             <CSSTransitionGroup
               transitionName="header-menu-animation"
@@ -371,9 +386,12 @@ class ShopItemDetails extends Component {
           </div>
         </div>
         <div className="select-section sizes-section">
-          <div className="container">
+          <div className="container" style={{ position: 'relative' }}>
             <span className="title">SELECT SIZE</span>
-            <div className="sizes">
+            <div className="left-arrow" onClick={this.leftClick}>
+              <i class="lni lni-chevron-left"></i>
+            </div>
+            <div className="sizes" ref={this.scrollContainerRef}>
               {activeSizes &&
                 activeSizes.map((size, index) => (
                   <span
@@ -391,6 +409,9 @@ class ShopItemDetails extends Component {
                     )}
                   </span>
                 ))}
+            </div>
+            <div className="right-arrow" onClick={this.rightClick}>
+              <i class="lni lni-chevron-right"></i>
             </div>
           </div>
         </div>

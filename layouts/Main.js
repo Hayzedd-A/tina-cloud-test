@@ -14,6 +14,7 @@ class Main extends Component {
       <>
         <Head>
           <title>Best Banana Bread in Lagos</title>
+          <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet" />
         </Head>
 
         <div className="app">{children}</div>
