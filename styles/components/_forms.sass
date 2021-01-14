@@ -108,6 +108,17 @@
         &.red
             color: $red
 
+        &.flashing-red 
+            font-size: 15px
+            color: crimson
+
+    .blink_me
+        animation: blinker 2s linear infinite
+
+    @keyframes blinker
+        50%
+            opacity: 0.5
+
 
 .checkbox-container
     .checkbox

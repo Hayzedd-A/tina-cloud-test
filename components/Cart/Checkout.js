@@ -411,7 +411,7 @@ class Checkout extends Component {
                     onSuggestNoResults={this.onSuggestNoResults}
                     queryDelay={600}
                   />
-                  <span className="hint">
+                  <span className="hint flashing-red blink_me">
                     {" "}
                     If your delivery address is not auto-detected, enter your
                     city
