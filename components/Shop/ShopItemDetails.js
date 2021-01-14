@@ -12,7 +12,9 @@ import { CartConsumer } from "../../providers/CartProvider";
 import NumberSelector from "../FormElements/NumberSelector";
 import { ToppingsForm } from "./";
 
-import { RightArrow, ModalBread } from "../../public/static/vectors";
+import { RightArrow, ModalBread, ArrowRight } from "../../public/static/vectors";
+// import ArrowRight from "../public/static/svg/arrow-right";
+
 import { reduceLinearArray, reduceArray } from "../../utils/functions";
 import Toaster from "../Toaster";
 import Modal from "../Modal";
@@ -389,7 +391,7 @@ class ShopItemDetails extends Component {
           <div className="container" style={{ position: 'relative' }}>
             <span className="title">SELECT SIZE</span>
             <div className="left-arrow" onClick={this.leftClick}>
-              <i class="lni lni-chevron-left"></i>
+              <ArrowRight style={{ transform: 'rotate(180deg' }} />
             </div>
             <div className="sizes" ref={this.scrollContainerRef}>
               {activeSizes &&
@@ -411,7 +413,7 @@ class ShopItemDetails extends Component {
                 ))}
             </div>
             <div className="right-arrow" onClick={this.rightClick}>
-              <i class="lni lni-chevron-right"></i>
+              <ArrowRight />
             </div>
           </div>
         </div>

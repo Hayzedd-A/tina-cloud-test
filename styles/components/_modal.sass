@@ -1,11 +1,13 @@
 .modal-overlay
     @include full-fixed
     background: $black-trans-3
+    z-index: 2
 
 .modal-container
     @include full-fixed
     @include flex-position(center, center)
     padding: 20px
+    z-index: 3
 
     .modal-content
         width: 100%

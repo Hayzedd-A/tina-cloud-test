@@ -16,6 +16,7 @@ import Search from "./Search";
 import SelectorAdd from "./SelectorAdd";
 import SelectorSubtract from "./SelectorSubtract";
 import Success from "./Success";
+import ArrowRight from "./ArrowRight";
 
 export {
   Avatar,
@@ -31,6 +32,7 @@ export {
   EmptyStore,
   Logo,
   ModalBread,
+  ArrowRight,
   RightArrow,
   Search,
   SelectorAdd,

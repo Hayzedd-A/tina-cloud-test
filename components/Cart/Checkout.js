@@ -52,7 +52,8 @@ class Checkout extends Component {
   state = {
     formData: { ...initialFormData },
     deliveryCost: 0,
-    isMenuActive: false
+    isMenuActive: false,
+    isLoadingDeliveryPrice: false
   };
 
   handleChange = ({ target }, valid) => {
@@ -71,6 +72,7 @@ class Checkout extends Component {
             }
             : this.state.formData.address
       },
+      isLoadingDeliveryPrice: false,
       deliveryCost:
         target.name === "shippingMethod" ? 0 : this.state.deliveryCost
     });
