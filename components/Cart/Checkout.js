@@ -414,7 +414,7 @@ class Checkout extends Component {
                   <span className="hint flashing-red blink_me">
                     {" "}
                     If your delivery address is not auto-detected, enter your
-                    city
+                    city e.g Lekki Phase 1 or Surulere
                   </span>
                 </div>
               ) : (
