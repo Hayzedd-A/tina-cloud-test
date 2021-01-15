@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import { getRequest, postRequest, patchRequest } from "../../api";
+import { STORE_ID } from "../../constants";
 import { getRequestError } from "../../utils/functions";
 
 const OrdersContext = React.createContext();
@@ -22,7 +23,7 @@ class OrdersProvider extends Component {
 
     try {
       const res = await getRequest({
-        url: "/customer-requests/stores/8a7a28dc-b54d-4841-b949-efe60dbae709/orders",
+        url: `/customer-requests/stores/${STORE_ID}/orders`,
         token: true
       })
 

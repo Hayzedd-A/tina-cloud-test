@@ -20,6 +20,7 @@ import {
 } from "../../utils/functions";
 import { deliveryPoints } from "../../utils/data";
 import { HeaderMenu } from "../Header";
+import { STORE_ID } from "../../constants";
 
 const initialFormData = {
   name: {
@@ -114,7 +115,7 @@ class Checkout extends Component {
           try {
             const res = await getRequest({
               url:
-                "/customer-requests/stores/8a7a28dc-b54d-4841-b949-efe60dbae709/get-delivery-type",
+                `/customer-requests/stores/${STORE_ID}/get-delivery-type`,
               params: {
                 address,
                 latitude,
@@ -220,36 +221,36 @@ class Checkout extends Component {
 
     console.log("payload: ", payload)
 
-    // try {
-    //   const res = await postRequest({
-    //     url:
-    //       "/customer-requests/stores/8a7a28dc-b54d-4841-b949-efe60dbae709/placed-orders",
-    //     data: payload
-    //   });
+    try {
+      const res = await postRequest({
+        url:
+        `/customer-requests/stores/${STORE_ID}/placed-orders`,
+        data: payload
+      });
 
-    //   const { paymentReference, amount } = res.data;
+      const { paymentReference, amount } = res.data;
 
-    //   paystack(
-    //     email,
-    //     paymentReference,
-    //     (parseFloat(amount)) * 100,
-    //     this.handlePaystackSuccess,
-    //     this.handlePaystackClose
-    //   );
+      paystack(
+        email,
+        paymentReference,
+        (parseFloat(amount)) * 100,
+        this.handlePaystackSuccess,
+        this.handlePaystackClose
+      );
 
-    //   this.setState({
-    //     isCheckingOut: false
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    //   const message = getRequestError(error);
+      this.setState({
+        isCheckingOut: false
+      });
+    } catch (error) {
+      console.log(error);
+      const message = getRequestError(error);
 
-    //   this.setState({
-    //     isCheckingOut: false
-    //   });
+      this.setState({
+        isCheckingOut: false
+      });
 
-    //   this.openToaster("error", message);
-    // }
+      this.openToaster("error", message);
+    }
   };
 
   handlePaystackSuccess = response => {

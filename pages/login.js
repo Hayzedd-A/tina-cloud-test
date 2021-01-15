@@ -13,6 +13,7 @@ import { AuthenticationConsumer } from "../providers/AuthenticationProvider";
 
 import { RightArrow } from "../public/static/vectors";
 import { getFormValues } from "../utils/functions";
+import { STORE_ID } from "../constants";
 
 class CreateLogin extends Component {
   constructor(props) {
@@ -80,7 +81,7 @@ class CreateLogin extends Component {
 
     isSignUp
       ? register(
-          { phoneNumber, pin, storeId: "8a7a28dc-b54d-4841-b949-efe60dbae709" },
+          { phoneNumber, pin, storeId: STORE_ID },
           () => router.push("/my-account"),
           error =>
             this.openToaster(
