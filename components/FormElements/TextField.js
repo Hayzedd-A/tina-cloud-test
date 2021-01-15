@@ -35,17 +35,12 @@ class TextField extends Component {
       isValid = value.length >= min;
     }
 
-    this.setState({
-      isValid,
-      isBlurred,
-      isFocused: !isBlurred
-    });
 
     if (mobile) {
       const re = /^[0-9\b]+$/;
 
       if (value === "" || (re.test(value) && value.length <= 11)) {
-        isValid = value.length === 11;
+        isValid = (value.length === 10) || (value.length === 11);
         
         onChange({ target: { name, value } }, isValid);
       }
@@ -67,6 +62,12 @@ class TextField extends Component {
       }
     }
 
+    this.setState({
+      isValid,
+      isBlurred,
+      isFocused: !isBlurred
+    });
+
     isBlurred && onBlur && onBlur();
   };
 
@@ -87,6 +88,7 @@ class TextField extends Component {
       required,
       className,
       label,
+      name,
       onChange,
       onFocus,
       onBlur,
@@ -95,6 +97,9 @@ class TextField extends Component {
       ...rest
     } = this.props;
 
+    if (name === "phoneNumber") {
+      console.log(isBlurred, isValid)
+    }
     return (
       <div
         className={classNames(`input-container ${className || ""}`, {

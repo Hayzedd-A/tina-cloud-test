@@ -57,6 +57,7 @@ class Checkout extends Component {
   };
 
   handleChange = ({ target }, valid) => {
+    console.log(target.name, target.value)
     this.setState({
       formData: {
         ...this.state.formData,
@@ -106,6 +107,7 @@ class Checkout extends Component {
         if (suggest) {
 
           const address = suggest.gmaps.formatted_address;
+          const fullAddress = suggest.label;
           const latitude = suggest.location.lat;
           const longitude = suggest.location.lng;
 
@@ -124,12 +126,12 @@ class Checkout extends Component {
               formData: {
                 ...this.state.formData,
                 address: {
-                  value: address,
+                  value: fullAddress,
                   valid: true
                 }
               },
               deliveryLocation: {
-                address,
+                address: fullAddress,
                 latitude,
                 longitude
               },
@@ -216,36 +218,38 @@ class Checkout extends Component {
 
     shippingMethod === "pickup" && delete payload.deliveryLocation;
 
-    try {
-      const res = await postRequest({
-        url:
-          "/customer-requests/stores/8a7a28dc-b54d-4841-b949-efe60dbae709/placed-orders",
-        data: payload
-      });
+    console.log("payload: ", payload)
 
-      const { paymentReference, amount } = res.data;
+    // try {
+    //   const res = await postRequest({
+    //     url:
+    //       "/customer-requests/stores/8a7a28dc-b54d-4841-b949-efe60dbae709/placed-orders",
+    //     data: payload
+    //   });
 
-      paystack(
-        email,
-        paymentReference,
-        (parseFloat(amount)) * 100,
-        this.handlePaystackSuccess,
-        this.handlePaystackClose
-      );
+    //   const { paymentReference, amount } = res.data;
 
-      this.setState({
-        isCheckingOut: false
-      });
-    } catch (error) {
-      console.log(error);
-      const message = getRequestError(error);
+    //   paystack(
+    //     email,
+    //     paymentReference,
+    //     (parseFloat(amount)) * 100,
+    //     this.handlePaystackSuccess,
+    //     this.handlePaystackClose
+    //   );
 
-      this.setState({
-        isCheckingOut: false
-      });
+    //   this.setState({
+    //     isCheckingOut: false
+    //   });
+    // } catch (error) {
+    //   console.log(error);
+    //   const message = getRequestError(error);
 
-      this.openToaster("error", message);
-    }
+    //   this.setState({
+    //     isCheckingOut: false
+    //   });
+
+    //   this.openToaster("error", message);
+    // }
   };
 
   handlePaystackSuccess = response => {
@@ -316,6 +320,7 @@ class Checkout extends Component {
     const { name, phoneNumber, email, shippingMethod, note } = formData;
 
     const subTotal = reduceArray(cart, "totalCost");
+    console.log(this.state.formData);
 
     return (
       <div className="cart-container">

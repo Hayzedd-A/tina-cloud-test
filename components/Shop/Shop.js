@@ -114,7 +114,9 @@ class Shop extends Component {
                       const firstSize = activeSizes && activeSizes[0];
                       const { imageUrl, unitPrice } = sizes[firstSize] ? sizes[firstSize][0] : {};
 
-                      return (
+                      console.log(name, activeSizes[0]);
+
+                      return firstSize && (
                         <ShopItem
                           key={`${slugify(
                             products[currentTab].name
