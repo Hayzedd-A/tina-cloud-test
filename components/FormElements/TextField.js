@@ -40,7 +40,7 @@ class TextField extends Component {
       const re = /^[0-9\b]+$/;
 
       if (value === "" || (re.test(value) && value.length <= 11)) {
-        isValid = (value.length === 10) || (value.length === 11);
+        isValid = value.length === 11;
         
         onChange({ target: { name, value } }, isValid);
       }
@@ -94,6 +94,7 @@ class TextField extends Component {
       onBlur,
       min,
       mobile,
+      hint,
       ...rest
     } = this.props;
 
@@ -109,7 +110,8 @@ class TextField extends Component {
       >
         {label && (
           <label>
-            {label} {required && <sup className="marked">*</sup>}
+            {label} {required && <sup className="marked">*</sup>} 
+            {hint && <i style={{ textTransform: 'capitalize', color: '#333', fontWeight: 'bold' }}>{hint}</i>}
           </label>
         )}
         <div onClick={e => e.stopPropagation()}>

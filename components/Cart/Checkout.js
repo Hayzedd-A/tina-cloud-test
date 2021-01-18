@@ -382,6 +382,7 @@ class Checkout extends Component {
               value={phoneNumber.value}
               onChange={this.handleChange}
               className="mb-40"
+              hint="11 digits required"
               required
               mobile
             />
