@@ -184,8 +184,12 @@ class Cart extends Component {
                   })}
                   onClick={(subTotal >= 2500) && checkout}
                 >
-                  <div className="container">
-                    <span>{(subTotal >= 2500) ? 'Checkout' : 'Oops, order less than 2500 cannot be checked out'}</span>
+                  <div className="container" style={{textAlign: 'center', padding: '0px 20px', lineHeight: '20px'}}>
+                    {
+                      (subTotal >= 2500) 
+                        ? <span>Checkout</span>
+                        : <span style={{fontSize: '.7em'}}>Oops! Minimum order value is N2,500. Please add more items.</span>
+                    }
                     {(subTotal >= 2500) && <RightArrow />}
                   </div>
                 </div>
