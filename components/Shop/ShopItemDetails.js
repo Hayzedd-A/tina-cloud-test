@@ -55,7 +55,8 @@ class ShopItemDetails extends Component {
     });
   };
 
-  handleQuantity = quantity => {
+  handleQuantity = _quantity => {
+    let quantity = ((_quantity === "") || isNaN(_quantity)) ? 0 : _quantity;
     let tempCart = JSON.parse(JSON.stringify(this.state.tempCart));
 
     const tempCartItem = tempCart.find(
@@ -76,6 +77,7 @@ class ShopItemDetails extends Component {
       parseFloat(tempCartItem.unitPrice) * quantity +
       reduceLinearArray(toppingsPrices);
 
+    console.log("tempCart: ", tempCart);
     this.setState({
       tempCart
     });
@@ -182,7 +184,8 @@ class ShopItemDetails extends Component {
   getTotalQuantity = () => {
     const totalQuantity = reduceArray(this.state.tempCart, "quantity");
 
-    return totalQuantity;
+    console.log("totalQuantity: ", totalQuantity);
+    return isNaN(totalQuantity) ? 0 : totalQuantity;
   };
 
   openToaster = (status, message) => {

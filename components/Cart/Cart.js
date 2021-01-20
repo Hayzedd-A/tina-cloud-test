@@ -36,6 +36,8 @@ class Cart extends Component {
     const toppingsTotalCost = reduceLinearArray(toppingsPrices);
     const totalCost = toppingsTotalCost + parseFloat(unitPrice) * quantity;
 
+    // console.log(quantity);
+
     quantity === 0
       ? removeFromCart(item)
       : updateCart({ ...item, quantity, toppings, totalCost });
@@ -74,7 +76,7 @@ class Cart extends Component {
             <div className="title">My Cart</div>
             <div
               className="header-icon-container hamburger-menu right-menu"
-              style={{top: '-12px'}}
+              style={{ top: '-12px' }}
               onClick={() => this.showMenu(true)}
             >
               <span></span>
@@ -154,6 +156,8 @@ class Cart extends Component {
                               </div>
                             ))}
                             <NumberSelector
+                              key={index}
+                              index={index}
                               value={quantity}
                               onChange={e =>
                                 this.cartAction(cartItem, e.target.value)
@@ -176,13 +180,13 @@ class Cart extends Component {
               <div className="cart-actions no-margin fixed">
                 <div
                   className={classNames("checkout-button", {
-                    disabled: !cart.length
+                    disabled: !cart.length || subTotal < 2500
                   })}
-                  onClick={checkout}
+                  onClick={(subTotal >= 2500) && checkout}
                 >
                   <div className="container">
-                    <span>Checkout</span>
-                    <RightArrow />
+                    <span>{(subTotal >= 2500) ? 'Checkout' : 'Oops, order less than 2500 cannot be checked out'}</span>
+                    {(subTotal >= 2500) && <RightArrow />}
                   </div>
                 </div>
               </div>

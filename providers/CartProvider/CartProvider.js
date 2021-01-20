@@ -117,6 +117,8 @@ class CartProvider extends Component {
     let cartCopy = [...cart];
     cartCopy = cartCopy.filter(cartItem => cartItem.uuid !== uuid);
 
+    console.log(cartCopy);
+
     this.updateLocalCart(cartCopy, success);
   };
 

@@ -17,19 +17,20 @@ class NumberSelector extends Component {
     let value = target.value;
     value = value || value === 0 ? parseInt(value) : value;
 
-    this.setState({
-      value
-    });
-
     this.props.onChange({ target: { value } });
   };
 
   componentDidUpdate(prevProps) {
     const { value } = this.props;
 
-    if (prevProps.value !== value && (value || value === 0)) {
+    console.log((prevProps.value !== value && (value || value === 0)), value)
+    if ((prevProps.value !== value && (value || value === 0))) {
       this.setState({
         value
+      });
+    } else if (prevProps.value !== value && value === "") {
+      this.setState({
+        value: 0
       });
     }
   }
@@ -37,6 +38,7 @@ class NumberSelector extends Component {
   render() {
     const { value } = this.state;
     const { className } = this.props;
+    console.log(this.props.index, value)
 
     return (
       <div className={`number-selector-container ${className || ""}`}>
