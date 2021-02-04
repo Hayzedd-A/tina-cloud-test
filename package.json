@@ -16,6 +16,7 @@
     "react": "^16.7.0",
     "react-cache": "^2.0.0-alpha.1",
     "react-code-input": "^3.10.0",
+    "react-day-picker": "^7.4.8",
     "react-dom": "^16.7.0",
     "react-geosuggest": "2.12.1",
     "react-spinners": "^0.10.4",

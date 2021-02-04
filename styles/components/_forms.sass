@@ -61,7 +61,7 @@
         margin-bottom: 15px
         transition: all ease-in-out .3s
 
-    .input, .geosuggest__input
+    .input, .geosuggest__input, .select, input
         border: 1px solid transparentize($brown, 0.45)
         border-radius: 13px
         height: 60px
@@ -74,8 +74,9 @@
         transition: all ease-in-out .3s
         background: $white
         color: $brown
-        -webkit-appearance: none
         @include flex-position(initial, center)
+        &.mb-4 
+            margin-bottom: 30px
 
         @include placeholder
             color: transparentize($brown, 0.41)
@@ -86,6 +87,14 @@
             border-color: $brown
             outline: 0
 
+    .select
+        -webkit-appearance: none
+        -moz-appearance: none
+        background: transparent
+        background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>")
+        background-repeat: no-repeat
+        background-position-x: 99%
+        background-position-y: 50%
     &.isFocused
         label
             color: $brown

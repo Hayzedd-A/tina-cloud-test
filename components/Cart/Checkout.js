@@ -21,6 +21,9 @@ import {
 import { deliveryPoints } from "../../utils/data";
 import { HeaderMenu } from "../Header";
 import { STORE_ID } from "../../constants";
+import SelectField from "../FormElements/SelectField";
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
 
 const initialFormData = {
   name: {
@@ -38,6 +41,10 @@ const initialFormData = {
   address: {
     value: "",
     valid: false
+  },
+  deliveryDate: {
+    value: "",
+    valid: true
   },
   note: {
     value: "",
@@ -80,13 +87,49 @@ class Checkout extends Component {
     });
   };
 
+  handleDeliveryChange = ({ target }, valid) => {
+    console.log(target.name, target.value, valid)
+    const { value } = target;
+    this.setState({
+      formData: {
+        ...this.state.formData,
+        shippingMethod: {
+          value, 
+          valid
+        },
+        address: {
+          value: (value === "s-pickup" || value === "pickup") ? "" : this.state.formData.address.value,
+          valid: (value === "s-pickup" || value === "pickup")
+        },
+        deliveryDate: {
+          value: (value === "pickup" || value === "delivery") ? new Date() : "",
+          valid: (value === "pickup" || value === "delivery") ? true : false
+        }
+      },
+      isLoadingDeliveryPrice: false,
+      deliveryCost: (value === "pickup" || value === "s-pickup") ? 0 : this.state.deliveryCost
+    });
+  };
+
+  handleDeliveryDateChange = (day) => {
+    this.setState({
+      formData: {
+        ...this.state.formData,
+        deliveryDate: {
+          value: day || "",
+          valid: true
+        }
+      }
+    });
+  };
+
   checkFormValidity = () => {
     const { address, ...rest } = this.state.formData;
 
     return Object.values(rest).every(
       value =>
         value.valid &&
-        (rest.shippingMethod.value === "delivery" ? address.valid : true)
+        ((rest.shippingMethod.value === "delivery" || rest.shippingMethod.value === "s-delivery") ? address.valid : true)
     );
   };
 
@@ -185,10 +228,10 @@ class Checkout extends Component {
 
   checkout = async () => {
     const { formData, deliveryCost, deliveryLocation } = this.state;
-    const { name, phoneNumber, address, email, shippingMethod } = getFormValues(
+    const { name, phoneNumber, address, email, shippingMethod, deliveryDate } = getFormValues(
       formData
     );
-    const { cart, user } = this.props;
+    const { cart, user, couponObject } = this.props;
 
     const orderItems = cart.map(({ id, quantity, toppings }) => ({
       productId: id,
@@ -214,7 +257,10 @@ class Checkout extends Component {
         name,
         phoneNumber
       },
-      deliveryLocation
+      deliveryDate: deliveryDate || null,
+      deliveryLocation,
+      discountType: couponObject ? couponObject.discountType : null,
+      discountValue: couponObject ? couponObject.value : null
     };
 
     shippingMethod === "pickup" && delete payload.deliveryLocation;
@@ -229,11 +275,18 @@ class Checkout extends Component {
       });
 
       const { paymentReference, amount } = res.data;
+      const subTotal = reduceArray(cart, "totalCost");
+
+      const discountAmount = couponObject 
+      ? couponObject.discountType === 'percent' 
+        ? (couponObject.value * subTotal / 100).toLocaleString() 
+        : couponObject.value
+      : null;
 
       paystack(
         email,
         paymentReference,
-        (parseFloat(amount)) * 100,
+        (parseFloat(amount - (discountAmount || 0))) * 100,
         this.handlePaystackSuccess,
         this.handlePaystackClose
       );
@@ -317,11 +370,28 @@ class Checkout extends Component {
       isLoadingDeliveryPrice,
       isMenuActive
     } = this.state;
-    const { cart, goBack } = this.props;
-    const { name, phoneNumber, email, shippingMethod, note } = formData;
+    const { cart, goBack, couponObject } = this.props;
+    const { name, phoneNumber, email, shippingMethod, note, deliveryDate } = formData;
 
     const subTotal = reduceArray(cart, "totalCost");
     console.log(this.state.formData);
+    let tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const disabledModifiers = {
+      modifiers: {
+        disabled: [
+          {
+            before: tomorrow
+          }
+        ]
+      }
+    }
+
+    const discountAmount = couponObject 
+      ? couponObject.discountType === 'percent' 
+        ? (couponObject.value * subTotal / 100).toLocaleString() 
+        : couponObject.value
+      : null;
 
     return (
       <div className="cart-container">
@@ -389,22 +459,30 @@ class Checkout extends Component {
           </div>
           <div className="shipping-method">
             <div className="container">
-              <div className="radio-group mb-40">
-                <Radio
-                  label="Delivery"
-                  name="shippingMethod"
-                  value="delivery"
-                  onChange={e => this.handleChange(e, !!e.target.value)}
-                  checked={shippingMethod.value === "delivery"}
-                />
-                <Radio
-                  label="Pickup"
-                  name="shippingMethod"
-                  value="pickup"
-                  onChange={e => this.handleChange(e, !!e.target.value)}
-                  checked={shippingMethod.value === "pickup"}
-                />
-              </div>
+              <SelectField
+                label="Select Delivery Type"
+                required
+                hint="Pickup, Delivery or Scheduled"
+                onChange={this.handleDeliveryChange}
+                options={[
+                  {
+                    key: "delivery",
+                    label: "Delivery"
+                  },
+                  {
+                    key: "pickup",
+                    label: "Pickup"
+                  },
+                  {
+                    key: "s-delivery",
+                    label: "Scheduled Delivery"
+                  },
+                  {
+                    key: "s-pickup",
+                    label: "Scheduled Pickup"
+                  }
+                ]}
+              / >
               {shippingMethod.value === "delivery" ? (
                 <div className="input-container mb-40">
                   <label>
@@ -424,14 +502,56 @@ class Checkout extends Component {
                     city e.g Lekki Phase 1 or Surulere
                   </span>
                 </div>
-              ) : (
+              ) : shippingMethod.value === "pickup" ? (
                   <div className="input-container mb-40">
                     <label>Pickup Address</label>
                     <div className="pickup-address mb-40">
                       RT Lawal Street, Behind Meadow Hall School, Ikate
                   </div>
                   </div>
-                )}
+                ) : shippingMethod.value === "s-delivery" ? (
+                  <>
+                    <div className="input-container mb-40">
+                      <label>
+                        Delivery Address <sup className="marked">*</sup>
+                        {isLoadingDeliveryPrice && <i style={{ textTransform: 'capitalize', color: '#333', fontWeight: 'bold' }}> Calculating Price... </i>}
+                      </label>
+                      <Geosuggest
+                        placeholder="Enter your address"
+                        country="ng"
+                        onSuggestSelect={this.onSuggestSelect}
+                        onSuggestNoResults={this.onSuggestNoResults}
+                        queryDelay={600}
+                      />
+                      <span className="hint flashing-red blink_me">
+                        {" "}
+                        If your delivery address is not auto-detected, enter your
+                        city e.g Lekki Phase 1 or Surulere
+                      </span>
+                    </div>
+                    <div className="input-container mb-40">
+                      <label>
+                        Delivery Date <sup className="marked">*</sup>
+                      </label>
+                      <DayPickerInput dayPickerProps={disabledModifiers} value={deliveryDate.value} onDayChange={this.handleDeliveryDateChange} placeholder="DD/MM/YYYY" format="DD/MM/YYYY" />
+                    </div>
+                  </>
+                ) : shippingMethod.value === "s-pickup" ? (
+                  <>
+                    <div className="input-container mb-40">
+                      <label>Pickup Address</label>
+                      <div className="pickup-address mb-40">
+                        RT Lawal Street, Behind Meadow Hall School, Ikate
+                      </div>
+                    </div>
+                    <div className="input-container mb-40">
+                      <label>
+                        Pickup Date <sup className="marked">*</sup>
+                      </label>
+                      <DayPickerInput dayPickerProps={disabledModifiers} value={deliveryDate.value} onDayChange={this.handleDeliveryDateChange} placeholder="DD/MM/YYYY" format="DD/MM/YYYY" />
+                    </div>
+                  </>
+                ) : null }
               <TextField
                 label="Special Note"
                 placeholder="Any special notes for delivery"
@@ -444,7 +564,7 @@ class Checkout extends Component {
           </div>
         </div>
         <div className="cart-actions no-margin fixed">
-          {!!deliveryCost && shippingMethod.value === "delivery" && (
+          {!!deliveryCost && (shippingMethod.value === "delivery" || shippingMethod.value === "s-delivery") && (
             <div className="delivery-fees-notice">
               <div className="container">
                 <span className="icon">
@@ -466,7 +586,12 @@ class Checkout extends Component {
             onClick={this.checkout}
           >
             <div className="container">
-              <span>{isCheckingOut ? 'Paying...' : 'Pay'} ₦{(subTotal + deliveryCost).toLocaleString()}</span>
+              <span>
+                {isCheckingOut ? 'Paying...' : 'Pay'} ₦{(subTotal + deliveryCost - (discountAmount || 0)).toLocaleString()} 
+                {
+                  discountAmount && <small style={{marginLeft: '10px'}}><strike>{(subTotal + deliveryCost).toLocaleString()}</strike></small>
+                }
+              </span>
               <RightArrow />
             </div>
           </div>
