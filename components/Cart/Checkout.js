@@ -258,10 +258,13 @@ class Checkout extends Component {
         phoneNumber
       },
       deliveryDate: deliveryDate || null,
-      deliveryLocation,
-      discountType: couponObject ? couponObject.discountType : null,
-      discountValue: couponObject ? couponObject.value : null
+      deliveryLocation
     };
+
+    if (couponObject) {
+      payload.discountType = couponObject.discountType;
+      payload.discountValue = couponObject.discountValue;
+    }
 
     shippingMethod === "pickup" && delete payload.deliveryLocation;
 
