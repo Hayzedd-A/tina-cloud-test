@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const API = axios.create({
-  baseURL: "https://zupa-prod-api.dev.intelia.io/",
+  baseURL: "https://zupa-api.dev.intelia.io/",
   headers: {}
 });
 
