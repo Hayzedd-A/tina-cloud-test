@@ -48,12 +48,14 @@ class Shop extends Component {
       .filter((item) => {
         return activeCategories.includes(item.name);
       })
-      .sort((a, b) => 
-        (a.position && b.position) 
+      .sort((a, b) => {
+        console.log(a, b);
+        return (a.position && b.position) 
           ? (parseInt(a.position) > parseInt(b.position)) 
             ? 1 : -1
           : (a.name > b.name) 
             ? 1 : -1
+      }
         )
       : [];
 
@@ -65,7 +67,7 @@ class Shop extends Component {
         <Header />
         <Tabs
           active={isTabActive}
-          tabs={tabs}
+          tabs={activeCategories}
           forCategories={true}
           currentTab={currentTab}
           switchTab={this.switchTab}
