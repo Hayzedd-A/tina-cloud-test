@@ -42,26 +42,19 @@ class Shop extends Component {
   render() {
     const { currentTab, isTabActive } = this.state;
     const { selectItem, products, productCategories } = this.props;
-
-    const activeCategories = productCategories ? productCategories.filter((item) => item.active).map((item) => item.name) : [];
-    const allProducts = products ? products
-      .filter((item) => {
-        return activeCategories.includes(item.name);
-      })
-      .sort((a, b) => {
-        console.log(a, b);
-        return (a.position && b.position) 
-          ? (parseInt(a.position) > parseInt(b.position)) 
-            ? 1 : -1
-          : (a.name > b.name) 
-            ? 1 : -1
-      }
-        )
+    const activeCategories = productCategories
+      ? productCategories.filter((item) => item.active)
+        .sort((a, b) => parseInt(a.position) > parseInt(b.position) ? 1 : -1)
+        .map((item) => item.name)
       : [];
 
-    const tabs = allProducts.map(({ name }) => name);
-    const toppings = products && products[currentTab] && products[currentTab].toppings;
+    const allProducts = [];
+    activeCategories.forEach((category) => {
+      const product = products.find(item => item.name === category);
+      allProducts.push(product)
+    })
 
+    const toppings = allProducts && allProducts[currentTab] && allProducts[currentTab].toppings;
     return (
       <div className="shop-container" id="shop-container">
         <Header />
