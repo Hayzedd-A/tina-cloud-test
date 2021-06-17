@@ -509,7 +509,7 @@ class Checkout extends Component {
                   <div className="input-container mb-40">
                     <label>Pickup Address</label>
                     <div className="pickup-address mb-40">
-                      RT Lawal Street, Behind Meadow Hall School, Ikate
+                      14B Africa Ln, Lekki Phase 1, Lekki
                   </div>
                   </div>
                 ) : shippingMethod.value === "s-delivery" ? (
