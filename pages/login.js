@@ -26,20 +26,20 @@ class CreateLogin extends Component {
       formData: {
         phoneNumber: {
           value: "",
-          valid: false
+          valid: false,
         },
         pin: {
           value: "",
-          valid: false
+          valid: false,
         },
         confirmPin: {
           value: "",
-          valid: false
-        }
+          valid: false,
+        },
       },
       currentTab: newUser ? 1 : 0,
       isTabActive: false,
-      isSignUp: !!newUser
+      isSignUp: !!newUser,
     };
   }
 
@@ -49,16 +49,16 @@ class CreateLogin extends Component {
         ...this.state.formData,
         [target.name]: {
           value: target.value,
-          valid
-        }
-      }
+          valid,
+        },
+      },
     });
   };
 
-  switchTab = currentTab => {
+  switchTab = (currentTab) => {
     this.setState({
       currentTab,
-      isSignUp: !!currentTab
+      isSignUp: !!currentTab,
     });
   };
 
@@ -70,7 +70,8 @@ class CreateLogin extends Component {
     const data = isSignUp ? formData : { phoneNumber, pin };
 
     return Object.values(data).every(
-      value => value.valid && (isSignUp ? pin.value === confirmPin.value : true)
+      (value) =>
+        value.valid && (isSignUp ? pin.value === confirmPin.value : true)
     );
   };
 
@@ -83,7 +84,7 @@ class CreateLogin extends Component {
       ? register(
           { phoneNumber, pin, storeId: STORE_ID },
           () => router.push("/my-account"),
-          error =>
+          (error) =>
             this.openToaster(
               "error",
               error || `An error occurred. Please try again.`
@@ -92,7 +93,7 @@ class CreateLogin extends Component {
       : login(
           { phoneNumber, pin },
           () => router.push("/my-account"),
-          error => this.openToaster("error", error || `Invalid login details`)
+          (error) => this.openToaster("error", error || `Invalid login details`)
         );
   };
 
@@ -100,14 +101,14 @@ class CreateLogin extends Component {
     this.setState({
       toaster: {
         status,
-        message
-      }
+        message,
+      },
     });
   };
 
   closeToaster = () => {
     this.setState({
-      toaster: null
+      toaster: null,
     });
   };
 
@@ -117,7 +118,7 @@ class CreateLogin extends Component {
       .getBoundingClientRect();
 
     this.setState({
-      isTabActive: tab && tab.top <= 0
+      isTabActive: tab && tab.top <= 0,
     });
   };
 
@@ -136,7 +137,7 @@ class CreateLogin extends Component {
 
       this.setState({
         currentTab: newUser ? 1 : 0,
-        isSignUp: !!newUser
+        isSignUp: !!newUser,
       });
     }
   }
@@ -157,12 +158,15 @@ class CreateLogin extends Component {
       <Main>
         <div className="cart-container login-container">
           <div className="cart-header login-header">
-            <div className="container login-header-inner" style={{position: 'relative'}}>
+            <div
+              className="container login-header-inner"
+              style={{ position: "relative" }}
+            >
               <div
                 className="back"
                 onClick={() =>
                   router.push(`/`, undefined, {
-                    shallow: true
+                    shallow: true,
                   })
                 }
               >
@@ -217,7 +221,7 @@ class CreateLogin extends Component {
             <div className="cart-actions">
               <div
                 className={classNames("checkout-button", {
-                  disabled: !this.checkFormValidity() || isLoggingIn
+                  disabled: !this.checkFormValidity() || isLoggingIn,
                 })}
                 onClick={this.login}
               >
