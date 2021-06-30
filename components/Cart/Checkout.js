@@ -250,85 +250,84 @@ class Checkout extends Component {
   }
 
   checkout = async () => {
-    alert("checkout clicked");
-    // const { formData, deliveryCost, deliveryLocation } = this.state;
-    // const { name, phoneNumber, address, email, shippingMethod, deliveryDate } =
-    //   getFormValues(formData);
-    // const { cart, user, couponObject } = this.props;
+    const { formData, deliveryCost, deliveryLocation } = this.state;
+    const { name, phoneNumber, address, email, shippingMethod, deliveryDate } =
+      getFormValues(formData);
+    const { cart, user, couponObject } = this.props;
 
-    // const orderItems = cart.map(({ id, quantity, toppings }) => ({
-    //   productId: id,
-    //   quantity,
-    //   toppings: toppings.map((topping) => ({
-    //     productId: topping.id,
-    //     quantity: topping.quantity || 1,
-    //   })),
-    // }));
+    const orderItems = cart.map(({ id, quantity, toppings }) => ({
+      productId: id,
+      quantity,
+      toppings: toppings.map((topping) => ({
+        productId: topping.id,
+        quantity: topping.quantity || 1,
+      })),
+    }));
 
-    // this.setState({
-    //   isCheckingOut: true,
-    // });
+    this.setState({
+      isCheckingOut: true,
+    });
 
-    // const payload = {
-    //   orderItems,
-    //   customer: {
-    //     name,
-    //     phoneNumber,
-    //     address,
-    //   },
-    //   recipient: {
-    //     name,
-    //     phoneNumber,
-    //   },
-    //   deliveryDate: deliveryDate || null,
-    //   deliveryLocation,
-    // };
+    const payload = {
+      orderItems,
+      customer: {
+        name,
+        phoneNumber,
+        address,
+      },
+      recipient: {
+        name,
+        phoneNumber,
+      },
+      deliveryDate: deliveryDate || null,
+      deliveryLocation,
+    };
 
-    // if (couponObject) {
-    //   payload.discountType = couponObject.discountType;
-    //   payload.discountValue = couponObject.discountValue;
-    // }
+    if (couponObject) {
+      payload.discountType = couponObject.discountType;
+      payload.discountValue = couponObject.discountValue;
+    }
 
-    // shippingMethod === "pickup" && delete payload.deliveryLocation;
+    shippingMethod === "pickup" && delete payload.deliveryLocation;
 
-    // console.log("payload: ", payload);
+    console.log("payload: ", payload);
 
-    // try {
-    //   const res = await postRequest({
-    //     url: `/customer-requests/stores/${STORE_ID}/placed-orders`,
-    //     data: payload,
-    //   });
+    try {
+      const res = await postRequest({
+        url: `/customer-requests/stores/${STORE_ID}/placed-orders`,
+        data: payload,
+      });
 
-    //   const { paymentReference, amount } = res.data;
-    //   const subTotal = reduceArray(cart, "totalCost");
+      const { paymentReference, amount } = res.data;
+      const subTotal = reduceArray(cart, "totalCost");
 
-    //   const discountAmount = couponObject
-    //     ? couponObject.discountType === "percent"
-    //       ? ((couponObject.value * subTotal) / 100).toLocaleString()
-    //       : couponObject.value
-    //     : null;
+      const discountAmount = couponObject
+        ? couponObject.discountType === "percent"
+          ? ((couponObject.value * subTotal) / 100).toLocaleString()
+          : couponObject.value
+        : null;
 
-    //   paystack(
-    //     email,
-    //     paymentReference,
-    //     parseFloat(amount - (discountAmount || 0)) * 100,
-    //     this.handlePaystackSuccess,
-    //     this.handlePaystackClose
-    //   );
+      paystack(
+        email,
+        paymentReference,
+        parseFloat(amount - (discountAmount || 0)) * 100,
+        this.handlePaystackSuccess,
+        this.handlePaystackClose
+      );
 
-    //   this.setState({
-    //     isCheckingOut: false,
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    //   const message = getRequestError(error);
+      this.setState({
+        isCheckingOut: false,
+      });
+    } catch (error) {
+      console.log(error);
+      const message = getRequestError(error);
 
-    //   this.setState({
-    //     isCheckingOut: false,
-    //   });
+      this.setState({
+        isCheckingOut: false,
+      });
 
-    //   this.openToaster("error", message);
-    // }
+      this.openToaster("error", message);
+    }
   };
 
   handlePaystackSuccess = (response) => {
