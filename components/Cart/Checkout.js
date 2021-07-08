@@ -251,8 +251,15 @@ class Checkout extends Component {
 
   checkout = async () => {
     const { formData, deliveryCost, deliveryLocation } = this.state;
-    const { name, phoneNumber, address, email, shippingMethod, deliveryDate } =
-      getFormValues(formData);
+    const {
+      name,
+      phoneNumber,
+      address,
+      email,
+      note,
+      shippingMethod,
+      deliveryDate,
+    } = getFormValues(formData);
     const { cart, user, couponObject } = this.props;
 
     const orderItems = cart.map(({ id, quantity, toppings }) => ({
@@ -269,6 +276,7 @@ class Checkout extends Component {
     });
 
     const payload = {
+      specialNote: note,
       orderItems,
       customer: {
         name,
@@ -289,8 +297,6 @@ class Checkout extends Component {
     }
 
     shippingMethod === "pickup" && delete payload.deliveryLocation;
-
-    console.log("payload: ", payload);
 
     try {
       const res = await postRequest({
