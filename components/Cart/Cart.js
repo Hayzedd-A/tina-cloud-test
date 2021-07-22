@@ -99,7 +99,7 @@ class Cart extends Component {
     const { couponCode, couponObject } = this.props;
     
     const subTotal = reduceArray(cart, "totalCost");
-    const minimumAmount = 500;
+    const minimumAmount = 2500;
     
     console.log(subTotal, couponObject)
 
