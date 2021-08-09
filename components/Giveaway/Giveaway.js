@@ -41,63 +41,12 @@ class Giveaway extends Component {
               <img src="/static/svgs/offer.svg" alt="female" />
               {/* </figure> */}
             </div>
-            <h5 className="message ga">COUPON CODE: SWEET 5</h5>
-            <button onClick={() => router.push("/")}>CLAIM MY #500</button>
+            <h5 className="message ga">COUPON CODE: SWEET5</h5>
+            <button onClick={() => router.push("/")}>
+              CLAIM MY ₦500
+            </button>
           </div>
 
-          {/* {allProducts && allProducts[currentTab] && allProducts[currentTab].topProducts && allProducts[currentTab].topProducts.length ||
-          allProducts && allProducts[currentTab] && allProducts[currentTab].products && allProducts[currentTab].products.length ? (
-            <>
-              {!!(allProducts && allProducts[currentTab].topProducts.length) && (
-                <div className="shop-section carousel">
-                  <div className="section-title favorite">
-                    <span className="icon">
-                      <img src="/static/images/diamond.png" alt="" />
-                    </span>
-                    <span className="text">Current Best Sellers</span>
-                  </div>
-                  <div className="section-items">
-                    {allProducts && allProducts[currentTab].topProducts.map((item, index) => {
-                      const { name, sizes } = item;
-                      const activeSizes = Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0);
-                      const firstSize = activeSizes && activeSizes[0];
-                      const { imageUrl, unitPrice } = sizes[firstSize][0] || {};
-
-                      return (
-                        <ShopItem
-                          key={`${slugify(products[currentTab].name)}-${index}`}
-                          name={name}
-                          image={imageUrl}
-                          price={unitPrice}
-                          onClick={() => selectItem({ ...item, toppings })}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-              {!!( allProducts && allProducts[currentTab].products.length) && (
-                <div className="shop-section">
-                  <div className="section-title">
-                    All products
-                  </div>
-                  <div className="section-items">
-                    <h2>tttttt</h2>
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="cart-empty-state" style={{ padding: "70px 30px" }}>
-              <div className="icon">
-                <EmptyStore />
-              </div>
-              <div className="message">
-                No products at the moment.
-                <br /> Please check back later
-              </div>
-            </div>
-          )} */}
           <Menu />
         </div>
       </div>
