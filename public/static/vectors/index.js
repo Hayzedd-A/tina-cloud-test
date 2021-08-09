@@ -17,6 +17,7 @@ import SelectorAdd from "./SelectorAdd";
 import SelectorSubtract from "./SelectorSubtract";
 import Success from "./Success";
 import ArrowRight from "./ArrowRight";
+// import Offer from "./Offer"
 
 export {
   Avatar,
@@ -24,6 +25,7 @@ export {
   Bag,
   Bread,
   Check,
+  // Offer,
   CircularClose,
   Close,
   EmptyCart,
@@ -37,5 +39,5 @@ export {
   Search,
   SelectorAdd,
   SelectorSubtract,
-  Success
+  Success,
 };
