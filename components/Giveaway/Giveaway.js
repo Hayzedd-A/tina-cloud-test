@@ -30,7 +30,7 @@ class Giveaway extends Component {
         <Header />
 
         <div className="container">
-          <div className="cart-empty-state" style={{ padding: "70px 30px" }}>
+          <div className="cart-empty-state giveaway-box">
             <div className="icon giveaway">
               {/* <figure> */}
               <img src="/static/svgs/female.svg" alt="female" />
@@ -41,10 +41,10 @@ class Giveaway extends Component {
               <img src="/static/svgs/offer.svg" alt="female" />
               {/* </figure> */}
             </div>
-            <h5 className="message ga">COUPON CODE: SWEET5</h5>
-            <button onClick={() => router.push("/")}>
-              CLAIM MY ₦500
-            </button>
+            <h5 onClick={() => router.push("/")} className="message ga">
+              COUPON CODE: SWEET5
+            </h5>
+            <button onClick={() => router.push("/")}>CLAIM MY ₦500</button>
           </div>
 
           <Menu />
