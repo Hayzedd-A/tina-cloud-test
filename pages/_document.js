@@ -50,7 +50,7 @@ export default class MyDocument extends Document {
           <meta name="msapplication-TileColor" content="#da532c" />
           <meta name="theme-color" content="#ffffff" />
 
-          <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPEzytcDTH18DQU3BXioxWY183FPDfr1A&libraries=places"></script>
+          <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeMiMQ-XEFp2jz_I80CMYD3GErVMDHJM4&libraries=places"></script>
           <script src="https://js.paystack.co/v1/inline.js"></script>
         </Head>
         <body>
