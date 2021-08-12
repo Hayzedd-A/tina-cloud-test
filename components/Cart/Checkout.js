@@ -385,7 +385,7 @@ class Checkout extends Component {
     window.scrollTo(0, 0);
     const currentUser = localStorage.getItem("gourmet-twist-user");
 
-    // console.log("meta data", STORE_ID);
+    console.log("meta data", STORE_ID);
 
     const subTotal = reduceArray(this.props.cart, "totalCost");
     this.checkPrice(subTotal);
