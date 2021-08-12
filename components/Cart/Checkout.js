@@ -289,7 +289,7 @@ class Checkout extends Component {
       },
       deliveryDate: deliveryDate || null,
       deliveryLocation,
-      deliveryCost
+      deliveryCost,
     };
 
     if (couponObject) {
@@ -314,12 +314,23 @@ class Checkout extends Component {
           : couponObject.value
         : null;
 
+      let metadata = {
+        storeID: STORE_ID || "",
+      };
+
+      console.log("dghd pay", {
+        email,
+        paymentReference,
+        metadata,
+      });
+
       paystack(
         email,
         paymentReference,
         parseFloat(amount + deliveryCost - (discountAmount || 0)) * 100,
         this.handlePaystackSuccess,
-        this.handlePaystackClose
+        this.handlePaystackClose,
+        metadata
       );
 
       this.setState({
@@ -369,6 +380,8 @@ class Checkout extends Component {
   componentDidMount() {
     window.scrollTo(0, 0);
     const currentUser = localStorage.getItem("gourmet-twist-user");
+
+    console.log("meta data in store", STORE_ID);
 
     const subTotal = reduceArray(this.props.cart, "totalCost");
     this.checkPrice(subTotal);
