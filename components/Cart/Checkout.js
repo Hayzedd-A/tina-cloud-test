@@ -315,7 +315,7 @@ class Checkout extends Component {
         : null;
 
       let metadata = {
-        storeID: STORE_ID || "",
+        storeID: "8a7a28dc-b54d-4841-b949-efe60dbae709",
       };
 
       console.log("dghd pay", {
