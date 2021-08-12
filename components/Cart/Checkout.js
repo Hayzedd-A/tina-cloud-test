@@ -25,8 +25,6 @@ import SelectField from "../FormElements/SelectField";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
 
-
-
 const initialFormData = {
   name: {
     value: "",
@@ -291,7 +289,7 @@ class Checkout extends Component {
       },
       deliveryDate: deliveryDate || null,
       deliveryLocation,
-      deliveryCost
+      deliveryCost,
     };
 
     if (couponObject) {
@@ -315,18 +313,16 @@ class Checkout extends Component {
           ? ((couponObject.value * subTotal) / 100).toLocaleString()
           : couponObject.value
         : null;
-      
 
-        let metadata = {
-          storeID: STORE_ID || "",
-        };
+      let metadata = {
+        storeID: STORE_ID || "",
+      };
 
-        console.log({
-           email,
-           paymentReference,
-           metadata,
-         });
-
+      console.log("dghd pay", {
+        email,
+        paymentReference,
+        metadata,
+      });
 
       paystack(
         email,
@@ -385,7 +381,7 @@ class Checkout extends Component {
     window.scrollTo(0, 0);
     const currentUser = localStorage.getItem("gourmet-twist-user");
 
-    console.log("meta data", STORE_ID);
+    console.log("meta data in store", STORE_ID);
 
     const subTotal = reduceArray(this.props.cart, "totalCost");
     this.checkPrice(subTotal);
