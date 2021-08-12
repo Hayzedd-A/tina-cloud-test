@@ -289,6 +289,7 @@ class Checkout extends Component {
       },
       deliveryDate: deliveryDate || null,
       deliveryLocation,
+      deliveryCost
     };
 
     if (couponObject) {
@@ -316,7 +317,7 @@ class Checkout extends Component {
       paystack(
         email,
         paymentReference,
-        parseFloat(amount - (discountAmount || 0)) * 100,
+        parseFloat(amount + deliveryCost - (discountAmount || 0)) * 100,
         this.handlePaystackSuccess,
         this.handlePaystackClose
       );
