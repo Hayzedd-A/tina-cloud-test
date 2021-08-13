@@ -2,8 +2,24 @@ import axios from "axios";
 
 export const API = axios.create({
   baseURL: "https://zupa-prod-api.dev.intelia.io/",
-  headers: {}
+  headers: {},
 });
+
+export const zupaGetRequest = async ({ url, params, token }) => {
+  var request = {
+    url,
+    method: "get",
+    params,
+  };
+
+  if (token) {
+    request["headers"] = { authorization: `Bearer ${token}` };
+  }
+
+  const requestResponse = await API(request);
+
+  return requestResponse;
+};
 
 export const getUserDetails = () => {
   return JSON.parse(localStorage.getItem("gourmet-twist-user"));
@@ -15,7 +31,7 @@ export const getRequest = async ({ url, params, token }) => {
   var request = {
     url,
     method: "get",
-    params
+    params,
   };
 
   if (token && currentUser && currentUser.jwt) {
@@ -34,7 +50,7 @@ export const postRequest = async ({ url, params, data, token }) => {
     url,
     method: "post",
     params,
-    data
+    data,
   };
 
   if (token && currentUser && currentUser.jwt) {
@@ -53,7 +69,7 @@ export const patchRequest = async ({ url, params, data, token }) => {
     url,
     method: "patch",
     params,
-    data
+    data,
   };
 
   if (token && currentUser && currentUser.jwt) {
@@ -72,7 +88,7 @@ export const deleteRequest = async ({ url, params, data, token }) => {
     url,
     method: "delete",
     params,
-    data
+    data,
   };
 
   if (token && currentUser && currentUser.jwt) {
