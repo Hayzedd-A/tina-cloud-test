@@ -109,7 +109,8 @@ class Cart extends Component {
 
     const discountAmount = couponObject
       ? couponObject.discountType === "percent"
-        ? ((couponObject.value * subTotal) / 100).toLocaleString()
+        // ? ((couponObject.value * subTotal) / 100).toLocaleString()
+        ? ((couponObject.value * subTotal) / 100)
         : couponObject.value
       : null;
     // return <div>Hello</div>
