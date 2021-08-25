@@ -446,7 +446,6 @@ class Checkout extends Component {
 
       currentStore &&
         currentStore.delivery_types.map((item) => {
-          console.log("delivey item is ", item);
           let newObj = {};
           newObj.key = item.id;
           newObj.label = item.name;
