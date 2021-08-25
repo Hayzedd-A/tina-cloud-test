@@ -180,7 +180,7 @@ class Checkout extends Component {
   };
 
   onSuggestSelect = async (suggest) => {
-    console.log("suggest", this.state?.chosenCity);
+    // console.log("suggest", this.state?.chosenCity);
     this.setState(
       {
         formData: {
@@ -314,8 +314,8 @@ class Checkout extends Component {
 
       const discountAmount = couponObject
         ? couponObject.discountType === "percent"
-          // ? ((couponObject.value * subTotal) / 100).toLocaleString()
-          ? ((couponObject.value * subTotal) / 100)
+          ? // ? ((couponObject.value * subTotal) / 100).toLocaleString()
+            (couponObject.value * subTotal) / 100
           : couponObject.value
         : null;
 
@@ -437,21 +437,34 @@ class Checkout extends Component {
     //build up cities object
     if (currentStore?.delivery_types.length > 0) {
       let newStateArr = [
-        {
-          key: 0,
-          label: "Choose a city/area",
-          price: 0,
-        },
+        // {
+        //   key: 0,
+        //   label: "Choose a city/area",
+        //   price: 0,
+        // },
       ];
 
       currentStore &&
         currentStore.delivery_types.map((item) => {
+          console.log("delivey item is ", item);
           let newObj = {};
           newObj.key = item.id;
           newObj.label = item.name;
           newObj.price = item.price;
           newStateArr.push(newObj);
         });
+
+      let sortedArr = newStateArr.sort(function (a, b) {
+        let nameA = a.label.toLowerCase();
+        let nameB = b.label.toLowerCase();
+        return nameA > nameB;
+      });
+
+      sortedArr.unshift({
+        key: 0,
+        label: "Choose a city/area",
+        price: 0,
+      });
 
       this.setState({
         cities: [...newStateArr],
@@ -526,7 +539,7 @@ class Checkout extends Component {
 
     const discountAmount = couponObject
       ? couponObject.discountType === "percent"
-        ? ((couponObject.value * subTotal) / 100)
+        ? (couponObject.value * subTotal) / 100
         : couponObject.value
       : null;
 

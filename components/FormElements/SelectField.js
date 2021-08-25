@@ -5,23 +5,15 @@ class SelectField extends Component {
   state = {
     active: false,
     isValid: false,
-    isBlurred: false
+    isBlurred: false,
   };
 
   textFieldRef = createRef();
 
   onChange = ({ target }, isBlurred) => {
     let { isValid } = this.state;
-    const {
-      type,
-      required,
-      min,
-      mobile,
-      max,
-      name,
-      onBlur,
-      onChange
-    } = this.props;
+    const { type, required, min, mobile, max, name, onBlur, onChange } =
+      this.props;
     const { value } = target;
 
     isValid = required ? value !== "" : true;
@@ -35,13 +27,12 @@ class SelectField extends Component {
       isValid = value.length >= min;
     }
 
-
     if (mobile) {
       const re = /^[0-9\b]+$/;
 
       if (value === "" || (re.test(value) && value.length <= 11)) {
         isValid = value.length === 11;
-        
+
         onChange({ target: { name, value } }, isValid);
       }
     } else if (type === "custom-number") {
@@ -65,7 +56,7 @@ class SelectField extends Component {
     this.setState({
       isValid,
       isBlurred,
-      isFocused: !isBlurred
+      isFocused: !isBlurred,
     });
 
     isBlurred && onBlur && onBlur();
@@ -76,7 +67,7 @@ class SelectField extends Component {
 
     this.setState(
       {
-        isFocused: true
+        isFocused: true,
       },
       () => onFocus && onFocus()
     );
@@ -100,37 +91,43 @@ class SelectField extends Component {
     } = this.props;
 
     if (name === "phoneNumber") {
-      console.log(isBlurred, isValid)
+      console.log(isBlurred, isValid);
     }
     return (
       <div
         className={classNames(`input-container ${className || ""}`, {
           isFocused,
-          error: !isValid && isBlurred
+          error: !isValid && isBlurred,
         })}
       >
         {label && (
           <label>
-            {label} {required && <sup className="marked">*</sup>} 
-            {hint && <i style={{ textTransform: 'capitalize', color: '#333', fontWeight: 'bold' }}>{hint}</i>}
+            {label} {required && <sup className="marked">*</sup>}
+            {hint && (
+              <i
+                style={{
+                  textTransform: "capitalize",
+                  color: "#333",
+                  fontWeight: "bold",
+                }}
+              >
+                {hint}
+              </i>
+            )}
           </label>
         )}
-        <div onClick={e => e.stopPropagation()}>
-          <select 
-            className="select mb-4" 
+        <div onClick={(e) => e.stopPropagation()}>
+          <select
+            className="select mb-4"
             ref={this.textFieldRef}
             {...rest}
-            onBlur={e => this.onChange(e, true)}
+            onBlur={(e) => this.onChange(e, true)}
             onChange={this.onChange}
             onFocus={this.onFocus}
-            >
-            {
-              options.map(({ label, key }, index) => {
-                return (  
-                  <option value={key}>{label}</option>
-                )
-              })
-            }
+          >
+            {options.map(({ label, key }, index) => {
+              return <option value={key}>{label}</option>;
+            })}
           </select>
           {/* <input
             ref={this.textFieldRef}
@@ -140,7 +137,6 @@ class SelectField extends Component {
             onChange={this.onChange}
             onFocus={this.onFocus}
           /> */}
-          
         </div>
       </div>
     );
