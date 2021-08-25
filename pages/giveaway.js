@@ -11,15 +11,13 @@ class GiveawayPage extends Component {
   state = {
     selectedItem: {},
     showDetails: false,
-    showSplash: true
+    showSplash: true,
   };
-
- 
 
   componentDidMount() {
     this.splashtimeout = setTimeout(() => {
       this.setState({
-        showSplash: false
+        showSplash: false,
       });
     }, 4000);
   }
@@ -31,15 +29,7 @@ class GiveawayPage extends Component {
   render() {
     const { isLoadingProducts } = this.props;
 
-    return (
-      <Main>
-        {isLoadingProducts ? (
-          <SplashScreen />
-        ) : (
-          <Giveaway />
-        )}
-      </Main>
-    );
+    return <Main>{isLoadingProducts ? <SplashScreen /> : <Giveaway />}</Main>;
   }
 }
 

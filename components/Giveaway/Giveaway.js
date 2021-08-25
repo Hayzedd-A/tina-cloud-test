@@ -5,7 +5,7 @@ import Menu from "../Menu";
 import { withRouter } from "next/router";
 
 import { ProductsConsumer } from "../../providers/ProductsProvider";
-import FemaleIcon from "../../public/static/images/FemaleIcon.svg";
+// import FemaleIcon from "../../public/static/images/FemaleIcon.svg";
 // import { EmptyStore } from "../../public/static/vectors";
 
 class Giveaway extends Component {
@@ -33,7 +33,7 @@ class Giveaway extends Component {
           <div className="cart-empty-state giveaway-box">
             <div className="icon giveaway">
               {/* <figure> */}
-              {/* <img src="/static/svgs/female.svg" alt="female" /> */}
+              <img src="/static/svgs/female.svg" alt="female" />
               {/* </figure> */}
 
               {/* <figure>
@@ -42,11 +42,11 @@ class Giveaway extends Component {
             </div>
             <div className="icon giveaway">
               {/* <figure> */}
-                   <img src="/static/svgs/offer.svg" alt="female" />
+              <img src="/static/svgs/offer.svg" alt="female" />
               {/* </figure> */}
             </div>
             <h5 onClick={() => router.push("/")} className="message ga">
-              CeeeOUPON CODE: SWEET5
+              COUPON CODE: SWEET5
             </h5>
             <button onClick={() => router.push("/")}>CLAIM MY ₦500</button>
           </div>
