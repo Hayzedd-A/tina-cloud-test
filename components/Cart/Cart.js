@@ -5,6 +5,7 @@ import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 import { getRequest } from "../../api";
 
 import { CartConsumer } from "../../providers/CartProvider";
+import { StoreConsumer } from "../../providers/StoreProvider";
 import { TextField, Radio } from "../FormElements";
 
 import { NumberSelector } from "../FormElements";
@@ -18,22 +19,21 @@ import {
   getFormValues,
   getRequestError,
   paystack,
-  patchFormValues
+  patchFormValues,
 } from "../../utils/functions";
 
 class Cart extends Component {
-
   state = {
     formData: {
       couponCode: {
         value: "",
-        valid: false
-      }
+        valid: false,
+      },
     },
     isApplyingCouponCode: false,
     isMenuActive: false,
-    showCouponSection: false
-  }
+    showCouponSection: false,
+  };
 
   cartAction = (item, quantity) => {
     const { updateCart, removeFromCart } = this.props;
@@ -41,13 +41,13 @@ class Cart extends Component {
 
     let toppings = JSON.parse(JSON.stringify(item.toppings));
 
-    toppings = toppings.map(topping => ({
+    toppings = toppings.map((topping) => ({
       ...topping,
-      quantity
+      quantity,
     }));
 
     const toppingsPrices = toppings.map(
-      topping => parseFloat(topping.unitPrice) * quantity
+      (topping) => parseFloat(topping.unitPrice) * quantity
     );
 
     const toppingsTotalCost = reduceLinearArray(toppingsPrices);
@@ -59,65 +59,78 @@ class Cart extends Component {
   };
 
   showMenu = (isMenuActive) => {
-    this.setState({ isMenuActive })
-  }
+    this.setState({ isMenuActive });
+  };
 
   handleApplyCouponCode = async () => {
-    const { formData: { couponCode } } = this.state;
-    console.log("I got here: ", couponCode.value)
+    const {
+      formData: { couponCode },
+    } = this.state;
+    console.log("I got here: ", couponCode.value);
     this.setState({
-      isApplyingCouponCode: true
+      isApplyingCouponCode: true,
     });
     await this.props.handleApplyCouponCode();
     this.setState({
-      isApplyingCouponCode: false
+      isApplyingCouponCode: false,
     });
-  }
+  };
 
   openToaster = (status, message) => {
     this.setState({
       toaster: {
         status,
-        message
-      }
+        message,
+      },
     });
   };
 
   closeToaster = () => {
     this.setState({
-      toaster: null
+      toaster: null,
     });
   };
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    await this.props?.fetchStoreInfo();
     window.scrollTo(0, 0);
-  }
+  };
 
   render() {
     const { isLoadingCart, cart, checkout, router } = this.props;
-    const { isMenuActive, showCouponSection, isApplyingCouponCode } = this.state;
+    const { isMenuActive, showCouponSection, isApplyingCouponCode } =
+      this.state;
     const { couponCode, couponObject } = this.props;
-    
+
     const subTotal = reduceArray(cart, "totalCost");
     const minimumAmount = 2500;
-    
-    console.log(subTotal, couponObject)
 
-    const discountAmount = couponObject 
-      ? couponObject.discountType === 'percent' 
-        ? (couponObject.value * subTotal / 100).toLocaleString() 
+    console.log(subTotal, couponObject);
+
+    const discountAmount = couponObject
+      ? couponObject.discountType === "percent"
+        // ? ((couponObject.value * subTotal) / 100).toLocaleString()
+        ? ((couponObject.value * subTotal) / 100)
         : couponObject.value
       : null;
     // return <div>Hello</div>
     return (
       <div className="cart-container full-height">
         <div className="cart-header">
-          <div className="container login-header-inner" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div
+            className="container login-header-inner"
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <div
               className="back"
               onClick={() =>
                 router.push(`/`, undefined, {
-                  shallow: true
+                  shallow: true,
                 })
               }
             >
@@ -126,7 +139,7 @@ class Cart extends Component {
             <div className="title">My Cart</div>
             <div
               className="header-icon-container hamburger-menu right-menu"
-              style={{ top: '-12px' }}
+              style={{ top: "-12px" }}
               onClick={() => this.showMenu(true)}
             >
               <span></span>
@@ -167,14 +180,19 @@ class Cart extends Component {
                       quantity,
                       unitPrice,
                       totalCost,
-                      toppings
+                      toppings,
                     } = cartItem;
 
                     return (
                       <div key={`cart-item-${index}`} className="cart-item">
                         <div className="container">
                           <div className="image">
-                            <img src={imageUrl || "/static/svgs/image-placeholder.svg"} alt="" />
+                            <img
+                              src={
+                                imageUrl || "/static/svgs/image-placeholder.svg"
+                              }
+                              alt=""
+                            />
                           </div>
                           <div className="info">
                             <div className="main-description">
@@ -209,7 +227,7 @@ class Cart extends Component {
                               key={index}
                               index={index}
                               value={quantity}
-                              onChange={e =>
+                              onChange={(e) =>
                                 this.cartAction(cartItem, e.target.value)
                               }
                               className="small"
@@ -221,11 +239,24 @@ class Cart extends Component {
                   })}
                 </div>
                 <div className="container">
-                  <div className="row" style={{ alignItems: 'flex-end' }}>
+                  <div className="row" style={{ alignItems: "flex-end" }}>
                     <div className="col-12">
-                      <div style={{ marginBottom: '20px', textDecoration: 'underline', width: 'fit-content' }} onClick={() => this.setState({ showCouponSection: !showCouponSection })}>I have a coupon code</div>
-                      {
-                        showCouponSection && <div className="row" style={{ alignItems: 'flex-end' }}>
+                      <div
+                        style={{
+                          marginBottom: "20px",
+                          textDecoration: "underline",
+                          width: "fit-content",
+                        }}
+                        onClick={() =>
+                          this.setState({
+                            showCouponSection: !showCouponSection,
+                          })
+                        }
+                      >
+                        I have a coupon code
+                      </div>
+                      {showCouponSection && (
+                        <div className="row" style={{ alignItems: "flex-end" }}>
                           <div className="col-8">
                             <TextField
                               label="Coupon Code"
@@ -237,21 +268,39 @@ class Cart extends Component {
                             />
                           </div>
                           <div className="col-4">
-                            <button onClick={this.handleApplyCouponCode} className={classNames("button-coupon mb-40", {
-                              disabled: !couponCode.value || isApplyingCouponCode
-                            })}>{isApplyingCouponCode ? 'Applying...' : 'Apply Code'}</button>
+                            <button
+                              onClick={this.handleApplyCouponCode}
+                              className={classNames("button-coupon mb-40", {
+                                disabled:
+                                  !couponCode.value || isApplyingCouponCode,
+                              })}
+                            >
+                              {isApplyingCouponCode
+                                ? "Applying..."
+                                : "Apply Code"}
+                            </button>
                           </div>
                         </div>
-                      }
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className="sub-total">
                   <div className="container">
                     <span className="title">Sub Total</span>
-                    <span className="value" style={{display: 'flex', alignItems: 'center'}}>
-                      ₦  {(subTotal - discountAmount).toLocaleString()} 
-                      {discountAmount && <span style={{fontSize: '16px', marginLeft: '10px'}}><strike className="small"> {subTotal.toLocaleString()}</strike> </span>}
+                    <span
+                      className="value"
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      ₦ {(subTotal - discountAmount).toLocaleString()}
+                      {discountAmount && (
+                        <span style={{ fontSize: "16px", marginLeft: "10px" }}>
+                          <strike className="small">
+                            {" "}
+                            {subTotal.toLocaleString()}
+                          </strike>{" "}
+                        </span>
+                      )}
                     </span>
                   </div>
                 </div>
@@ -262,43 +311,55 @@ class Cart extends Component {
                   <div className="delivery-fees-notice">
                     <div className="container">
                       <span className="text">
-                        {couponObject.discountType === 'percent' && `${couponObject.value}% discount - `}
-                        ₦{discountAmount?.toLocaleString() } will be deducted - ({couponObject.name})
+                        {couponObject.discountType === "percent" &&
+                          `${couponObject.value}% discount - `}
+                        ₦{discountAmount?.toLocaleString()} will be deducted - (
+                        {couponObject.name})
                       </span>
                     </div>
                   </div>
                 )}
                 <div
                   className={classNames("checkout-button", {
-                    disabled: !cart.length || subTotal < minimumAmount
+                    disabled: !cart.length || subTotal < minimumAmount,
                   })}
-                  onClick={(subTotal >= minimumAmount) && checkout}
+                  onClick={subTotal >= minimumAmount && checkout}
                 >
-                  <div className="container" style={{ textAlign: 'center', padding: '0px 20px', lineHeight: '20px' }}>
-                    {
-                      (subTotal >= minimumAmount)
-                        ? <span>Checkout</span>
-                        : <span style={{ fontSize: '.7em' }}>Oops! Minimum order value is N2,500. Please add more items.</span>
-                    }
-                    {(subTotal >= minimumAmount) && <RightArrow />}
+                  <div
+                    className="container"
+                    style={{
+                      textAlign: "center",
+                      padding: "0px 20px",
+                      lineHeight: "20px",
+                    }}
+                  >
+                    {subTotal >= minimumAmount ? (
+                      <span>Checkout</span>
+                    ) : (
+                      <span style={{ fontSize: ".7em" }}>
+                        Oops! Minimum order value is N2,500. Please add more
+                        items.
+                      </span>
+                    )}
+                    {subTotal >= minimumAmount && <RightArrow />}
                   </div>
                 </div>
               </div>
             </>
           ) : (
-              <div className="cart-empty-state">
-                <div className="icon">
-                  <EmptyCart />
-                </div>
-                <div className="message">Your cart is currently empty</div>
-                <div className="action" onClick={() => router.push("/")}>
-                  Shop now
+            <div className="cart-empty-state">
+              <div className="icon">
+                <EmptyCart />
               </div>
+              <div className="message">Your cart is currently empty</div>
+              <div className="action" onClick={() => router.push("/")}>
+                Shop now
               </div>
-            ))}
+            </div>
+          ))}
       </div>
     );
   }
 }
 
-export default CartConsumer(withRouter(Cart));
+export default StoreConsumer(CartConsumer(withRouter(Cart)));

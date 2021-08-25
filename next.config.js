@@ -1,4 +1,4 @@
-const withPWA = require('next-pwa')
+const withPWA = require("next-pwa");
 
 // module.exports = withPWA({
 //   pwa: {
@@ -8,6 +8,33 @@ const withPWA = require('next-pwa')
 
 module.exports = {
   images: {
-    domains: ['s3.eu-west-2.amazonaws.com'],
+    domains: ["s3.eu-west-2.amazonaws.com"],
   },
-}
+};
+
+// const withPWA = require("next-pwa");
+
+// module.exports = {
+//   images: {
+//     domains: ["s3.eu-west-2.amazonaws.com"],
+//   },
+//   webpack(config) {
+//     config.module.rules.push({
+//       test: /\.svg$/,
+//       issuer: {
+//         test: /\\.(js|ts|jsx|tsx)x?$/,
+//       },
+//       use: [
+//         {
+//           loader: "@svgr/webpack",
+//         },
+//         {
+//           loader: "file-loader",
+//         },
+//       ],
+//       type: "javascript/auto",
+//     });
+
+//     return config;
+//   },
+// };

@@ -5,8 +5,8 @@ import Menu from "../Menu";
 import { withRouter } from "next/router";
 
 import { ProductsConsumer } from "../../providers/ProductsProvider";
-import FemaleIcon from "../../public/static/images/FemaleIcon.svg";
-import { EmptyStore } from "../../public/static/vectors";
+// import FemaleIcon from "../../public/static/images/FemaleIcon.svg";
+// import { EmptyStore } from "../../public/static/vectors";
 
 class Giveaway extends Component {
   constructor(props) {
@@ -35,6 +35,10 @@ class Giveaway extends Component {
               {/* <figure> */}
               <img src="/static/svgs/female.svg" alt="female" />
               {/* </figure> */}
+
+              {/* <figure>
+                <img src={FemaleIcon} alt="female" />
+              </figure> */}
             </div>
             <div className="icon giveaway">
               {/* <figure> */}

@@ -1,13 +1,12 @@
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import Geosuggest from "react-geosuggest";
 import * as classNames from "classnames";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 
 import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
 import { CartConsumer } from "../../providers/CartProvider";
-import { StoreConsumer } from "../../providers/StoreProvider";
 
-import { TextField } from "../FormElements";
+import { TextField, Radio } from "../FormElements";
 import Toaster from "../Toaster";
 
 import { postRequest, getRequest } from "../../api";
@@ -25,8 +24,6 @@ import { STORE_ID } from "../../constants";
 import SelectField from "../FormElements/SelectField";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
-
-const deliveryArr = ["delivery", "s-delivery"];
 
 const initialFormData = {
   name: {
@@ -65,12 +62,6 @@ class Checkout extends Component {
     deliveryCost: 0,
     isMenuActive: false,
     isLoadingDeliveryPrice: false,
-    pickUpAddress: {},
-    states: [],
-    cities: [],
-    chosenState: "",
-    chosenCity: {},
-    touched: false,
     priceCheck: false,
   };
 
@@ -87,6 +78,7 @@ class Checkout extends Component {
   };
 
   handleChange = ({ target }, valid) => {
+    console.log(target.name, target.value);
     this.setState({
       formData: {
         ...this.state.formData,
@@ -109,30 +101,14 @@ class Checkout extends Component {
   };
 
   handleDeliveryChange = ({ target }, valid) => {
+    console.log(target.name, target.value, valid);
     const { value } = target;
-
-    if (deliveryArr.includes(value)) {
-      const { store } = this.props;
-      if (store?.states.length < 1) {
-        this.openToaster(
-          "error",
-          "The delivery system for this store is not availabale yet"
-        );
-      } else {
-        this.effectDeliveryChange(value);
-      }
-    } else {
-      this.effectDeliveryChange(value);
-    }
-  };
-
-  effectDeliveryChange = (value) => {
     this.setState({
       formData: {
         ...this.state.formData,
         shippingMethod: {
           value,
-          valid: true,
+          valid,
         },
         address: {
           value:
@@ -180,7 +156,7 @@ class Checkout extends Component {
   };
 
   onSuggestSelect = async (suggest) => {
-    // console.log("suggest", this.state?.chosenCity);
+    console.log(suggest);
     this.setState(
       {
         formData: {
@@ -200,33 +176,55 @@ class Checkout extends Component {
           const latitude = suggest.location.lat;
           const longitude = suggest.location.lng;
 
-          const { store } = this.props;
-          const { id: STORE_ID } = store || {};
-          this.setState({
-            formData: {
-              ...this.state.formData,
-              address: {
-                value: fullAddress,
-                valid: true,
+          try {
+            const res = await getRequest({
+              url: `/customer-requests/stores/${STORE_ID}/get-delivery-type`,
+              params: {
+                address,
+                latitude,
+                longitude,
               },
-            },
-            deliveryLocation: {
-              address: fullAddress,
-              latitude,
-              longitude,
-            },
-            deliveryCost:
-              Object.keys(this.state.chosenCity).length > 0
-                ? parseInt(this.state.chosenCity?.price)
-                : 0,
-            isLoadingDeliveryPrice: false,
-          });
+            });
+
+            this.setState({
+              formData: {
+                ...this.state.formData,
+                address: {
+                  value: fullAddress,
+                  valid: true,
+                },
+              },
+              deliveryLocation: {
+                address: fullAddress,
+                latitude,
+                longitude,
+              },
+              deliveryCost: parseInt(res.data.price),
+              isLoadingDeliveryPrice: false,
+            });
+          } catch (error) {
+            const errorMessage =
+              error &&
+              error.response &&
+              error.response.data &&
+              error.response.data.message
+                ? error.response.data.message
+                : "An error occured while fetching delivery price, please enter again";
+
+            this.openToaster("error", errorMessage);
+
+            this.setState({
+              isLoadingDeliveryPrice: false,
+            });
+          }
         }
       }
     );
   };
 
-  onSuggestNoResults = (userInput) => {};
+  onSuggestNoResults = (userInput) => {
+    console.log("no results for " + userInput);
+  };
 
   computeDistance(pointA, pointB) {
     const lat1 = pointA.location.lat;
@@ -252,7 +250,7 @@ class Checkout extends Component {
   }
 
   checkout = async () => {
-    const { formData, deliveryCost, chosenCity, deliveryLocation } = this.state;
+    const { formData, deliveryCost, deliveryLocation } = this.state;
     const {
       name,
       phoneNumber,
@@ -278,9 +276,6 @@ class Checkout extends Component {
     });
 
     const payload = {
-      state: "lagos",
-      city: chosenCity?.label || "",
-      deliveryTypeId: chosenCity?.key || "",
       specialNote: note,
       orderItems,
       customer: {
@@ -294,6 +289,7 @@ class Checkout extends Component {
       },
       deliveryDate: deliveryDate || null,
       deliveryLocation,
+      deliveryCost,
     };
 
     if (couponObject) {
@@ -305,7 +301,7 @@ class Checkout extends Component {
 
     try {
       const res = await postRequest({
-        url: `/customer-requests/stores/8a7a28dc-b54d-4841-b949-efe60dbae709/placed-orders`,
+        url: `/customer-requests/stores/${STORE_ID}/placed-orders`,
         data: payload,
       });
 
@@ -314,8 +310,7 @@ class Checkout extends Component {
 
       const discountAmount = couponObject
         ? couponObject.discountType === "percent"
-          ? // ? ((couponObject.value * subTotal) / 100).toLocaleString()
-            (couponObject.value * subTotal) / 100
+          ? ((couponObject.value * subTotal) / 100).toLocaleString()
           : couponObject.value
         : null;
 
@@ -323,16 +318,10 @@ class Checkout extends Component {
         storeID: "8a7a28dc-b54d-4841-b949-efe60dbae709",
       };
 
-      console.log({
-        email,
-        paymentReference,
-        metadata,
-      });
-
       paystack(
         email,
         paymentReference,
-        parseFloat(amount - (discountAmount || 0)) * 100,
+        parseFloat(amount + deliveryCost - (discountAmount || 0)) * 100,
         this.handlePaystackSuccess,
         this.handlePaystackClose,
         metadata
@@ -381,37 +370,14 @@ class Checkout extends Component {
     this.setState({ isMenuActive });
   };
 
-  capitalizeWord = (value) => {
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  };
-
-  componentDidMount = async () => {
-    await this.props?.fetchStoreInfo();
+  componentDidMount() {
     window.scrollTo(0, 0);
     const currentUser = localStorage.getItem("gourmet-twist-user");
-    const currentStore = JSON.parse(localStorage.getItem("STORE_INFO"));
+
+    console.log("meta data in store", STORE_ID);
 
     const subTotal = reduceArray(this.props.cart, "totalCost");
     this.checkPrice(subTotal);
-
-    if (currentStore && currentStore?.address === null) {
-      this.openToaster(
-        "error",
-        "Store Address is not available,please try out other stores"
-      );
-      setTimeout(() => {
-        const { store: storeUrl } = this.props?.router?.query || {};
-        this.props?.router.push(`/${storeUrl}`, undefined, {
-          shallow: true,
-        });
-      }, 2000);
-    }
-
-    this.setState({
-      pickUpAddress: {
-        ...currentStore?.gokadaAddress,
-      },
-    });
 
     if (currentUser) {
       const formData = patchFormValues(
@@ -433,82 +399,7 @@ class Checkout extends Component {
         },
       });
     }
-
-    //build up cities object
-    if (currentStore?.delivery_types.length > 0) {
-      let newStateArr = [
-        // {
-        //   key: 0,
-        //   label: "Choose a city/area",
-        //   price: 0,
-        // },
-      ];
-
-      currentStore &&
-        currentStore.delivery_types.map((item) => {
-          let newObj = {};
-          newObj.key = item.id;
-          newObj.label = item.name;
-          newObj.price = item.price;
-          newStateArr.push(newObj);
-        });
-
-      let sortedArr = newStateArr.sort(function (a, b) {
-        let nameA = a.label.toLowerCase();
-        let nameB = b.label.toLowerCase();
-        return nameA > nameB;
-      });
-
-      sortedArr.unshift({
-        key: 0,
-        label: "Choose a city/area",
-        price: 0,
-      });
-
-      this.setState({
-        cities: [...newStateArr],
-      });
-    } else {
-      this.setState({
-        deliveryErrFlag: true,
-      });
-      this.openToaster(
-        "error",
-        "Delivery not availabale in this state yet, you can choose PICKUP or SCHEDULED delivery"
-      );
-    }
-  };
-
-  handleCityChange = (e) => {
-    let cityIndex = e.target.value;
-    if (isNaN(e)) {
-      let index = e.target.value;
-      if (!isNaN(index)) {
-        this.openToaster("error", "Please choose a valid delivery option");
-        this.setState({
-          chosenCity: {},
-          deliveryCost: 0,
-        });
-      } else {
-        let found = this.state.cities.find((elem) => {
-          return elem.key === index;
-        });
-        if (found) {
-          if (Object.entries(found).length > 0) {
-            this.setState({
-              chosenCity: { ...found },
-              deliveryCost: parseInt(found.price),
-            });
-          }
-        }
-      }
-    } else {
-      this.setState({
-        chosenCity: {},
-        deliveryCost: 0,
-      });
-    }
-  };
+  }
 
   render() {
     const {
@@ -538,7 +429,7 @@ class Checkout extends Component {
 
     const discountAmount = couponObject
       ? couponObject.discountType === "percent"
-        ? (couponObject.value * subTotal) / 100
+        ? ((couponObject.value * subTotal) / 100).toLocaleString()
         : couponObject.value
       : null;
 
@@ -658,54 +549,35 @@ class Checkout extends Component {
                 ]}
               />
               {shippingMethod.value === "delivery" ? (
-                <Fragment>
-                  <div className="input-container mb-40">
-                    <Fragment>
-                      <SelectField
-                        label="City"
-                        required
-                        hint="City"
-                        onChange={this.handleCityChange}
-                        options={this.state.cities}
-                      />
-
-                      {Object.entries(this.state.chosenCity).length < 1 && (
-                        <span className="hint flashing-red blink_me">
-                          Choose a city/area
-                        </span>
-                      )}
-                    </Fragment>
-                  </div>
-                  <div className="input-container mb-40">
-                    <label>
-                      Delivery Address <sup className="marked">*</sup>
-                      {isLoadingDeliveryPrice && (
-                        <i
-                          style={{
-                            textTransform: "capitalize",
-                            color: "#333",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {" "}
-                          Calculating Price...{" "}
-                        </i>
-                      )}
-                    </label>
-                    <Geosuggest
-                      placeholder="Enter your address"
-                      country="ng"
-                      onSuggestSelect={this.onSuggestSelect}
-                      onSuggestNoResults={this.onSuggestNoResults}
-                      queryDelay={600}
-                    />
-                    <span className="hint flashing-red blink_me">
-                      {" "}
-                      If your delivery address is not auto-detected, enter your
-                      city e.g Lekki Phase 1 or Surulere
-                    </span>
-                  </div>
-                </Fragment>
+                <div className="input-container mb-40">
+                  <label>
+                    Delivery Address <sup className="marked">*</sup>
+                    {isLoadingDeliveryPrice && (
+                      <i
+                        style={{
+                          textTransform: "capitalize",
+                          color: "#333",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {" "}
+                        Calculating Price...{" "}
+                      </i>
+                    )}
+                  </label>
+                  <Geosuggest
+                    placeholder="Enter your address"
+                    country="ng"
+                    onSuggestSelect={this.onSuggestSelect}
+                    onSuggestNoResults={this.onSuggestNoResults}
+                    queryDelay={600}
+                  />
+                  <span className="hint flashing-red blink_me">
+                    {" "}
+                    If your delivery address is not auto-detected, enter your
+                    city e.g Lekki Phase 1 or Surulere
+                  </span>
+                </div>
               ) : shippingMethod.value === "pickup" ? (
                 <div className="input-container mb-40">
                   <label>Pickup Address</label>
@@ -808,75 +680,7 @@ class Checkout extends Component {
             )}
 
           {/* Checkout Buton */}
-          {deliveryArr.includes(shippingMethod?.value) ? (
-            <div
-              className={classNames("checkout-button", {
-                disabled:
-                  !this.state.priceCheck ||
-                  !this.checkFormValidity() ||
-                  isCheckingOut ||
-                  isLoadingDeliveryPrice ||
-                  Object.entries(this.state.chosenCity).length === 0
-                    ? true
-                    : false,
-              })}
-              onClick={this.checkout}
-            >
-              <div className="container">
-                <span>
-                  {isCheckingOut ? "Paying..." : "Pay"} ₦
-                  {(
-                    subTotal +
-                    deliveryCost -
-                    (discountAmount || 0)
-                  ).toLocaleString()}
-                  {discountAmount && (
-                    <small style={{ marginLeft: "10px" }}>
-                      <strike>
-                        {(subTotal + deliveryCost).toLocaleString()}
-                      </strike>
-                    </small>
-                  )}
-                </span>
-                <RightArrow />
-              </div>
-            </div>
-          ) : (
-            <div
-              className={classNames("checkout-button", {
-                disabled:
-                  !this.state.priceCheck ||
-                  !this.checkFormValidity() ||
-                  isCheckingOut ||
-                  isLoadingDeliveryPrice,
-              })}
-              onClick={this.checkout}
-            >
-              <div className="container">
-                <span>
-                  {isCheckingOut ? "Paying..." : "Pay"} ₦
-                  {(
-                    subTotal +
-                    deliveryCost -
-                    (discountAmount || 0)
-                  ).toLocaleString()}
-                  {discountAmount && (
-                    <small style={{ marginLeft: "10px" }}>
-                      <strike>
-                        {(subTotal + deliveryCost).toLocaleString()}
-                      </strike>
-                    </small>
-                  )}
-                </span>
-                <RightArrow />
-              </div>
-            </div>
-          )}
-
-          {/* Checkout Buton */}
-
-          {/* Checkout Buton */}
-          {/* <div
+          <div
             className={classNames("checkout-button", {
               disabled:
                 !this.state.priceCheck ||
@@ -886,6 +690,36 @@ class Checkout extends Component {
             })}
             onClick={this.checkout}
           >
+            <div className="container">
+              <span>
+                {isCheckingOut ? "Paying..." : "Pay"} ₦
+                {(
+                  subTotal +
+                  deliveryCost -
+                  (discountAmount || 0)
+                ).toLocaleString()}
+                {discountAmount && (
+                  <small style={{ marginLeft: "10px" }}>
+                    <strike>
+                      {(subTotal + deliveryCost).toLocaleString()}
+                    </strike>
+                  </small>
+                )}
+              </span>
+              <RightArrow />
+            </div>
+          </div>
+          {/* Checkout Buton */}
+
+          {/* Checkout Buton */}
+          {/* <div
+            className={classNames("checkout-button", {
+              disabled: !this.state.priceCheck,
+            })}
+            onClick={this.checkout}
+          >
+           
+
             <div className="container">
               <span>
                 {isCheckingOut ? "Paying..." : "Pay"} ₦
@@ -914,4 +748,4 @@ class Checkout extends Component {
   }
 }
 
-export default StoreConsumer(CartConsumer(AuthenticationConsumer(Checkout)));
+export default CartConsumer(AuthenticationConsumer(Checkout));

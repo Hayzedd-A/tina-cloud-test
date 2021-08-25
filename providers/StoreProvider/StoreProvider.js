@@ -1,5 +1,6 @@
 import { withRouter } from "next/router";
 import React, { Component } from "react";
+import { STORE_ID } from "../../constants";
 
 import { zupaGetRequest } from "../../api";
 
@@ -20,33 +21,21 @@ class StoreProvider extends Component {
 
   fetchStoreInfo = async () => {
     console.log("Fetch store called");
-
     this.setState({
       isLoadingStore: true,
     });
 
-    const { store: storeUrl } = this.props?.router?.query || {};
-
-    // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyMzY3NTA5MiwiZXhwIjoxNjU1MjMyNjkyfQ._DMZKsOp_uaFRM7zxwrt8BIhFQLgze5EqoeoojAyfrg"
     const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MjQ3MTgwOTAsImV4cCI6MTY1NjI3NTY5MH0.fWo5iMSeJhi1LI0z5kVhexEqMKCd6nFmVr1nPv6RvHk";
-    try {
-      
-      // const res = await zupaGetRequest({
-      //   url: `/store/${storeUrl}?$include=delivery_types.states`,
-      //   token,
-      // });
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyODc3ODc3OCwiZXhwIjoxNjYwMzM2Mzc4fQ.RzbdNEI-fpB85UCJi8TetFi6BSWKtZQNBl70upcE-Ww";
 
+    try {
       const res = await zupaGetRequest({
-        url: `/store/${storeUrl}?$include=delivery_types`,
+        url: `/stores/${STORE_ID}?$include=delivery_types,states`,
         token,
       });
       localStorage.setItem("STORE_INFO__SAVED", true);
       localStorage.setItem("STORE_INFO", JSON.stringify(res.data));
 
-      console.log("Store info is", res.data);
-
-      this.setupThemeVariables(res?.data?.theme);
       this.setState({
         store: res.data,
         isLoadingStore: false,
@@ -54,6 +43,8 @@ class StoreProvider extends Component {
         isActive: res?.data?.paystackSubAccountCode ? true : false,
       });
     } catch (error) {
+      console.log("store not saved", error);
+
       this.setState({
         isLoadingStore: false,
         invalidURL: true,
@@ -92,39 +83,9 @@ class StoreProvider extends Component {
       : hex;
   };
 
-  setupThemeVariables = (theme) => {
-    const defaultTheme = {
-      primaryColor: "#5347df",
-      primaryFontColor: "#ffffff",
-      buttonColor: "#f2c131",
-      buttonFontColor: "#1B1617",
-    };
-
-    const themeObject = theme ? JSON.parse(theme) : defaultTheme;
-    const { primaryColor, primaryFontColor, buttonColor, buttonFontColor } =
-      themeObject;
-
-    this.setState({ themeObject });
-
-    const bodyStyle = document.querySelector("body").style;
-    bodyStyle.setProperty("--primaryColor", this.hexToRgb(primaryColor));
-    bodyStyle.setProperty(
-      "--primaryColorDarker",
-      this.hexToRgb(this.shadeColor(primaryColor, -40))
-    );
-    bodyStyle.setProperty(
-      "--primaryFontColor",
-      this.hexToRgb(primaryFontColor)
-    );
-    bodyStyle.setProperty("--buttonColor", this.hexToRgb(buttonColor));
-    bodyStyle.setProperty("--buttonFontColor", this.hexToRgb(buttonFontColor));
-  };
-
   componentDidMount() {
     this.fetchStoreInfo();
   }
-
-  componentDidUpdate(prevProps) {}
 
   render() {
     return (
