@@ -2,14 +2,12 @@ import { Component } from "react";
 import { withRouter } from "next/router";
 
 import Main from "../layouts/Main";
-import Shop from "../components/Shop";
 import Giveaway from "../components/Giveaway";
 import SplashScreen from "../components/SplashScreen";
 
 import { ProductsConsumer } from "../providers/ProductsProvider";
-import { slugify } from "../utils/functions";
 
-class Home extends Component {
+class GiveawayPage extends Component {
   state = {
     selectedItem: {},
     showDetails: false,
@@ -45,4 +43,4 @@ class Home extends Component {
   }
 }
 
-export default ProductsConsumer(withRouter(Home));
+export default ProductsConsumer(withRouter(GiveawayPage));
