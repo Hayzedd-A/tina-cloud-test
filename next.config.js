@@ -1,10 +1,13 @@
-const withPWA = require('next-pwa')
+const withPWA = require("next-pwa");
 
 // module.exports = withPWA({
 //   pwa: {
 //     dest: 'public'
 //   }
 // })
+
+// test: /\.(js|ts)x?$/,
+// use: ["@svgr/webpack"],
 
 module.exports = {
   images: {
@@ -14,12 +17,19 @@ module.exports = {
     config.module.rules.push({
       test: /\.svg$/,
       issuer: {
-        test: /\.(js|ts)x?$/,
+        test: /\\.(js|ts|jsx|tsx)x?$/,
       },
-      use: ["@svgr/webpack"],
+      use: [
+        {
+          loader: "@svgr/webpack",
+        },
+        {
+          loader: "file-loader",
+        },
+      ],
+      type: "javascript/auto",
     });
 
     return config;
   },
 };
-
