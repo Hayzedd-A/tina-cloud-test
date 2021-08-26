@@ -382,7 +382,7 @@ class Checkout extends Component {
   };
 
   capitalizeWord = (value) => {
-    return value.charAt(0).toUpperCase() + value.slice(1);
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   };
 
   componentDidMount = async () => {
@@ -448,6 +448,7 @@ class Checkout extends Component {
         currentStore.delivery_types.map((item) => {
           let newObj = {};
           newObj.key = item.id;
+          // newObj.label = this.capitalizeWord(item.name);
           newObj.label = item.name;
           newObj.price = item.price;
           newStateArr.push(newObj);
@@ -465,9 +466,13 @@ class Checkout extends Component {
         price: 0,
       });
 
+      console.log("not sorted", newStateArr);
+      console.log("sorted", sortedArr);
+
       this.setState({
-        cities: [...newStateArr],
+        cities: [...sortedArr],
       });
+      
     } else {
       this.setState({
         deliveryErrFlag: true,
