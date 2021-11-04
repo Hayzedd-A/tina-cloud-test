@@ -18,6 +18,7 @@ import {
   getRequestError,
   paystack,
   patchFormValues,
+  dynamicSort,
 } from "../../utils/functions";
 import { deliveryPoints } from "../../utils/data";
 import { HeaderMenu } from "../Header";
@@ -445,7 +446,7 @@ class Checkout extends Component {
       ];
 
       currentStore &&
-        currentStore.delivery_types.map((item) => {
+        currentStore.delivery_types.sort(dynamicSort("name")).map((item) => {
           if (item?.price > 0) {
             let newObj = {};
             newObj.key = item.id;
@@ -467,8 +468,6 @@ class Checkout extends Component {
         label: "Choose a city/area",
         price: 0,
       });
-
-     
 
       this.setState({
         cities: [...sortedArr],
