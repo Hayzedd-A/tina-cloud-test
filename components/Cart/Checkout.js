@@ -178,7 +178,7 @@ class Checkout extends Component {
         },
       },
       deliveryCost: 0,
-      chosenState: "",
+      chosenState: "lagos",
       chosenCity: {},
       touched: false,
       cities: [...this.state.storeCities],
@@ -762,6 +762,23 @@ class Checkout extends Component {
                 </div>
               ) : shippingMethod.value === "s-delivery" ? (
                 <>
+                  <div className="input-container mb-40">
+                    <Fragment>
+                      <SelectField
+                        label="City"
+                        required
+                        hint="City"
+                        onChange={this.handleCityChange}
+                        options={this.state.cities}
+                      />
+
+                      {Object.entries(this.state.chosenCity).length < 1 && (
+                        <span className="hint flashing-red blink_me">
+                          Choose a city/area
+                        </span>
+                      )}
+                    </Fragment>
+                  </div>
                   <div className="input-container mb-40">
                     <label>
                       Delivery Address <sup className="marked">*</sup>
