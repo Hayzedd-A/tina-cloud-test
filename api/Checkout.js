@@ -3,15 +3,15 @@ import Geosuggest from "react-geosuggest";
 import * as classNames from "classnames";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 
-import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
-import { CartConsumer } from "../../providers/CartProvider";
-import { StoreConsumer } from "../../providers/StoreProvider";
+import { AuthenticationConsumer } from "../providers/AuthenticationProvider";
+import { CartConsumer } from "../providers/CartProvider";
+import { StoreConsumer } from "../providers/StoreProvider";
 
-import { TextField } from "../FormElements";
-import Toaster from "../Toaster";
+import { TextField } from "../components/FormElements";
+import Toaster from "../components/Toaster";
 
-import { postRequest, getRequest } from "../../api";
-import { RightArrow } from "../../public/static/vectors";
+import { postRequest, getRequest } from ".";
+import { RightArrow } from "../public/static/vectors";
 import {
   reduceArray,
   getFormValues,
@@ -19,11 +19,11 @@ import {
   paystack,
   patchFormValues,
   dynamicSort,
-} from "../../utils/functions";
-import { deliveryPoints } from "../../utils/data";
-import { HeaderMenu } from "../Header";
-import { STORE_ID } from "../../constants";
-import SelectField from "../FormElements/SelectField";
+} from "../utils/functions";
+import { deliveryPoints } from "../utils/data";
+import { HeaderMenu } from "../components/Header";
+import { STORE_ID } from "../constants";
+import SelectField from "../components/FormElements/SelectField";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
 
@@ -56,7 +56,7 @@ const initialFormData = {
   },
   shippingMethod: {
     value: "delivery",
-    valid: true,
+    valid: false,
   },
 };
 
@@ -70,12 +70,12 @@ class Checkout extends Component {
     states: [],
     cities: [],
     chosenState: "",
+    city: "",
     chosenCity: {},
     touched: false,
     priceCheck: false,
     deliveryErrFlag: false,
     pickupErrFlag: false,
-    storeCities: [],
   };
 
   checkPrice = (subTotal) => {
@@ -110,29 +110,31 @@ class Checkout extends Component {
       deliveryCost:
         target.name === "shippingMethod" ? 0 : this.state.deliveryCost,
     });
-    1;
   };
 
   handleDeliveryChange = ({ target }, valid) => {
     const { value } = target;
     this.resetDelivery(value);
-
-    if (deliveryArr.includes(value)) {
-      const { store } = this.props;
-      if (store?.states.length < 1) {
-        this.openToaster(
-          "error",
-          "The delivery system for this store is not availabale yet"
-        );
+    if (value !== "d-option") {
+      if (deliveryArr.includes(value)) {
+        const { store } = this.props;
+        if (store?.states.length < 1) {
+          this.openToaster(
+            "error",
+            "The delivery system for this store is not availabale yet"
+          );
+        } else {
+          this.effectDeliveryChange(value);
+        }
       } else {
         this.effectDeliveryChange(value);
       }
-    } else {
-      this.effectDeliveryChange(value);
     }
   };
 
   effectDeliveryChange = (value) => {
+    console.log(value);
+
     this.setState({
       formData: {
         ...this.state.formData,
@@ -181,7 +183,7 @@ class Checkout extends Component {
       chosenState: "",
       chosenCity: {},
       touched: false,
-      cities: [...this.state.storeCities],
+      cities: [],
     });
   };
 
@@ -310,8 +312,8 @@ class Checkout extends Component {
 
     const payload = {
       state: "lagos",
-      city: chosenCity?.label,
-      deliveryTypeId: chosenCity?.key,
+      city: chosenCity?.label || "",
+      deliveryTypeId: chosenCity?.key || "",
       specialNote: note,
       orderItems,
       customer: {
@@ -333,8 +335,6 @@ class Checkout extends Component {
     }
 
     shippingMethod === "pickup" && delete payload.deliveryLocation;
-
-    console.log("payload", payload);
 
     try {
       const res = await postRequest({
@@ -427,28 +427,13 @@ class Checkout extends Component {
     const subTotal = reduceArray(this.props.cart, "totalCost");
     this.checkPrice(subTotal);
 
-    // if (currentStore && currentStore?.address === null) {
-    //   this.openToaster(
-    //     "error",
-    //     "Store Address is not available,please try out other stores"
-    //   );
-    //   setTimeout(() => {
-    //     const { store: storeUrl } = this.props?.router?.query || {};
-    //     this.props?.router.push(`/${storeUrl}`, undefined, {
-    //       shallow: true,
-    //     });
-    //   }, 2000);
-    // }
-
-    // this.setState({
-    //   pickUpAddress: {
-    //     ...currentStore?.gokadaAddress,
-    //   },
-    // });
-
     // // Check if pickup is enabled and address set for pickup option
     if (currentStore) {
       if (currentStore?.newAddress === null || !currentStore?.pickup) {
+        // this.openToaster(
+        //   "error",
+        //   "Store Address is not available,please try out other stores"
+        // );
         this.setState({
           pickupErrFlag: true,
         });
@@ -483,56 +468,89 @@ class Checkout extends Component {
       });
     }
 
-    //build up cities object
+    //build up state object
     if (currentStore?.delivery_types.length > 0) {
-      let newStateArr = [];
+      let newStateArr = [
+        {
+          id: 0,
+          key: "no-state",
+          label: "Choose A State",
+          disabled: false,
+        },
+      ];
 
-      currentStore &&
-        currentStore.delivery_types.sort(dynamicSort("name")).map((item) => {
-          if (item?.price > 0) {
-            let newObj = {};
-            newObj.key = item.id;
-            newObj.label = this.capitalizeWord(item.name.toLowerCase());
-            // newObj.label = item.name;
-            newObj.price = item.price;
-            newStateArr.push(newObj);
-          }
+      const activeDeliveryStates = currentStore.states.filter((elem) => {
+        return elem?.isActive === true;
+      });
+
+      if (activeDeliveryStates.length > 0) {
+        activeDeliveryStates.map((item) => {
+          let newObj = {};
+          let newElem = parseInt(newStateArr[newStateArr.length - 1].id) + 1;
+          newObj.id = newElem;
+          newObj.key = item.name;
+          newObj.label = this.capitalizeWord(item.name) + " State";
+          newObj.disabled = false;
+          newStateArr.push(newObj);
+          return true;
         });
-
-      let sortedArr = newStateArr.sort(function (a, b) {
-        let nameA = a.label.toLowerCase();
-        let nameB = b.label.toLowerCase();
-        return nameA > nameB;
-      });
-
-      sortedArr.unshift({
-        key: 0,
-        label: "Choose a city/area",
-        price: 0,
-      });
-
+      } else {
+        this.setState({
+          deliveryErrFlag: true,
+        });
+        this.openToaster(
+          "error",
+          "This store does not have any active delivery state,you can check the pickup option"
+        );
+      }
       this.setState({
-        cities: [...sortedArr],
-        storeCities: [...sortedArr],
+        states: [...newStateArr],
       });
     } else {
       this.setState({
         deliveryErrFlag: true,
       });
-      this.openToaster(
-        "error",
-        "Delivery not availabale in this state yet, you can choose PICKUP or SCHEDULED delivery"
-      );
+      this.openToaster("error", "Delivery not available for this store yet.");
     }
   };
 
+  // handleCityChange = (e) => {
+  //   let cityIndex = e.target.value;
+  //   if (isNaN(e)) {
+  //     let index = e.target.value;
+  //     if (!isNaN(index)) {
+  //       this.openToaster("error", "Please choose a valid delivery option");
+  //       this.setState({
+  //         chosenCity: {},
+  //         deliveryCost: 0,
+  //       });
+  //     } else {
+  //       let found = this.state.cities.find((elem) => {
+  //         return elem.key === index;
+  //       });
+  //       if (found) {
+  //         if (Object.entries(found).length > 0) {
+  //           this.setState({
+  //             chosenCity: { ...found },
+  //             deliveryCost: parseInt(found.price),
+  //           });
+  //         }
+  //       }
+  //     }
+  //   } else {
+  //     this.setState({
+  //       chosenCity: {},
+  //       deliveryCost: 0,
+  //     });
+  //   }
+  // };
+
   handleCityChange = (e) => {
-    let cityIndex = e.target.value;
     if (isNaN(e)) {
       let index = e.target.value;
       if (!isNaN(index)) {
-        this.openToaster("error", "Please choose a valid delivery option");
         this.setState({
+          city: "",
           chosenCity: {},
           deliveryCost: 0,
         });
@@ -543,6 +561,7 @@ class Checkout extends Component {
         if (found) {
           if (Object.entries(found).length > 0) {
             this.setState({
+              city: found.label,
               chosenCity: { ...found },
               deliveryCost: parseInt(found.price),
             });
@@ -551,6 +570,7 @@ class Checkout extends Component {
       }
     } else {
       this.setState({
+        city: "",
         chosenCity: {},
         deliveryCost: 0,
       });
@@ -560,11 +580,14 @@ class Checkout extends Component {
   render() {
     const {
       toaster,
+      chosenState,
+      chosenCity,
       deliveryCost,
       isCheckingOut,
       formData,
       isLoadingDeliveryPrice,
       isMenuActive,
+      pickupErrFlag,
     } = this.state;
     const { cart, goBack, couponObject } = this.props;
     const { name, phoneNumber, email, shippingMethod, note, deliveryDate } =
@@ -687,22 +710,33 @@ class Checkout extends Component {
                 onChange={this.handleDeliveryChange}
                 options={[
                   {
-                    key: "delivery",
-                    label: "Delivery",
+                    key: "d-option",
+                    label: "Choose a delivery option",
+                    disabled: false,
                   },
                   {
                     key: "pickup",
                     label: "Pickup",
+                    disabled: this.state.pickupErrFlag,
+                  },
+                  {
+                    key: "delivery",
+                    label: "Delivery",
+                    disabled: this.state.deliveryErrFlag,
                   },
                   {
                     key: "s-delivery",
                     label: "Scheduled Delivery",
+                    disabled: this.state.deliveryErrFlag,
                   },
                   {
                     key: "s-pickup",
                     label: "Scheduled Pickup",
+                    disabled: this.state.pickupErrFlag,
                   },
-                ]}
+                ].filter((item) => {
+                  return item?.disabled === false;
+                })}
               />
               {shippingMethod.value === "delivery" ? (
                 <Fragment>
@@ -808,8 +842,14 @@ class Checkout extends Component {
                 <>
                   <div className="input-container mb-40">
                     <label>Pickup Address</label>
-                    <div className="pickup-address mb-40">
+                    {/* <div className="pickup-address mb-40">
                       14B Africa Ln, Lekki Phase 1, Lekki
+                    </div> */}
+                    <div className="pickup-address mb-40">
+                      {pickupErrFlag
+                        ? "Pickup not available for this store"
+                        : this.state.pickUpAddress?.address}
+                      {/* RT Lawal Street, Behind Meadow Hall School, Ikate */}
                     </div>
                   </div>
                   <div className="input-container mb-40">
@@ -837,6 +877,7 @@ class Checkout extends Component {
             </div>
           </div>
         </div>
+        
         <div className="cart-actions no-margin fixed">
           {!!deliveryCost &&
             (shippingMethod.value === "delivery" ||
