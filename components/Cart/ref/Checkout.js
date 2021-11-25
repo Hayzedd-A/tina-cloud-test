@@ -3,15 +3,15 @@ import Geosuggest from "react-geosuggest";
 import * as classNames from "classnames";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 
-import { AuthenticationConsumer } from "../providers/AuthenticationProvider";
-import { CartConsumer } from "../providers/CartProvider";
-import { StoreConsumer } from "../providers/StoreProvider";
+import { AuthenticationConsumer } from "../../../providers/AuthenticationProvider";
+import { CartConsumer } from "../../../providers/CartProvider";
+import { StoreConsumer } from "../../../providers/StoreProvider";
 
-import { TextField } from "../components/FormElements";
-import Toaster from "../components/Toaster";
+import { TextField } from "../../FormElements";
+import Toaster from "../../Toaster";
 
-import { postRequest, getRequest } from ".";
-import { RightArrow } from "../public/static/vectors";
+import { postRequest, getRequest } from "../../../api";
+import { RightArrow } from "../../../public/static/vectors";
 import {
   reduceArray,
   getFormValues,
@@ -19,11 +19,11 @@ import {
   paystack,
   patchFormValues,
   dynamicSort,
-} from "../utils/functions";
-import { deliveryPoints } from "../utils/data";
-import { HeaderMenu } from "../components/Header";
-import { STORE_ID } from "../constants";
-import SelectField from "../components/FormElements/SelectField";
+} from "../../../utils/functions";
+import { deliveryPoints } from "../../../utils/data";
+import { HeaderMenu } from "../../Header";
+import { STORE_ID } from "../../../constants";
+import SelectField from "../../FormElements/SelectField";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
 

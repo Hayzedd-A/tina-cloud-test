@@ -4,7 +4,7 @@ export const isClient = () => {
   return typeof window !== "undefined";
 };
 
-export const slugify = text => {
+export const slugify = (text) => {
   return (
     text
       .toString()
@@ -19,14 +19,14 @@ export const slugify = text => {
   ); // Trim - from end of text
 };
 
-export const getFormValues = formFields => {
+export const getFormValues = (formFields) => {
   if (!formFields || !(typeof formFields === "object") || formFields[0]) {
     return null;
   }
 
   let formValues = {};
 
-  Object.keys(formFields).forEach(key => {
+  Object.keys(formFields).forEach((key) => {
     formValues[key] =
       typeof formFields[key] === "string"
         ? formFields[key].value.trim()
@@ -36,7 +36,7 @@ export const getFormValues = formFields => {
   return formValues;
 };
 
-export const getRequestError = error => {
+export const getRequestError = (error) => {
   const { response } = error;
   if (response && response.data.code === 401) {
     logout();
@@ -59,7 +59,7 @@ export const reduceArray = (array, reducer) => {
   return array.reduce((prev, curr) => prev + parseFloat(curr[reducer]), 0);
 };
 
-export const reduceLinearArray = array => {
+export const reduceLinearArray = (array) => {
   return array.reduce((prev, curr) => prev + parseFloat(curr), 0);
 };
 
@@ -69,7 +69,7 @@ export const getDays = () => {
 
     return {
       label: day,
-      value: day
+      value: day,
     };
   });
 
@@ -79,7 +79,7 @@ export const getDays = () => {
 export const getMonths = () => {
   const months = new Array(12).fill(0).map(({}, index) => ({
     label: moment(index + 1, "M").format("MMMM"),
-    value: moment(index + 1, "M").format("MM")
+    value: moment(index + 1, "M").format("MM"),
   }));
 
   return months;
@@ -91,14 +91,14 @@ export const getYears = () => {
 
     return {
       label: year,
-      value: year
+      value: year,
     };
   });
 
   return years;
 };
 
-export const convertDateObjectToString = date => {
+export const convertDateObjectToString = (date) => {
   let month = "" + (date.getMonth() + 1);
   let day = "" + date.getDate();
   let year = date.getFullYear();
@@ -123,14 +123,13 @@ export const paystack = (
 ) => {
   const handler = window.PaystackPop.setup({
     key: "pk_live_42c6b07dfc9fd32654d4cc9fd39b08a031ac8826",
-    // key: "pk_test_54ed04488bcc1a192bd2406fd36cfd8596e3ccae",
     email,
     amount,
-    currency: 'NGN',
+    currency: "NGN",
     metadata,
     ref,
-    callback: response => handlePaystackSuccess(response),
-    onClose: () => handlePaystackClose()
+    callback: (response) => handlePaystackSuccess(response),
+    onClose: () => handlePaystackClose(),
   });
 
   handler.openIframe();
@@ -152,10 +151,10 @@ export const patchFormValues = (formFields, data) => {
 
   let formValues = {};
 
-  Object.keys(formFields).forEach(key => {
+  Object.keys(formFields).forEach((key) => {
     formValues[key] = {
       value: data[key] || "",
-      valid: !!data[key] || formFields[key].valid
+      valid: !!data[key] || formFields[key].valid,
     };
   });
 
