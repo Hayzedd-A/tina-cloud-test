@@ -76,6 +76,12 @@ class Checkout extends Component {
     deliveryErrFlag: false,
     pickupErrFlag: false,
     storeCities: [],
+    initialValue: "",
+    deliveryLocation: {
+      address: "",
+      latitude: "",
+      longitude: "",
+    },
   };
 
   checkPrice = (subTotal) => {
@@ -182,6 +188,12 @@ class Checkout extends Component {
       chosenCity: {},
       touched: false,
       cities: [...this.state.storeCities],
+      deliveryLocation: {
+        address: "",
+        latitude: "6.5244",
+        longitude: "3.3792",
+      },
+      initialValue: "",
     });
   };
 
@@ -333,6 +345,7 @@ class Checkout extends Component {
     }
 
     shippingMethod === "pickup" && delete payload.deliveryLocation;
+    shippingMethod === "s-pickup" && delete payload.deliveryLocation;
 
     console.log("payload", payload);
 
@@ -565,6 +578,7 @@ class Checkout extends Component {
       formData,
       isLoadingDeliveryPrice,
       isMenuActive,
+      initialValue,
     } = this.state;
     const { cart, goBack, couponObject } = this.props;
     const { name, phoneNumber, email, shippingMethod, note, deliveryDate } =
@@ -745,12 +759,18 @@ class Checkout extends Component {
                       onSuggestSelect={this.onSuggestSelect}
                       onSuggestNoResults={this.onSuggestNoResults}
                       queryDelay={600}
+                      initialValue={initialValue}
                     />
-                    <span className="hint flashing-red blink_me">
+                    {Object.entries(this.state.deliveryLocation).length < 1 && (
+                      <span className="hint flashing-red blink_me">
+                        Please enter a more specific address for delivery
+                      </span>
+                    )}
+                    {/* <span className="hint flashing-red blink_me">
                       {" "}
                       If your delivery address is not auto-detected, enter your
                       city e.g Lekki Phase 1 or Surulere
-                    </span>
+                    </span> */}
                   </div>
                 </Fragment>
               ) : shippingMethod.value === "pickup" ? (
@@ -802,11 +822,16 @@ class Checkout extends Component {
                       onSuggestNoResults={this.onSuggestNoResults}
                       queryDelay={600}
                     />
-                    <span className="hint flashing-red blink_me">
+                    {Object.entries(this.state.deliveryLocation).length < 1 && (
+                      <span className="hint flashing-red blink_me">
+                        Please enter a more specific address for delivery
+                      </span>
+                    )}
+                    {/* <span className="hint flashing-red blink_me">
                       {" "}
                       If your delivery address is not auto-detected, enter your
                       city e.g Lekki Phase 1 or Surulere
-                    </span>
+                    </span> */}
                   </div>
                   <div className="input-container mb-40">
                     <label>
