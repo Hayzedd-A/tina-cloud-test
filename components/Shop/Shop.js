@@ -71,7 +71,7 @@ class Shop extends Component {
               <EmptyStore />
             </div>
             <div className="message">
-              We are Officially closed for the year.
+              We are officially closed for the year.
               <br />
               Thank you for the patronage through out the year, We shall be back in business on the 10th of January, 2022
               {/* <br /> Please check back later */}
