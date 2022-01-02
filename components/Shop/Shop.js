@@ -12,12 +12,12 @@ import { slugify } from "../../utils/functions";
 class Shop extends Component {
   state = {
     currentTab: 0,
-    isTabActive: false
+    isTabActive: false,
   };
 
-  switchTab = currentTab => {
+  switchTab = (currentTab) => {
     this.setState({
-      currentTab
+      currentTab,
     });
   };
 
@@ -27,7 +27,7 @@ class Shop extends Component {
       .getBoundingClientRect();
 
     this.setState({
-      isTabActive: tab && tab.top <= 0
+      isTabActive: tab && tab.top <= 0,
     });
   };
 
@@ -43,22 +43,43 @@ class Shop extends Component {
     const { currentTab, isTabActive } = this.state;
     const { selectItem, products, productCategories } = this.props;
     const activeCategories = productCategories
-      ? productCategories.filter((item) => item.active)
-        .sort((a, b) => parseInt(a.position) > parseInt(b.position) ? 1 : -1)
-        .map((item) => item.name)
+      ? productCategories
+          .filter((item) => item.active)
+          .sort((a, b) =>
+            parseInt(a.position) > parseInt(b.position) ? 1 : -1
+          )
+          .map((item) => item.name)
       : [];
 
     const allProducts = [];
     activeCategories.forEach((category) => {
-      const product = products.find(item => item.name === category);
-      allProducts.push(product)
-    })
+      const product = products.find((item) => item.name === category);
+      allProducts.push(product);
+    });
 
-    const toppings = allProducts && allProducts[currentTab] && allProducts[currentTab].toppings;
+    const toppings =
+      allProducts &&
+      allProducts[currentTab] &&
+      allProducts[currentTab].toppings;
     return (
       <div className="shop-container" id="shop-container">
         <Header />
-        <Tabs
+
+        <div className="container">
+          <div className="cart-empty-state" style={{ padding: "70px 30px" }}>
+            <div className="icon">
+              <EmptyStore />
+            </div>
+            <div className="message">
+              We are Officially closed for the year.
+              <br />
+              Thank you for the patronage through out the year, We shall be back in business on the 10th of January, 2022
+              {/* <br /> Please check back later */}
+            </div>
+          </div>
+        </div>
+
+        {/* <Tabs
           active={isTabActive}
           tabs={activeCategories}
           forCategories={true}
@@ -66,10 +87,18 @@ class Shop extends Component {
           switchTab={this.switchTab}
         />
         <div className="container">
-          {allProducts && allProducts[currentTab] && allProducts[currentTab].topProducts && allProducts[currentTab].topProducts.length ||
-          allProducts && allProducts[currentTab] && allProducts[currentTab].products && allProducts[currentTab].products.length ? (
+          {(allProducts &&
+            allProducts[currentTab] &&
+            allProducts[currentTab].topProducts &&
+            allProducts[currentTab].topProducts.length) ||
+          (allProducts &&
+            allProducts[currentTab] &&
+            allProducts[currentTab].products &&
+            allProducts[currentTab].products.length) ? (
             <>
-              {!!(allProducts && allProducts[currentTab].topProducts.length) && (
+              {!!(
+                allProducts && allProducts[currentTab].topProducts.length
+              ) && (
                 <div className="shop-section carousel">
                   <div className="section-title favorite">
                     <span className="icon">
@@ -78,26 +107,32 @@ class Shop extends Component {
                     <span className="text">Current Best Sellers</span>
                   </div>
                   <div className="section-items">
-                    {allProducts && allProducts[currentTab].topProducts.map((item, index) => {
-                      const { name, sizes } = item;
-                      const activeSizes = Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0);
-                      const firstSize = activeSizes && activeSizes[0];
-                      const { imageUrl, unitPrice } = sizes[firstSize][0] || {};
+                    {allProducts &&
+                      allProducts[currentTab].topProducts.map((item, index) => {
+                        const { name, sizes } = item;
+                        const activeSizes = Object.keys(sizes).filter(
+                          (item) => sizes[item] && sizes[item].length > 0
+                        );
+                        const firstSize = activeSizes && activeSizes[0];
+                        const { imageUrl, unitPrice } =
+                          sizes[firstSize][0] || {};
 
-                      return (
-                        <ShopItem
-                          key={`${slugify(products[currentTab].name)}-${index}`}
-                          name={name}
-                          image={imageUrl}
-                          price={unitPrice}
-                          onClick={() => selectItem({ ...item, toppings })}
-                        />
-                      );
-                    })}
+                        return (
+                          <ShopItem
+                            key={`${slugify(
+                              products[currentTab].name
+                            )}-${index}`}
+                            name={name}
+                            image={imageUrl}
+                            price={unitPrice}
+                            onClick={() => selectItem({ ...item, toppings })}
+                          />
+                        );
+                      })}
                   </div>
                 </div>
               )}
-              {!!( allProducts && allProducts[currentTab].products.length) && (
+              {!!(allProducts && allProducts[currentTab].products.length) && (
                 <div className="shop-section">
                   <div className="section-title">
                     All {allProducts[currentTab].name}s
@@ -105,22 +140,28 @@ class Shop extends Component {
                   <div className="section-items">
                     {allProducts[currentTab].products.map((item, index) => {
                       const { name, sizes } = item;
-                      const activeSizes = Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0);
+                      const activeSizes = Object.keys(sizes).filter(
+                        (item) => sizes[item] && sizes[item].length > 0
+                      );
                       const firstSize = activeSizes && activeSizes[0];
-                      const { imageUrl, unitPrice } = sizes[firstSize] ? sizes[firstSize][0] : {};
+                      const { imageUrl, unitPrice } = sizes[firstSize]
+                        ? sizes[firstSize][0]
+                        : {};
 
                       console.log(name, activeSizes[0]);
 
-                      return firstSize && (
-                        <ShopItem
-                          key={`${slugify(
-                            products[currentTab].name
-                          )}-${index}-2`}
-                          name={name}
-                          image={imageUrl}
-                          price={unitPrice}
-                          onClick={() => selectItem({ ...item, toppings })}
-                        />
+                      return (
+                        firstSize && (
+                          <ShopItem
+                            key={`${slugify(
+                              products[currentTab].name
+                            )}-${index}-2`}
+                            name={name}
+                            image={imageUrl}
+                            price={unitPrice}
+                            onClick={() => selectItem({ ...item, toppings })}
+                          />
+                        )
                       );
                     })}
                   </div>
@@ -139,7 +180,7 @@ class Shop extends Component {
             </div>
           )}
           <Menu />
-        </div>
+        </div> */}
       </div>
     );
   }
