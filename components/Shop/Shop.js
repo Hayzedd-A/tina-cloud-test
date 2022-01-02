@@ -9,12 +9,9 @@ import { ProductsConsumer } from "../../providers/ProductsProvider";
 import { EmptyStore } from "../../public/static/vectors";
 import { slugify } from "../../utils/functions";
 
-import Toaster from "../Toaster";
 import Modal from "../Modal";
 import {
-  RightArrow,
   ModalBread,
-  ArrowRight,
 } from "../../public/static/vectors";
 
 class Shop extends Component {
@@ -98,10 +95,10 @@ class Shop extends Component {
                 <ModalBread />
               </div>
               <div className="message">
-                We are officially closed for the year.
+                We are currently closed till January 10th. Orders placed now
+                will be delivered on the 10th.
                 <br />
-                Thank you for the patronage through out the year, All your
-                orders shall be processed on the 10th of January, 2022.
+                Thank you.
               </div>
 
               <div className="actions">
