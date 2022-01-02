@@ -9,10 +9,20 @@ import { ProductsConsumer } from "../../providers/ProductsProvider";
 import { EmptyStore } from "../../public/static/vectors";
 import { slugify } from "../../utils/functions";
 
+import Toaster from "../Toaster";
+import Modal from "../Modal";
+import {
+  RightArrow,
+  ModalBread,
+  ArrowRight,
+} from "../../public/static/vectors";
+
 class Shop extends Component {
   state = {
     currentTab: 0,
     isTabActive: false,
+    toaster: {},
+    modalOpen: true,
   };
 
   switchTab = (currentTab) => {
@@ -31,8 +41,24 @@ class Shop extends Component {
     });
   };
 
+  openToaster = (status, message) => {
+    this.setState({
+      toaster: {
+        status,
+        message,
+      },
+    });
+  };
+
+  closeToaster = () => {
+    this.setState({
+      toaster: {},
+    });
+  };
+
   componentDidMount() {
     window.addEventListener("scroll", this.setTabBg);
+    this.openToaster("success", `Added successfully to the cart`);
   }
 
   componentWillUnmount() {
@@ -65,21 +91,32 @@ class Shop extends Component {
       <div className="shop-container" id="shop-container">
         <Header />
 
-        <div className="container">
-          <div className="cart-empty-state" style={{ padding: "70px 30px" }}>
-            <div className="icon">
-              <EmptyStore />
-            </div>
-            <div className="message">
-              We are officially closed for the year.
-              <br />
-              Thank you for the patronage through out the year, We shall be back in business on the 10th of January, 2022
-              {/* <br /> Please check back later */}
-            </div>
-          </div>
-        </div>
+        {this.state.modalOpen && (
+          <Modal closeModal={this.closeToaster}>
+            <div className="add-cart-success">
+              <div className="icon">
+                <ModalBread />
+              </div>
+              <div className="message">
+                We are officially closed for the year.
+                <br />
+                Thank you for the patronage through out the year, All your
+                orders shall be processed on the 10th of January, 2022.
+              </div>
 
-        {/* <Tabs
+              <div className="actions">
+                <button
+                  className="continue"
+                  onClick={() => this.setState({ modalOpen: false })}
+                >
+                  Ok
+                </button>
+              </div>
+            </div>
+          </Modal>
+        )}
+
+        <Tabs
           active={isTabActive}
           tabs={activeCategories}
           forCategories={true}
@@ -180,7 +217,7 @@ class Shop extends Component {
             </div>
           )}
           <Menu />
-        </div> */}
+        </div>
       </div>
     );
   }
