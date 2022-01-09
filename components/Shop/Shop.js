@@ -10,16 +10,14 @@ import { EmptyStore } from "../../public/static/vectors";
 import { slugify } from "../../utils/functions";
 
 import Modal from "../Modal";
-import {
-  ModalBread,
-} from "../../public/static/vectors";
+import { ModalBread } from "../../public/static/vectors";
 
 class Shop extends Component {
   state = {
     currentTab: 0,
     isTabActive: false,
     toaster: {},
-    modalOpen: true,
+    modalOpen: false,
   };
 
   switchTab = (currentTab) => {
