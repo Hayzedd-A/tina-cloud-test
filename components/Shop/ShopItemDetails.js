@@ -350,7 +350,17 @@ class ShopItemDetails extends Component {
     return (
       <div className="shop-item-details">
         <div className="item-image">
-          <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+          <div
+            className="container"
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              height: "100%",
+            }}
+          >
             <img
               src={imageUrl ? imageUrl : "/static/svgs/image-placeholder.svg"}
               alt=""
@@ -383,18 +393,22 @@ class ShopItemDetails extends Component {
           <div className="container">
             <div className="name-price">
               <span className="name">{name}</span>
-              <span className="price">
-                ₦ {unitPrice?.toLocaleString()}
-              </span>
+              <span className="price">₦ {unitPrice?.toLocaleString()}</span>
             </div>
-            <div className="description">{description}</div>
+            {/* <div className="description">{description}</div> */}
+            <div className="description">
+              {selectedItem?.description !== undefined
+                ? selectedItem?.description.charAt(0).toUpperCase() +
+                  selectedItem?.description.slice(1)
+                : ""}
+            </div>
           </div>
         </div>
         <div className="select-section sizes-section">
-          <div className="container" style={{ position: 'relative' }}>
+          <div className="container" style={{ position: "relative" }}>
             <span className="title">SELECT SIZE</span>
             <div className="left-arrow" onClick={this.leftClick}>
-              <ArrowRight style={{ transform: 'rotate(180deg' }} />
+              <ArrowRight style={{ transform: "rotate(180deg" }} />
             </div>
             <div className="sizes" ref={this.scrollContainerRef}>
               {activeSizes &&
@@ -402,7 +416,7 @@ class ShopItemDetails extends Component {
                   <span
                     key={`size-${index}`}
                     className={classNames("size-selector", {
-                      active: selectedSize === size
+                      active: selectedSize === size,
                     })}
                     onClick={() => this.selectSize(size)}
                   >
@@ -426,7 +440,7 @@ class ShopItemDetails extends Component {
             <div className="quantity">
               <NumberSelector
                 value={this.checkQuantity()}
-                onChange={e => this.handleQuantity(e.target.value)}
+                onChange={(e) => this.handleQuantity(e.target.value)}
               />
             </div>
           </div>
@@ -437,15 +451,16 @@ class ShopItemDetails extends Component {
               <span className="title">EXTRAS</span>
               <div
                 className={classNames("add-toppings", {
-                  active: this.getSelectedToppings().length
+                  active: this.getSelectedToppings().length,
                 })}
                 onClick={this.toggleToppingsForm}
               >
                 {this.getSelectedToppings().length
-                  ? `${this.getSelectedToppings().length === 1
-                    ? `${this.getSelectedToppings().length} TOPPING`
-                    : `${this.getSelectedToppings().length} TOPPINGS`
-                  }`
+                  ? `${
+                      this.getSelectedToppings().length === 1
+                        ? `${this.getSelectedToppings().length} TOPPING`
+                        : `${this.getSelectedToppings().length} TOPPINGS`
+                    }`
                   : "ADD TOPPINGS"}
               </div>
             </div>
@@ -454,7 +469,7 @@ class ShopItemDetails extends Component {
         <div className="item-footer">
           <div
             className={classNames("add-to-cart", {
-              disabled: !this.getTotalQuantity()
+              disabled: !this.getTotalQuantity(),
             })}
             onClick={this.cartAction}
           >
@@ -503,7 +518,10 @@ class ShopItemDetails extends Component {
               </div>
               <div className="message">{toaster.message}</div>
               <div className="actions">
-                <button className="continue" onClick={() => router.push("/cart")}>
+                <button
+                  className="continue"
+                  onClick={() => router.push("/cart")}
+                >
                   Checkout
                 </button>
                 <button
