@@ -502,14 +502,14 @@ class Checkout extends Component {
 
       currentStore &&
         currentStore.delivery_types.sort(dynamicSort("name")).map((item) => {
-          if (item?.price > 0) {
+          // if (item?.price > 0) {
             let newObj = {};
             newObj.key = item.id;
             newObj.label = this.capitalizeWord(item.name.toLowerCase());
             // newObj.label = item.name;
             newObj.price = item.price;
             newStateArr.push(newObj);
-          }
+          // }
         });
 
       let sortedArr = newStateArr.sort(function (a, b) {
