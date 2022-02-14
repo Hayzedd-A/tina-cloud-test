@@ -17,7 +17,7 @@ class Shop extends Component {
     currentTab: 0,
     isTabActive: false,
     toaster: {},
-    modalOpen: false,
+    modalOpen: true,
   };
 
   switchTab = (currentTab) => {
@@ -93,8 +93,8 @@ class Shop extends Component {
                 <ModalBread />
               </div>
               <div className="message">
-                We are currently closed till January 10th. Orders placed now
-                will be delivered on the 10th.
+                Thanks so much for visiting us. We are fully booked till
+                Wednesday. Orders placed now will be processed on Wednesday
                 <br />
                 Thank you.
               </div>
