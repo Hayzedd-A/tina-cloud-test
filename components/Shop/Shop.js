@@ -17,7 +17,7 @@ class Shop extends Component {
     currentTab: 0,
     isTabActive: false,
     toaster: {},
-    modalOpen: false,
+    modalOpen: true,
   };
 
   switchTab = (currentTab) => {
@@ -94,7 +94,7 @@ class Shop extends Component {
               </div>
               <div className="message">
                 Thanks so much for visiting us. We are fully booked till
-                Wednesday. Orders placed now will be processed on Wednesday
+                Thursday. Orders placed now will be processed on Wednesday
                 <br />
                 Thank you.
               </div>
