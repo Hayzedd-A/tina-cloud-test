@@ -94,7 +94,7 @@ class Shop extends Component {
               </div>
               <div className="message">
                 Thanks so much for visiting us. We are fully booked till
-                Thursday. Orders placed now will be processed on Wednesday
+                Thursday. Orders placed now will be processed Tomorrow.
                 <br />
                 Thank you.
               </div>
