@@ -269,25 +269,39 @@ class Checkout extends Component {
   };
 
   onSuggestChange = async (suggest) => {
-    this.setState({
-      formData: {
-        ...this.state.formData,
-        address: {
-          value: suggest,
-          valid: true,
+    if (suggest && suggest.length > 0) {
+      this.setState({
+        formData: {
+          ...this.state.formData,
+          address: {
+            value: suggest,
+            valid: true,
+          },
         },
-      },
-      deliveryLocation: {
-        address: suggest,
-        latitude: 6.52,
-        longitude: 3.37,
-      },
-      deliveryCost:
-        Object.keys(this.state.chosenCity).length > 0
-          ? parseInt(this.state.chosenCity?.price)
-          : 0,
-      isLoadingDeliveryPrice: false,
-    });
+        deliveryLocation: {
+          address: suggest,
+          latitude: 6.52,
+          longitude: 3.37,
+        },
+        deliveryCost:
+          Object.keys(this.state.chosenCity).length > 0
+            ? parseInt(this.state.chosenCity?.price)
+            : 0,
+        isLoadingDeliveryPrice: false,
+      });
+    } else {
+      this.setState({
+        formData: {
+          ...this.state.formData,
+          address: {
+            value: "",
+            valid: false,
+          },
+        },
+        deliveryCost: 0,
+        isLoadingDeliveryPrice: true,
+      });
+    }
   };
 
   onSuggestNoResults = (userInput) => {};
