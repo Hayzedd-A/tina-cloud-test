@@ -841,6 +841,7 @@ class Checkout extends Component {
                       placeholder="Enter your address"
                       country="ng"
                       onSuggestSelect={this.onSuggestSelect}
+                      onChange={this.onSuggestChange}
                       onSuggestNoResults={this.onSuggestNoResults}
                       queryDelay={600}
                     />
