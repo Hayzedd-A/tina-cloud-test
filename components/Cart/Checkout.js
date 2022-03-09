@@ -223,7 +223,6 @@ class Checkout extends Component {
   };
 
   onSuggestSelect = async (suggest) => {
-    // console.log("suggest", this.state?.chosenCity);
     this.setState(
       {
         formData: {
@@ -267,6 +266,28 @@ class Checkout extends Component {
         }
       }
     );
+  };
+
+  onSuggestChange = async (suggest) => {
+    this.setState({
+      formData: {
+        ...this.state.formData,
+        address: {
+          value: suggest,
+          valid: true,
+        },
+      },
+      deliveryLocation: {
+        address: suggest,
+        latitude: 6.52,
+        longitude: 3.37,
+      },
+      deliveryCost:
+        Object.keys(this.state.chosenCity).length > 0
+          ? parseInt(this.state.chosenCity?.price)
+          : 0,
+      isLoadingDeliveryPrice: false,
+    });
   };
 
   onSuggestNoResults = (userInput) => {};
@@ -503,12 +524,12 @@ class Checkout extends Component {
       currentStore &&
         currentStore.delivery_types.sort(dynamicSort("name")).map((item) => {
           // if (item?.price > 0) {
-            let newObj = {};
-            newObj.key = item.id;
-            newObj.label = this.capitalizeWord(item.name.toLowerCase());
-            // newObj.label = item.name;
-            newObj.price = item.price;
-            newStateArr.push(newObj);
+          let newObj = {};
+          newObj.key = item.id;
+          newObj.label = this.capitalizeWord(item.name.toLowerCase());
+          // newObj.label = item.name;
+          newObj.price = item.price;
+          newStateArr.push(newObj);
           // }
         });
 
@@ -757,6 +778,7 @@ class Checkout extends Component {
                       placeholder="Enter your address"
                       country="ng"
                       onSuggestSelect={this.onSuggestSelect}
+                      onChange={this.onSuggestChange}
                       onSuggestNoResults={this.onSuggestNoResults}
                       queryDelay={600}
                       initialValue={initialValue}
