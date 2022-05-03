@@ -56,7 +56,10 @@ export const logout = () => {
 };
 
 export const reduceArray = (array, reducer) => {
-  return array.reduce((prev, curr) => prev + parseFloat(curr[reducer]), 0);
+  // return array.reduce((prev, curr) => prev + parseFloat(curr[reducer]), 0);
+  return array
+    ? array.reduce((prev, curr) => prev + parseFloat(curr[reducer]), 0)
+    : 0;
 };
 
 export const reduceLinearArray = (array) => {
