@@ -42,7 +42,6 @@ class StoreProvider extends Component {
         invalidURL: false,
         isActive: res?.data?.paystackSubAccountCode ? true : false,
       });
-      console.log("Fetch store called and saved");
     } catch (error) {
       console.log("store not saved", error);
 
