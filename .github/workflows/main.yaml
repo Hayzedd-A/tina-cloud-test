@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   REPOSITORY_ID: gourmet-twist
@@ -34,7 +34,7 @@ jobs:
           echo "Building image with tag: ${{ env.DOCKER_BUILD_TAG }}"
           docker build -f Dockerfile -t ${{ env.DOCKER_BUILD_TAG }} .
           echo "DOCKER_BUILD_TAG=${{ env.DOCKER_BUILD_TAG }}" >> $GITHUB_ENV
-      - uses: google-github-actions/setup-gcloud@master
+      - uses: google-github-actions/setup-gcloud@main
         with:
           version: '290.0.1'
           project_id: ${{ secrets.GCP_PROJECT_ID }}
