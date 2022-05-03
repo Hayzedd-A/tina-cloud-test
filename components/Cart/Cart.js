@@ -152,7 +152,7 @@ class Cart extends Component {
               {isMenuActive && <HeaderMenu showMenu={this.showMenu} />}
             </CSSTransitionGroup>
           </div>
-          {!!cart.length && (
+          {!!cart?.length && (
             <div className="info delivery-notice">
               <span className="icon">
                 <img src="/static/images/delivery.png" alt="" />
@@ -164,7 +164,7 @@ class Cart extends Component {
           )}
         </div>
         {!isLoadingCart &&
-          (cart.length ? (
+          (cart?.length ? (
             <>
               <div className="cart-content">
                 <div className="cart-items">
@@ -321,7 +321,7 @@ class Cart extends Component {
                 )}
                 <div
                   className={classNames("checkout-button", {
-                    disabled: !cart.length || subTotal < minimumAmount,
+                    disabled: !cart?.length || subTotal < minimumAmount,
                   })}
                   onClick={subTotal >= minimumAmount && checkout}
                 >

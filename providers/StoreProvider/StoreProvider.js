@@ -20,7 +20,7 @@ class StoreProvider extends Component {
   }
 
   fetchStoreInfo = async () => {
-    console.log("Fetch store called");
+    console.log("Fetch store called 2");
     this.setState({
       isLoadingStore: true,
     });
