@@ -12,7 +12,7 @@ import { ModalBread } from "../public/static/vectors";
 
 const CartPage = () => {
   const [isCheckoutActive, showCheckout] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(true);
   const [isCheckoutSuccessActive, showCheckoutSuccess] = useState(false);
   const [toaster, setToaster] = useState(null);
   const [couponObject, setCouponObject] = useState(null);
@@ -72,8 +72,8 @@ const CartPage = () => {
               <ModalBread />
             </div>
             <div className="message">
-              We are currently closed till January 10th. Orders placed now will
-              be delivered on the 10th.
+              We are currently closed for today. Orders placed now will be
+              processed and delivered tommorow.
               <br />
               Thank you.
             </div>
