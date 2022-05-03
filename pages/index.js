@@ -12,19 +12,19 @@ class Home extends Component {
   state = {
     selectedItem: {},
     showDetails: false,
-    showSplash: true
+    showSplash: true,
   };
 
   selectItem = ({ name, id }) => {
     this.props.router.push(`/shop?name=${slugify(name)}&id=${id}`, undefined, {
-      shallow: true
+      shallow: true,
     });
   };
 
   componentDidMount() {
     this.splashtimeout = setTimeout(() => {
       this.setState({
-        showSplash: false
+        showSplash: false,
       });
     }, 4000);
   }
@@ -32,6 +32,8 @@ class Home extends Component {
   componentWillUnmount() {
     clearTimeout(this.splashtimeout);
   }
+
+  // <SplashScreen />
 
   render() {
     const { isLoadingProducts } = this.props;
