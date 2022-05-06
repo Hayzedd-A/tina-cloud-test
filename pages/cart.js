@@ -12,7 +12,7 @@ import { ModalBread } from "../public/static/vectors";
 
 const CartPage = () => {
   const [isCheckoutActive, showCheckout] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(true);
   const [testFlows, setTestFlow] = useState(false);
   const [isCheckoutSuccessActive, showCheckoutSuccess] = useState(false);
   const [toaster, setToaster] = useState(null);
