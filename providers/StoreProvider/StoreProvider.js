@@ -26,7 +26,7 @@ class StoreProvider extends Component {
     });
 
     const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyODc3ODc3OCwiZXhwIjoxNjYwMzM2Mzc4fQ.RzbdNEI-fpB85UCJi8TetFi6BSWKtZQNBl70upcE-Ww";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2MTUzMzIxMCwiZXhwIjoxNjkzMDkwODEwfQ.FxboekvW0rnwGwVjeWyM5yLSmVCyI2ESzKtqBMHvXS8";
 
     try {
       const res = await zupaGetRequest({
