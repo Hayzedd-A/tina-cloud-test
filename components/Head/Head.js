@@ -14,12 +14,14 @@ export default ({ title, url, description, ogImage }) => (
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
+
     <meta property="og:url" content={url || defaultOGURL} />
     <meta property="og:title" content={title || "Best Banana Bread in Lagos"} />
     <meta
       property="og:description"
       content={description || defaultDescription}
     />
+
     <meta name="twitter:site" content={url || defaultOGURL} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage || defaultOGImage} />

@@ -10,12 +10,12 @@ import { slugify } from "../utils/functions";
 class Home extends Component {
   state = {
     selectedItem: {},
-    showDetails: false
+    showDetails: false,
   };
 
   selectItem = ({ name, id }) => {
     this.props.router.push(`/shop?name=${slugify(name)}&id=${id}`, undefined, {
-      shallow: true
+      shallow: true,
     });
   };
 

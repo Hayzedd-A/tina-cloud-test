@@ -11,6 +11,7 @@ const HeaderMenu = ({ showMenu, logout, user }) => (
     <div className="close" onClick={() => showMenu(false)}>
       <Close />
     </div>
+
     <div className="header-menu-items">
       {menu.map(({ label, value }, index) => (
         <Link key={`header-menu-${index}`} href={value}>

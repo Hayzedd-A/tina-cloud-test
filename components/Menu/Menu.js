@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ElfsightWidget } from "react-elfsight-widget";
 
 import { Bread, Avatar, Bag } from "../../public/static/vectors";
 
@@ -31,6 +32,7 @@ const Menu = ({ cart }) => {
             </a>
           </Link>
         </div>
+
         <div className="menu-item">
           <Link href="/my-orders">
             <a>
@@ -48,6 +50,7 @@ const Menu = ({ cart }) => {
             </a>
           </Link>
         </div>
+
         <div className="menu-item">
           <Link href="/cart">
             <a>
@@ -65,6 +68,10 @@ const Menu = ({ cart }) => {
               <span className="text">Cart</span>
             </a>
           </Link>
+        </div>
+
+        <div className="menu-item">
+          <ElfsightWidget widgetID="c3a6bd0a-949c-43de-961e-ad614a018677" />
         </div>
       </div>
     </div>

@@ -18,7 +18,6 @@ const SearchInput = ({
     } 
   });
 
-
   return (
     <div
       className={classNames("search-input-container", {
