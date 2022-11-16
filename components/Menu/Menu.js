@@ -9,7 +9,6 @@ import { reduceArray } from "../../utils/functions";
 
 const Menu = ({ cart }) => {
   const router = useRouter();
-
   const cartQuantity = reduceArray(cart, "quantity");
 
   return (

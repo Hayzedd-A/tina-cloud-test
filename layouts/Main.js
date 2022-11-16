@@ -1,5 +1,4 @@
 import { Component } from "react";
-
 import Head from "next/head";
 
 class Main extends Component {
