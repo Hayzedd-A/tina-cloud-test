@@ -111,6 +111,7 @@ class FAQ extends Component {
               </CSSTransitionGroup>
             </div>
           </div>
+          
           <div className="checkout-form login-form">
             <div className="container">
               <div className="faq-content">

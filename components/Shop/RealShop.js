@@ -1,5 +1,4 @@
 import { Component } from "react";
-import { ElfsightWidget } from "react-elfsight-widget";
 
 import { ShopItem } from ".";
 import Header from "../Header";

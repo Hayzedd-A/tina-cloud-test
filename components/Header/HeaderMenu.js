@@ -19,6 +19,7 @@ const HeaderMenu = ({ showMenu, logout, user }) => (
         </Link>
       ))}
     </div>
+    
     <div className="header-menu-items">
       {user ? (
         <span
