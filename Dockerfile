@@ -1,17 +1,13 @@
-FROM node:alpine
+FROM node:16-alpine
 
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /frontend
 
-# Install app dependencies
-COPY package.json /usr/src/app/
+COPY package*.json ./
+
 RUN npm install --legacy-peer-deps
 
-# Bundle app source
-COPY . /usr/src/app
-RUN npm run build
+COPY . .
 
-EXPOSE 3000
+RUN npm run build
 
 CMD [ "npm", "start" ]
