@@ -5,7 +5,7 @@ import Main from "../layouts/Main";
 import classNames from "classnames";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 import { RightArrow } from "../public/static/vectors";
-import { HeaderMenu } from "./../components/Header";
+import { HeaderMenu } from "../components/Header";
 import { AuthenticationConsumer } from "../providers/AuthenticationProvider";
 
 class Testimonies extends Component {

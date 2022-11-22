@@ -15,6 +15,12 @@ const Menu = ({ cart }) => {
     <div className="menu-container">
       <div>
         <div className="menu-item">
+          <ElfsightWidget
+            widgetID="c3a6bd0a-949c-43de-961e-ad614a018677"
+          />
+        </div>
+
+        <div className="menu-item">
           <Link href="/">
             <a>
               <span className="icon">
@@ -67,10 +73,6 @@ const Menu = ({ cart }) => {
               <span className="text">Cart</span>
             </a>
           </Link>
-        </div>
-
-        <div className="menu-item">
-          <ElfsightWidget widgetID="c3a6bd0a-949c-43de-961e-ad614a018677" />
         </div>
       </div>
     </div>
