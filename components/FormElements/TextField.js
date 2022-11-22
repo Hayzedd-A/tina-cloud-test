@@ -35,7 +35,6 @@ class TextField extends Component {
       isValid = value.length >= min;
     }
 
-
     if (mobile) {
       const re = /^[0-9\b]+$/;
 
