@@ -19,8 +19,4 @@ export const menu = [
     label: "Testimonials",
     value: "/testimonials",
   },
-  {
-    label: "sendy",
-    value: "/sendy",
-  },
 ];
