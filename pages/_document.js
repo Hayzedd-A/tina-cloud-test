@@ -69,6 +69,17 @@ export default class MyDocument extends Document {
             }}
           ></script>
 
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
+              `,
+            }}
+          ></script>
+
           <noscript
             dangerouslySetInnerHTML={{
               __html: `<iframe
