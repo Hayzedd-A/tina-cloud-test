@@ -7,7 +7,6 @@ import SplashScreen from "../components/SplashScreen";
 
 import { ProductsConsumer } from "../providers/ProductsProvider";
 import { slugify } from "../utils/functions";
-import { getFontDefinitionFromManifest } from "next/dist/next-server/server/font-utils";
 
 class Home extends Component {
   state = {
