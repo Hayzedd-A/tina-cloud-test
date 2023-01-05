@@ -110,8 +110,8 @@ class Cart extends Component {
 
     const discountAmount = couponObject
       ? couponObject.discountType === "percent"
-        // ? ((couponObject.value * subTotal) / 100).toLocaleString()
-        ? ((couponObject.value * subTotal) / 100)
+        ? // ? ((couponObject.value * subTotal) / 100).toLocaleString()
+          (couponObject.value * subTotal) / 100
         : couponObject.value
       : null;
     // return <div>Hello</div>
@@ -337,10 +337,12 @@ class Cart extends Component {
                     {subTotal >= minimumAmount ? (
                       <span>Checkout</span>
                     ) : (
-                      <span style={{ fontSize: ".7em" }}>
-                        Oops! Minimum order value is N2,500. Please add more
-                        items.
-                      </span>
+                      <>
+                        <span style={{ fontSize: ".7em" }}>
+                          Oops! Minimum order value is N4,500. Please add more
+                          items.
+                        </span>
+                      </>
                     )}
                     {subTotal >= minimumAmount && <RightArrow />}
                   </div>
