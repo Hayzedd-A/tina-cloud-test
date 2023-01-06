@@ -17,7 +17,7 @@ class Shop extends Component {
     currentTab: 0,
     isTabActive: false,
     toaster: {},
-    modalOpen: false,
+    modalOpen: true,
   };
 
   switchTab = (currentTab) => {
@@ -63,9 +63,12 @@ class Shop extends Component {
   render() {
     const { currentTab, isTabActive } = this.state;
     const { selectItem, products, productCategories } = this.props;
+
+    console.log("productCategories", productCategories);
+
     const activeCategories = productCategories
       ? productCategories
-          .filter((item) => item.active)
+          // .filter((item) => item.active)
           .sort((a, b) =>
             parseInt(a.position) > parseInt(b.position) ? 1 : -1
           )
@@ -93,10 +96,10 @@ class Shop extends Component {
                 <ModalBread />
               </div>
               <div className="message">
-                Thanks so much for visiting us. We are fully booked till
-                Thursday. Orders placed now will be processed Tomorrow.
+                Happy New Years! Due to the holidays, all orders placed will be
+                delivered on the 10th Of January 2023.
                 <br />
-                Thank you.
+                Thanks for your patronage.
               </div>
 
               <div className="actions">
