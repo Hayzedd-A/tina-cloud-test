@@ -17,7 +17,7 @@ class Shop extends Component {
     currentTab: 0,
     isTabActive: false,
     toaster: {},
-    modalOpen: true,
+    // modalOpen: true,
   };
 
   switchTab = (currentTab) => {
@@ -64,8 +64,6 @@ class Shop extends Component {
     const { currentTab, isTabActive } = this.state;
     const { selectItem, products, productCategories } = this.props;
 
-    console.log("productCategories", productCategories);
-
     const activeCategories = productCategories
       ? productCategories
           // .filter((item) => item.active)
@@ -89,7 +87,7 @@ class Shop extends Component {
       <div className="shop-container" id="shop-container">
         <Header />
 
-        {this.state.modalOpen && (
+        {/* {this.state.modalOpen && (
           <Modal closeModal={this.closeToaster}>
             <div className="add-cart-success">
               <div className="icon">
@@ -112,7 +110,7 @@ class Shop extends Component {
               </div>
             </div>
           </Modal>
-        )}
+        )} */}
 
         <Tabs
           active={isTabActive}

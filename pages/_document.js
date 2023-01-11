@@ -30,6 +30,7 @@ export default class MyDocument extends Document {
             sizes="180x180"
             href="/static/favicon/apple-touch-icon.png"
           />
+
           <link
             rel="icon"
             type="image/png"
@@ -73,6 +74,7 @@ export default class MyDocument extends Document {
             src="https://www.googletagmanager.com/gtag/js?id=8JVK388TQD"
             strategy="afterInteractive"
           />
+          
           <Script id="google-analytics" strategy="afterInteractive">
             {`
               window.dataLayer = window.dataLayer || [];
