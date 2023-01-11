@@ -8,7 +8,7 @@ export default ({ title, url, description, ogImage }) => (
   <Head>
     <meta charSet="utf-8" />
     <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-    <title>{title || "Best Banana Bread in Lagos"} </title>
+    <title>{title || "Best Banana Bread in Lagos v2.0"} </title>
     <meta name="description" content={description || defaultDescription} />
     <meta
       name="viewport"
