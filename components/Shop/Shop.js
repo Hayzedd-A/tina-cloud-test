@@ -17,7 +17,7 @@ class Shop extends Component {
     currentTab: 0,
     isTabActive: false,
     toaster: {},
-    modalOpen: true,
+    modalOpen: false,
   };
 
   switchTab = (currentTab) => {
