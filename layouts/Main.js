@@ -12,7 +12,7 @@ class Main extends Component {
     return (
       <>
         <Head>
-          <title>Best Banana Bread in Lagos v2.0</title>
+          <title>Best Banana Bread in Lagos</title>
           <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet" />
         </Head>
 
