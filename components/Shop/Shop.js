@@ -181,7 +181,7 @@ class Shop extends Component {
                         ? sizes[firstSize][0]
                         : {};
 
-                      console.log(name, activeSizes[0]);
+                      // console.log(name, activeSizes[0]);
 
                       return (
                         firstSize && (
