@@ -12,6 +12,9 @@ import { ModalBread } from "../public/static/vectors";
 
 const CartPage = () => {
   const [isCheckoutActive, showCheckout] = useState(false);
+
+  // const [modalOpen, setModalOpen] = useState(true);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [testFlows, setTestFlow] = useState(false);
   const [isCheckoutSuccessActive, showCheckoutSuccess] = useState(false);
@@ -66,12 +69,13 @@ const CartPage = () => {
 
   return (
     <Main>
-      {modalOpen && (
+      {/* {modalOpen && (
         <Modal closeModal={closeModal}>
           <div className="add-cart-success">
             <div className="icon">
               <ModalBread />
             </div>
+
             <div className="message">
               Happy New Years! Due to the holidays, all orders placed will be
               delivered on the 10th Of January 2023..
@@ -86,7 +90,8 @@ const CartPage = () => {
             </div>
           </div>
         </Modal>
-      )}
+      )} */}
+
       {isCheckoutSuccessActive ? (
         <CheckoutSuccess />
       ) : isCheckoutActive ? (

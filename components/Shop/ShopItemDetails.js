@@ -445,6 +445,7 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         </div>
+        
         {selectedItem.toppings && !!selectedItem.toppings.length && (
           <div className="select-section">
             <div className="container">

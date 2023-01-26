@@ -1,4 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import Script from "next/script";
 
 const APP_NAME = "Gourmet Twist Website";
 const APP_DESCRIPTION = "Best Banana Bread in Lagos";
@@ -29,6 +30,7 @@ export default class MyDocument extends Document {
             sizes="180x180"
             href="/static/favicon/apple-touch-icon.png"
           />
+
           <link
             rel="icon"
             type="image/png"
@@ -49,7 +51,6 @@ export default class MyDocument extends Document {
           />
           <meta name="msapplication-TileColor" content="#da532c" />
           <meta name="theme-color" content="#ffffff" />
-
           <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmIEtz7r7jGYPVGKfMAp-6SiMTfGMrMPI&libraries=places"></script>
           <script src="https://js.paystack.co/v1/inline.js"></script>
           <script
@@ -68,6 +69,71 @@ export default class MyDocument extends Document {
               `,
             }}
           ></script>
+
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=8JVK388TQD"
+            strategy="afterInteractive"
+          />
+          
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag() {dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
+            `}
+          </Script>
+
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());   
+              gtag('config', 'G-8JVK388TQD'); 
+            `}
+          </Script>
+
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());   
+              gtag('config', 'G-8JVK388TQD'); 
+            `}
+          </Script>
+
+          {/* <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag() {dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
+              `,
+            }}
+          ></script> */}
+
+          {/* <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());   
+                gtag('config', 'G-8JVK388TQD'); 
+              `,
+            }}
+          ></script> */}
+
+          {/* <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());   
+                gtag('config', 'G-8JVK388TQD'); 
+              `,
+            }}
+          ></script> */}
 
           <noscript
             dangerouslySetInnerHTML={{
