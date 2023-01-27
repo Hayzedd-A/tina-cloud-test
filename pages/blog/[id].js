@@ -21,6 +21,8 @@ const PostDetails = () => {
     setIsMenuActive(show);
   };
 
+  console.log(posts);
+
   return (
     <div className="blog-details">
       <div className="blog-image">
@@ -75,9 +77,10 @@ const PostDetails = () => {
 
       <div className="blog-info">
         <div className="container">
-          <p>{moment(posts?.publishedAt).format("MMM Do YY")}</p>
-          
+          <p>{moment(posts?.publishedAt).format("LL")}</p>
+
           <div className="body-content" style={{ paddingTop: 30 }}>
+            <h1 className="">{posts?.title}</h1>
             <p className="">{posts?.body}</p>
           </div>
         </div>
