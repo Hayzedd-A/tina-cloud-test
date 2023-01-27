@@ -48,7 +48,7 @@ const Blogs = (props) => {
               >
                 <RightArrow />
               </div>
-              <div className="title">Blogs</div>
+              <div className="title">Gourmet Twist Blog</div>
               <div
                 className="header-icon-container hamburger-menu right-menu"
                 style={{ top: "-5px" }}

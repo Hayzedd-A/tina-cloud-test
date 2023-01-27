@@ -58,7 +58,7 @@ const PostDetails = () => {
             </Link>
             <div
               className="header-icon-container hamburger-menu right-menu"
-              onClick={() => this.showMenu(true)}
+              onClick={() => showMenu(true)}
             >
               <span></span>
             </div>
@@ -82,16 +82,8 @@ const PostDetails = () => {
           </div>
         </div>
       </div>
-
-      <div className="blog-body-section sizes-section">
-        {/* <p className="">{posts?.body}</p> */}
-      </div>
     </div>
   );
 };
-
-export const getServerSidePros = async () => {
-  
-}
 
 export default PostDetails;
