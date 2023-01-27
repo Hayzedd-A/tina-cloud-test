@@ -124,6 +124,8 @@ export const paystack = (
   handlePaystackClose,
   metadata
 ) => {
+  // pk_live_42c6b07dfc9fd32654d4cc9fd39b08a031ac8826
+  // pk_test_54ed04488bcc1a192bd2406fd36cfd8596e3ccae
   const handler = window.PaystackPop.setup({
     key: "pk_live_42c6b07dfc9fd32654d4cc9fd39b08a031ac8826",
     email,
