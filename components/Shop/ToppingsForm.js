@@ -15,7 +15,8 @@ const ToppingsForm = ({
   console.log(toppings);
   const activeToppings = toppings ? toppings.filter((topping) => {
     const toppingDetails = getToppingsDetails(topping);
-    return toppingDetails;
+    if(toppingDetails && toppingDetails.unitPrice && parseFloat(toppingDetails.unitPrice) > 0)
+      return toppingDetails;
   }) : [];
   return (
     <div className="toppings-form-container">

@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "next",
+    "dev": "PORT=7080 next dev",
     "build": "next build",
     "start": "next start"
   },
