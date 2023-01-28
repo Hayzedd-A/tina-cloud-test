@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import useFetchContent from "../../hooks/useFetchContent";
 import Link from "next/link";
+import { HeaderMenu } from "../../components/Header";
 
 import { RightArrow } from "../../public/static/vectors";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
@@ -20,8 +21,6 @@ const PostDetails = () => {
   const showMenu = (show) => {
     setIsMenuActive(show);
   };
-
-  console.log(posts);
 
   return (
     <div className="blog-details">
