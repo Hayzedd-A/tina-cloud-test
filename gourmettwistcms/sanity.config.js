@@ -5,9 +5,9 @@ import {schemaTypes} from './schemas'
 
 export default defineConfig({
   name: 'default',
-  title: 'gourmet-twist',
+  title: 'gourmettwist_CMS',
 
-  projectId: 'ru0mi4so',
+  projectId: 'aovybyiq',
   dataset: 'production',
 
   plugins: [deskTool(), visionTool()],

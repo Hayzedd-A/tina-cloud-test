@@ -89,7 +89,7 @@ const Blogs = (props) => {
                     key={post._id}
                     name={post.title}
                     image={urlFor(post.mainImage)}
-                    date={moment(post?.publishedAt).format("MMM Do YY")}
+                    date={moment(post?.publishedAt).format("LL")}
                     onClick={() => router.push(`/blog/${post._id}`)}
                   />
                 ))}
