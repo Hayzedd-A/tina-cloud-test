@@ -27,8 +27,6 @@ const PostDetails = () => {
     setIsMenuActive(show);
   };
 
-  console.log(imageSrc);
-
   return (
     <div className="blog-details">
       <div className="blog-image">
