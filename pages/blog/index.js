@@ -5,16 +5,15 @@ import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 import { RightArrow } from "../../public/static/vectors";
 import { HeaderMenu } from "../../components/Header";
 import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
-import useFetchContent from "../../hooks/useFetchContent";
-import { urlFor } from "../../lib/client";
+import useFetchBlogs from "../../hooks/useFetchBlogs";
 import PostItem from "../../components/Blogs/Posts";
 import ClipLoader from "react-spinners/ClipLoader";
 import moment from "moment";
 
 const Blogs = (props) => {
-  const query = "*[_type == 'post']";
+  const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/blogs?populate=*`;
   const [isMenuActive, setIsMenuActive] = useState(false);
-  const { posts, loading } = useFetchContent(query);
+  const { posts, loading } = useFetchBlogs(url);
   const { router } = props;
 
   const showMenu = (show) => {
@@ -86,11 +85,11 @@ const Blogs = (props) => {
               <div className="section-items">
                 {posts.map((post) => (
                   <PostItem
-                    key={post._id}
-                    name={post.title}
-                    image={urlFor(post.mainImage)}
-                    date={moment(post?.publishedAt).format("MMM Do YY")}
-                    onClick={() => router.push(`/blog/${post._id}`)}
+                    key={post.id}
+                    name={post.attributes.title}
+                    image={`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}${post.attributes.image.data.attributes.formats.small.url}`}
+                    date={moment(post.attributes.publishedDate).format("LL")}
+                    onClick={() => router.push(`/blog/${post.id}`)}
                   />
                 ))}
               </div>

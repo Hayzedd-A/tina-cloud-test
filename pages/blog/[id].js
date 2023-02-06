@@ -1,27 +1,33 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import useFetchContent from "../../hooks/useFetchContent";
+import useFetchBlog from "../../hooks/useFetchBlogs";
 import Link from "next/link";
+import { HeaderMenu } from "../../components/Header";
 
 import { RightArrow } from "../../public/static/vectors";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 import ClipLoader from "react-spinners/ClipLoader";
-import { urlFor } from "../../lib/client";
 import moment from "moment";
 
 const PostDetails = () => {
   const router = useRouter();
   const { id } = router.query;
+  const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/blogs/${id}?populate=*`;
 
-  const queries = `*[_type == 'post' && _id == '${id}'][0]`;
   const [isMenuActive, setIsMenuActive] = useState(false);
-  const { posts, loading } = useFetchContent(queries);
-  const imageSrc = posts && posts.mainImage ? urlFor(posts.mainImage) : "";
+  const { posts, loading } = useFetchBlog(url);
+  let imageSrc;
+
+  if (posts && posts.attributes) {
+    const { formats } = posts.attributes.image.data.attributes;
+    imageSrc = `${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}${formats.small.url}`;
+  }
+
   const showMenu = (show) => {
     setIsMenuActive(show);
   };
 
-  console.log(posts);
+  console.log(imageSrc);
 
   return (
     <div className="blog-details">
@@ -77,11 +83,11 @@ const PostDetails = () => {
 
       <div className="blog-info">
         <div className="container">
-          <p>{moment(posts?.publishedAt).format("LL")}</p>
+          <p>{moment(posts?.attributes?.publishedDate).format("LL")}</p>
 
           <div className="body-content" style={{ paddingTop: 30 }}>
-            <h1 className="">{posts?.title}</h1>
-            <p className="">{posts?.body}</p>
+            <h1 className="">{posts?.attributes?.title}</h1>
+            <p className="">{posts?.attributes?.text}</p>
           </div>
         </div>
       </div>
