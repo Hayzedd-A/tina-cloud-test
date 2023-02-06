@@ -19,8 +19,8 @@ export const menu = [
     label: "Testimonials",
     value: "/testimonials",
   },
-  // {
-  //   label: "Blog",
-  //   value: "/blog/"
-  // }
+  {
+    label: "Blog",
+    value: "/blog/"
+  }
 ];
