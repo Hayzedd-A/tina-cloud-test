@@ -10,7 +10,6 @@ const useFetchBlog = (fetchUrl) => {
 
     const fetchPosts = async () => {
       const blogPosts = await fetchBlogPost(fetchUrl);
-      console.log("fetch posts:", blogPosts.data);
       setLoading(false);
       setPosts(blogPosts.data);
     };
