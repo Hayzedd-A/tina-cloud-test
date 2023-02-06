@@ -20,6 +20,8 @@ const Blogs = (props) => {
     setIsMenuActive(show);
   };
 
+  console.log("STRAPI_URL:", process.env.NEXT_PUBLIC_STRAPI_URL);
+
   return (
     <div className="shop-container" id="shop-container">
       <Main>
