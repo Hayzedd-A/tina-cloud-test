@@ -11,8 +11,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import moment from "moment";
 
 const Blogs = (props) => {
-  // const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/blogs?populate=*`;
-  const url = `https://shark-app-nsdyo.ondigitalocean.app/api/blogs?populate=*`;
+  const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/blogs?populate=*`;
   const [isMenuActive, setIsMenuActive] = useState(false);
   const { posts, loading } = useFetchBlogs(url);
   const { router } = props;
@@ -21,7 +20,7 @@ const Blogs = (props) => {
     setIsMenuActive(show);
   };
 
-  console.log("STRAPI_URL:", process.env.NEXT_PUBLIC_STRAPI_URL);
+  console.log("STRAPI_URL:", process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS);
 
   return (
     <div className="shop-container" id="shop-container">
