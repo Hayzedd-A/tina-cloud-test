@@ -12,7 +12,8 @@ import moment from "moment";
 const PostDetails = () => {
   const router = useRouter();
   const { id } = router.query;
-  const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/blogs/${id}?populate=*`;
+  // const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/blogs/${id}?populate=*`;
+  const url = `https://shark-app-nsdyo.ondigitalocean.app/api/blogs/${id}?populate=*`;
 
   const [isMenuActive, setIsMenuActive] = useState(false);
   const { posts, loading } = useFetchBlog(url);
