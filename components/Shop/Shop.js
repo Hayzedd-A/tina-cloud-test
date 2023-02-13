@@ -17,10 +17,10 @@ class Shop extends Component {
     currentTab: 0,
     isTabActive: false,
     toaster: {},
-    
+
     // modalOpen: true,
 
-    modalOpen: false,
+    modalOpen: true,
   };
 
   switchTab = (currentTab) => {
@@ -90,15 +90,16 @@ class Shop extends Component {
       <div className="shop-container" id="shop-container">
         <Header />
 
-        {/* {this.state.modalOpen && (
+        {this.state.modalOpen && (
           <Modal closeModal={this.closeToaster}>
             <div className="add-cart-success">
               <div className="icon">
                 <ModalBread />
               </div>
               <div className="message">
-                Happy New Years! Due to the holidays, all orders placed will be
-                delivered on the 10th Of January 2023.
+                Happy Valentine's Day to you. Due to Valentine deliveries,
+                orders placed on the 13th and 14th will be delivered on the
+                15th.
                 <br />
                 Thanks for your patronage.
               </div>
@@ -113,7 +114,7 @@ class Shop extends Component {
               </div>
             </div>
           </Modal>
-        )} */}
+        )}
 
         <Tabs
           active={isTabActive}
@@ -209,6 +210,7 @@ class Shop extends Component {
               <div className="icon">
                 <EmptyStore />
               </div>
+
               <div className="message">
                 No products at the moment.
                 <br /> Please check back later
