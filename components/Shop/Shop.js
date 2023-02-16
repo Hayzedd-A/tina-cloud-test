@@ -90,7 +90,7 @@ class Shop extends Component {
       <div className="shop-container" id="shop-container">
         <Header />
 
-        {this.state.modalOpen && (
+        {/* {this.state.modalOpen && (
           <Modal closeModal={this.closeToaster}>
             <div className="add-cart-success">
               <div className="icon">
@@ -114,7 +114,7 @@ class Shop extends Component {
               </div>
             </div>
           </Modal>
-        )}
+        )} */}
 
         <Tabs
           active={isTabActive}
