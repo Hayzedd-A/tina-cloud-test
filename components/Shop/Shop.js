@@ -90,16 +90,15 @@ class Shop extends Component {
       <div className="shop-container" id="shop-container">
         <Header />
 
-        {/* {this.state.modalOpen && (
+        {this.state.modalOpen && (
           <Modal closeModal={this.closeToaster}>
             <div className="add-cart-success">
               <div className="icon">
                 <ModalBread />
               </div>
               <div className="message">
-                Happy Valentine's Day to you. Due to Valentine deliveries,
-                orders placed on the 13th and 14th will be delivered on the
-                15th.
+                Early closure today. Orders placed after
+                11 am will be delivered on Monday. Soup Bowls unavailable today.
                 <br />
                 Thanks for your patronage.
               </div>
@@ -114,7 +113,7 @@ class Shop extends Component {
               </div>
             </div>
           </Modal>
-        )} */}
+        )}
 
         <Tabs
           active={isTabActive}
