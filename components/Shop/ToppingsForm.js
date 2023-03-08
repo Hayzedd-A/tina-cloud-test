@@ -12,7 +12,6 @@ const ToppingsForm = ({
 }) => {
   const checkIfSelected = toppingId =>
     selectedToppings.some(topping => topping.id === toppingId);
-  console.log(toppings);
   const activeToppings = toppings ? toppings.filter((topping) => {
     const toppingDetails = getToppingsDetails(topping);
     if(toppingDetails && toppingDetails.unitPrice && parseFloat(toppingDetails.unitPrice) > 0)
