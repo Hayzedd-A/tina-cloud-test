@@ -23,7 +23,7 @@ const AvailableBreads = () => {
     }, [searchQ])
 
     const getAllBreads = async () => {
-        const breadsStock = await axios.get(`http://localhost:3000/auth/gt-breads-stock`);
+        const breadsStock = await axios.get(`https://api.zupa.ng/auth/gt-breads-stock`);
         setAllRawData(breadsStock.data)
         const allSizesTemp = [...new Set(breadsStock.data.map(x => x.size))];
         allSizesTemp.unshift("All")
