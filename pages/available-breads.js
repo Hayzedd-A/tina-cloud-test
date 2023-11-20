@@ -24,8 +24,9 @@ const AvailableBreads = () => {
 
     const getAllBreads = async () => {
         const breadsStock = await axios.get(`https://api.zupa.ng/auth/gt-breads-stock`);
-        setAllRawData(breadsStock.data)
-        const allSizesTemp = [...new Set(breadsStock.data.map(x => x.size))];
+        const allBreadsStock = breadsStock.data.filter(x => x.stockQty > 0)
+        setAllRawData(allBreadsStock)
+        const allSizesTemp = [...new Set(allBreadsStock.map(x => x.size))];
         allSizesTemp.unshift("All")
         setAllSizes(allSizesTemp)
     }
@@ -83,29 +84,31 @@ const AvailableBreads = () => {
         <Main>
             {/* {isLoadingProducts && <Loader />} */}
             <div style={{ display: 'flex', marginTop: '3%' }}>
-                <div style={{ flex: 1 }}></div>
-                <div style={{ flex: 0.5 }}></div>
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 0.3 }}></div>
+                <div style={{ flex: 0.3 }}></div>
+                <div style={{ flex: 1, fontSize: '14pt' }}>
                     <div style={{
                         overflowX: 'auto',
                         whiteSpace: 'nowrap',
-                        display: 'flex',
-                        justifyContent: 'center'
+                        display: 'flex'
                     }}>
                         <ul style={{
                             listStyle: 'none',
-                            display: 'inline-block',
-                            cursor: 'pointer !important'
+                            display: 'flex',
+                            cursor: 'pointer !important',
+                            width: '100%'
                         }}>
                             {
                                 allSizes.map((s, idx) => <li className="sizesLi" onClick={(e) => selectSize(e, s)} style={{
-                                    display: "inline-block",
+                                    // display: "inline-block",
                                     background: (s === "All" ? "#e7e7ff" : "rgb(246 246 249)"),
                                     color: "black",
                                     padding: "5px 15px",
                                     borderRadius: 15,
                                     fontWeight: "bold",
-                                    fontSize: 12,
+                                    textAlign: 'center',
+                                    fontSize: `11pt`,
+                                    flex: 1,
                                     marginRight: (idx === allSizes.length - 1 ? '0px' : '10px')
                                 }}>{s}</li>)
                             }
@@ -119,15 +122,16 @@ const AvailableBreads = () => {
                             top: "50%",
                             transform: "translateY(-50%)",
                             cursor: "pointer",
-                            width: '15px'
+                            width: '20px'
                         }} class="magnifier-icon" />
                         <input placeholder="Search with item name and size" style={{
                             width: "100%",
                             padding: 10,
+                            fontSize: "12pt",
                             background: "#f2f3f5",
                             fontWeight: "bold",
                             border: 0,
-                            paddingLeft: '30px'
+                            paddingLeft: '35px'
                         }} type="text" value={searchQ} onChange={(e) => setSearchQ(e.target.value)} />
                     </div>
                     <br />
@@ -157,8 +161,8 @@ const AvailableBreads = () => {
                         </ul>
                     </div>
                 </div>
-                <div style={{ flex: 0.5 }}></div>
-                <div style={{ flex: 1 }}></div>
+                <div style={{ flex: 0.3 }}></div>
+                <div style={{ flex: 0.3 }}></div>
             </div>
         </Main>
     );
