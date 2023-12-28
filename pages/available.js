@@ -4,6 +4,7 @@ import Main from "../layouts/Main";
 
 import Loader from "../components/Loader";
 import axios from "axios";
+import { Checkbox } from "../components/FormElements";
 
 const AvailableBreads = () => {
 
@@ -13,6 +14,7 @@ const AvailableBreads = () => {
     const [selectedSize, setSelectedSize] = useState("All");
     const [filteredData, setFilteredData] = useState([]);
     const [searchQ, setSearchQ] = useState("")
+    const [clipboardStatus, setClipboardStatus] = useState("Copy to clipboard")
 
     useEffect(() => {
         getAllBreads()
@@ -80,6 +82,53 @@ const AvailableBreads = () => {
         setFilteredData(dataTemp)
     }, [selectedSize, allRawData])
 
+    const [ttlChecked, setTtlChecked] = useState(0)
+
+    const checkSize = (size, e) => {
+        const filteredDataTmp = JSON.parse(JSON.stringify(filteredData))
+        filteredDataTmp.find(x => x.size === size.size).checked = e.target.checked
+        if (e.target.checked)
+            filteredDataTmp.find(x => x.size === size.size).items.map(x => x.checked = true)
+        else
+            filteredDataTmp.find(x => x.size === size.size).items.map(x => x.checked = false)
+
+        setTtlChecked([].concat.apply([], filteredDataTmp.map(x => x.items)).filter(x => x.checked).length)
+
+        setFilteredData(filteredDataTmp)
+        setClipboardStatus("Copy to clipboard")
+    }
+
+    const checkItem = (size, item, e) => {
+        const filteredDataTmp = JSON.parse(JSON.stringify(filteredData))
+        filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).checked = e.target.checked
+        if (!e.target.checked)
+            filteredDataTmp.find(x => x.size === size.size).checked = false
+
+        if (!filteredDataTmp.find(x => x.size === size.size).items.find(x => !x.checked))
+            filteredDataTmp.find(x => x.size === size.size).checked = true
+
+        setTtlChecked([].concat.apply([], filteredDataTmp.map(x => x.items)).filter(x => x.checked).length)
+
+        setFilteredData(filteredDataTmp)
+        setClipboardStatus("Copy to clipboard")
+    }
+
+    const copyToClipboard = async () => {
+        const toCopy = [].concat.apply([], filteredData.map(x => x.items)).filter(x => x.checked).map(x => {
+            return {
+                name: x.name,
+                stockQty: x.stockQty,
+                size: x.size
+            }
+        });
+        let txtToCopy = ``;
+        toCopy.map(x => {
+            txtToCopy += `${x.size} - ${x.name} - ${x.stockQty} \n\n`
+        })
+        await navigator.clipboard.writeText(txtToCopy)
+        setClipboardStatus("Copied")
+    }
+
     return (
         <Main>
             {/* {isLoadingProducts && <Loader />} */}
@@ -139,18 +188,35 @@ const AvailableBreads = () => {
                         <ul>
                             {
                                 filteredData.map((d, idx) => {
-                                    return <li key={`${d.size}-${idx}`} style={{ marginBottom: '10px' }}>
-                                        <span style={{ fontWeight: 'bold' }}>{d.size} &nbsp; <span style={{
+                                    return <li key={`${d.size}-${idx}`} style={{ marginBottom: '10px', marginTop: idx === 0 ? 20 : 0 }}>
+                                        <Checkbox
+                                            checked={d.checked}
+                                            onChange={e => checkSize(d, e)}
+                                            availableBreadMainLabel={d.size} />
+                                        &nbsp;&nbsp;
+                                        <span style={{
                                             background: "black",
                                             color: "white",
                                             fontSize: 12,
                                             padding: "2px 10px",
                                             borderRadius: 5
-                                        }}>{d.count}</span></span>
+                                        }}>{d.count}</span>
                                         {
                                             d.items.map((i, idx) => {
-                                                return <ul key={`${i.name}-${idx}`} style={{ marginTop: '10px' }}>
-                                                    <li style={{ display: "inline-block", paddingLeft: 15 }}>{i.name}</li>
+                                                return <ul key={`${i.name}-${idx}`} style={{
+                                                    marginTop: '20px',
+                                                    borderTop: '1px solid rgb(228 212 212)',
+                                                    paddingTop: '20px',
+                                                    marginBottom: (d.items.length - 1) === idx ? '30px' : null,
+                                                    borderBottom: (d.items.length - 1) === idx ? '3px solid rgb(228 212 212)' : null,
+                                                    paddingBottom: (d.items.length - 1) === idx ? '30px' : null
+                                                }}>
+                                                    <li style={{ display: "inline-block", paddingLeft: 15 }}>
+                                                        <Checkbox
+                                                            checked={i.checked}
+                                                            onChange={e => checkItem(d, i, e)}
+                                                            availableBreadChildLabel={i.name} />
+                                                    </li>
                                                     <li style={{ display: "inline-block", float: "right", paddingRight: 15 }}>{i.stockQty || 0}</li>
                                                 </ul>
                                             })
@@ -163,8 +229,34 @@ const AvailableBreads = () => {
                 </div>
                 <div style={{ flex: 0.3 }}></div>
                 <div style={{ flex: 0.3 }}></div>
+                {
+                    ttlChecked > 0 && <span style={{
+                        cursor: "pointer",
+                        position: "fixed",
+                        bottom: "40px",
+                        right: "50px",
+                        background: "white",
+                        padding: "10px",
+                        color: "#756464",
+                        fontWeight: "bold",
+                        borderRadius: "10px",
+                        width: "fit-content",
+                        height: "50px",
+                        textAlign: "center",
+                        lineHeight: "30px",
+                        boxShadow:
+                            "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
+                        fontSize: "14px",
+                        display: "flex",
+                        alignItems: "center"
+                    }} onClick={copyToClipboard}>
+                        <img src="/copy-to-clipboard.png" width="20px" />
+                        &nbsp;
+                        <span>{clipboardStatus}</span>
+                    </span>
+                }
             </div>
-        </Main>
+        </Main >
     );
 };
 
