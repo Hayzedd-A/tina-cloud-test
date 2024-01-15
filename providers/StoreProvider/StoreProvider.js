@@ -1,7 +1,7 @@
 import { withRouter } from "next/router";
 import React, { Component } from "react";
 import { STORE_ID } from "../../constants";
-
+import axios from "axios";
 import { zupaGetRequest } from "../../api";
 
 const StoreContext = React.createContext();
@@ -24,14 +24,19 @@ class StoreProvider extends Component {
       isLoadingStore: true,
     });
 
-    const token =
+    try {
+    /*
+      const token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwNDgwNjMxOSwiZXhwIjoxNzM2MzYzOTE5fQ.JLjMqDwrn_ZnI313S9HliCnkin7K2sf1QfLaT080g0w";
 
-    try {
       const res = await zupaGetRequest({
         url: `/stores/${STORE_ID}?$include=delivery_types,states`,
         token,
       });
+     */
+
+      const res = await axios.get(`https://api.zupa.ng/auth/stores/${STORE_ID}`);
+
       localStorage.setItem("STORE_INFO__SAVED", true);
       localStorage.setItem("STORE_INFO", JSON.stringify(res.data));
 
