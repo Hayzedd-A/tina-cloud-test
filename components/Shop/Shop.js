@@ -67,6 +67,7 @@ class Shop extends Component {
     const { currentTab, isTabActive } = this.state;
     const { selectItem, products, productCategories } = this.props;
 
+    // CHANGES PUSHED
     const activeCategories = productCategories
       ? productCategories
           .filter((item) => item.active)
