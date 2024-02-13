@@ -15,7 +15,7 @@ const CartPage = () => {
 
   // const [modalOpen, setModalOpen] = useState(true);
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(true);
   const [testFlows, setTestFlow] = useState(false);
   const [isCheckoutSuccessActive, showCheckoutSuccess] = useState(false);
   const [toaster, setToaster] = useState(null);
@@ -69,7 +69,7 @@ const CartPage = () => {
 
   return (
     <Main>
-      {/* {modalOpen && (
+      {modalOpen && (
         <Modal closeModal={closeModal}>
           <div className="add-cart-success">
             <div className="icon">
@@ -77,8 +77,7 @@ const CartPage = () => {
             </div>
 
             <div className="message">
-              Happy New Years! Due to the holidays, all orders placed will be
-              delivered on the 10th Of January 2023..
+              We are fully booked for delivery on Feb 14. Orders placed now will be processed on the 15th.
               <br />
               Thanks for your patronage.
             </div>
@@ -90,7 +89,8 @@ const CartPage = () => {
             </div>
           </div>
         </Modal>
-      )} */}
+      )}
+
 
       {isCheckoutSuccessActive ? (
         <CheckoutSuccess />
