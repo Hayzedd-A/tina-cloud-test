@@ -15,7 +15,7 @@ const CartPage = () => {
 
   // const [modalOpen, setModalOpen] = useState(true);
 
-  const [modalOpen, setModalOpen] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const [testFlows, setTestFlow] = useState(false);
   const [isCheckoutSuccessActive, showCheckoutSuccess] = useState(false);
   const [toaster, setToaster] = useState(null);
