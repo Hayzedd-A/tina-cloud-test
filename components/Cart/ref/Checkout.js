@@ -331,7 +331,7 @@ class Checkout extends Component {
 
     if (couponObject) {
       payload.discountType = couponObject.discountType;
-      payload.discountValue = couponObject.discountValue;
+      payload.discountValue = couponObject.value;
     }
 
     shippingMethod === "pickup" && delete payload.deliveryLocation;

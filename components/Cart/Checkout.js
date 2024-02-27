@@ -377,13 +377,11 @@ class Checkout extends Component {
 
     if (couponObject) {
       payload.discountType = couponObject.discountType;
-      payload.discountValue = couponObject.discountValue;
+      payload.discountValue = couponObject.value;
     }
 
     shippingMethod === "pickup" && delete payload.deliveryLocation;
     shippingMethod === "s-pickup" && delete payload.deliveryLocation;
-
-    console.log("payload", payload);
 
     try {
       const res = await postRequest({
