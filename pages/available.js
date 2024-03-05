@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Main from "../layouts/Main";
 
 import Loader from "../components/Loader";
 import axios from "axios";
-import { Checkbox } from "../components/FormElements";
+import { Checkbox, TextField } from "../components/FormElements";
+import { API_BASE_URL } from "../constants";
+import { v4 as uuidv4 } from 'uuid';
+import { FloatButton, message, Modal } from 'antd';
+import { WhatsAppOutlined, InstagramOutlined, ReloadOutlined, QuestionCircleOutlined, CopyOutlined } from '@ant-design/icons';
+import { ModalBread } from "../public/static/vectors";
+import { useRouter } from "next/router";
 
 const AvailableBreads = () => {
 
@@ -16,6 +22,16 @@ const AvailableBreads = () => {
     const [searchQ, setSearchQ] = useState("")
     const [clipboardStatus, setClipboardStatus] = useState("Copy to clipboard")
 
+    const [timerRedirect, setTimerRedirect] = useState(5)
+
+    const [openFloatbuttonGroup, setOpenFloatbuttonGroup] = useState(false)
+
+    const interval = useRef();
+
+    const [showIgRedirectionModal, setShowIgRedirectionModal] = useState(false)
+
+    const router = useRouter()
+
     useEffect(() => {
         getAllBreads()
     }, [])
@@ -25,12 +41,14 @@ const AvailableBreads = () => {
     }, [searchQ])
 
     const getAllBreads = async () => {
-        const breadsStock = await axios.get(`https://api.zupa.ng/auth/gt-breads-stock`);
+        setIsLoadingProducts(true)
+        const breadsStock = await axios.get(`${API_BASE_URL}auth/gt-breads-stock`);
         const allBreadsStock = breadsStock.data.filter(x => x.stockQty > 0)
         setAllRawData(allBreadsStock)
         const allSizesTemp = [...new Set(allBreadsStock.map(x => x.size))];
         allSizesTemp.unshift("All")
         setAllSizes(allSizesTemp)
+        setIsLoadingProducts(false)
     }
 
     const normalizeData = (data) => {
@@ -82,8 +100,6 @@ const AvailableBreads = () => {
         setFilteredData(dataTemp)
     }, [selectedSize, allRawData])
 
-    const [ttlChecked, setTtlChecked] = useState(0)
-
     const checkSize = (size, e) => {
         const filteredDataTmp = JSON.parse(JSON.stringify(filteredData))
         filteredDataTmp.find(x => x.size === size.size).checked = e.target.checked
@@ -92,7 +108,7 @@ const AvailableBreads = () => {
         else
             filteredDataTmp.find(x => x.size === size.size).items.map(x => x.checked = false)
 
-        setTtlChecked([].concat.apply([], filteredDataTmp.map(x => x.items)).filter(x => x.checked).length)
+        // setTtlChecked([].concat.apply([], filteredDataTmp.map(x => x.items)).filter(x => x.checked).length)
 
         setFilteredData(filteredDataTmp)
         setClipboardStatus("Copy to clipboard")
@@ -101,37 +117,122 @@ const AvailableBreads = () => {
     const checkItem = (size, item, e) => {
         const filteredDataTmp = JSON.parse(JSON.stringify(filteredData))
         filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).checked = e.target.checked
-        if (!e.target.checked)
+        if (!e.target.checked) {
             filteredDataTmp.find(x => x.size === size.size).checked = false
+            filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).quantityToPurchase = 0
+        }
 
         if (!filteredDataTmp.find(x => x.size === size.size).items.find(x => !x.checked))
             filteredDataTmp.find(x => x.size === size.size).checked = true
 
-        setTtlChecked([].concat.apply([], filteredDataTmp.map(x => x.items)).filter(x => x.checked).length)
+        // setTtlChecked([].concat.apply([], filteredDataTmp.map(x => x.items)).filter(x => x.checked).length)
 
         setFilteredData(filteredDataTmp)
         setClipboardStatus("Copy to clipboard")
     }
 
-    const copyToClipboard = async () => {
+    const getTxtToCopy = () => {
         const toCopy = [].concat.apply([], filteredData.map(x => x.items)).filter(x => x.checked).map(x => {
             return {
                 name: x.name,
                 stockQty: x.stockQty,
+                quantityToPurchase: x.quantityToPurchase,
                 size: x.size
             }
         });
-        let txtToCopy = ``;
+        let txtToCopy = [];
         toCopy.map(x => {
-            txtToCopy += `${x.size} - ${x.name} - ${x.stockQty} \n\n`
+            txtToCopy.push(`${x.size} - ${x.name} - ${x.quantityToPurchase}`)
         })
-        await navigator.clipboard.writeText(txtToCopy)
+
+        return txtToCopy.join(`\n\n`)
+    }
+
+    const validateSelectedItems = () => {
+        if ([].concat.apply([], filteredData.map(x => x.items)).filter(x => x.quantityToPurchase).length !== [].concat.apply([], filteredData.map(x => x.items)).filter(x => x.checked).length) {
+            message.warning("Please provide quantity for all selected items")
+            return false
+        }
+        if (
+            ![].concat.apply([], filteredData.map(x => x.items)).filter(x => x.checked).length
+        ) {
+            message.warning("Please select a product first")
+            return false
+        }
+
+        return true
+    }
+
+    const copyToClipboard = async () => {
+        if (!validateSelectedItems()) return
+        await navigator.clipboard.writeText(getTxtToCopy())
         setClipboardStatus("Copied")
+    }
+
+    const [showCheckoutModal, setShowCheckoutModal] = useState(false)
+
+    const placeOrder = (source) => {
+        if (!validateSelectedItems()) return
+        var message = encodeURIComponent(`Hello, I want to order these items: \n\n${getTxtToCopy()} `);
+        if (source === "whatsapp") {
+            var phoneNumber = "923125847735";
+            var whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+            window.open(whatsappUrl, "_blank");
+        }
+        else if (source === "insta") {
+            copyToClipboard()
+            setShowIgRedirectionModal(true)
+            interval.current = setInterval(() => {
+                setTimerRedirect(prevTimer => prevTimer - 1);
+            }, 1000);
+        }
+        else if (source === "website") {
+            const cartItems = localStorage.getItem("gourmettwistcart") ? JSON.parse(localStorage.getItem("gourmettwistcart")) : [];
+            filteredData.filter(x => x.items.filter(i => i.checked).length).forEach(x => {
+                x.items.filter(i => i.checked).forEach(item => {
+                    if (cartItems.find(c => c.id === item.id))
+                        cartItems[cartItems.findIndex(c => c.id === item.id)] = {
+                            ...cartItems.find(c => c.id === item.id),
+                            quantity: item.quantityToPurchase,
+                            totalCost: parseInt(item.quantityToPurchase) * item.unitPrice
+                        }
+                    else cartItems.push({
+                        uuid: uuidv4(),
+                        id: item.id,
+                        size: x.size,
+                        unitPrice: item.unitPrice,
+                        imageUrl: item.imageUrl,
+                        name: item.name,
+                        quantity: item.quantityToPurchase,
+                        toppings: [],
+                        totalCost: parseInt(item.quantityToPurchase) * item.unitPrice
+                    })
+                });
+            });
+            localStorage.setItem("gourmettwistcart", JSON.stringify(cartItems))
+            setShowCheckoutModal(`Added x${cartItems.length} item(s) successfully to the cart`)
+        }
+    }
+
+    useEffect(() => {
+        if (timerRedirect <= 1) {
+            clearInterval(interval.current)
+            window.open(`https://ig.me/m/junaidulqayyum`, "_blank")
+            setShowIgRedirectionModal(false)
+            setTimerRedirect(5)
+        }
+    }, [timerRedirect])
+
+    const changePurchaseQty = (size, item, e) => {
+        const filteredDataTmp = JSON.parse(JSON.stringify(filteredData));
+        if (filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).stockQty < parseInt(e.target.value)) return message.warning("Please do not provide quantity more than available stock")
+        filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).quantityToPurchase = e.target.value
+        setFilteredData(filteredDataTmp)
     }
 
     return (
         <Main>
-            {/* {isLoadingProducts && <Loader />} */}
+            {isLoadingProducts && <Loader />}
             <div style={{ display: 'flex', marginTop: '3%' }}>
                 <div style={{ flex: 0.3 }}></div>
                 <div style={{ flex: 0.3 }}></div>
@@ -172,7 +273,7 @@ const AvailableBreads = () => {
                             transform: "translateY(-50%)",
                             cursor: "pointer",
                             width: '20px'
-                        }} class="magnifier-icon" />
+                        }} className="magnifier-icon" />
                         <input placeholder="Search with item name and size" style={{
                             width: "100%",
                             padding: 10,
@@ -217,7 +318,22 @@ const AvailableBreads = () => {
                                                             onChange={e => checkItem(d, i, e)}
                                                             availableBreadChildLabel={i.name} />
                                                     </li>
-                                                    <li style={{ display: "inline-block", float: "right", paddingRight: 15 }}>{i.stockQty || 0}</li>
+                                                    <li style={{ display: "inline-block", float: "right", paddingRight: 15 }}>
+                                                        {
+                                                            i.checked && <input placeholder="1"
+                                                                value={i.quantityToPurchase || ""}
+                                                                style={{
+                                                                    marginRight: 20,
+                                                                    height: 25,
+                                                                    borderRadius: 5,
+                                                                    border: "1px solid #bec7d9",
+                                                                    width: 50,
+                                                                    textAlign: "center"
+                                                                }}
+                                                                onChange={(e) => changePurchaseQty(d, i, e)} />
+                                                        }
+                                                        {i.stockQty || 0}
+                                                    </li>
                                                 </ul>
                                             })
                                         }
@@ -229,7 +345,7 @@ const AvailableBreads = () => {
                 </div>
                 <div style={{ flex: 0.3 }}></div>
                 <div style={{ flex: 0.3 }}></div>
-                {
+                {/* {
                     ttlChecked > 0 && <span style={{
                         cursor: "pointer",
                         position: "fixed",
@@ -254,8 +370,81 @@ const AvailableBreads = () => {
                         &nbsp;
                         <span>{clipboardStatus}</span>
                     </span>
-                }
+                } */}
             </div>
+
+            <FloatButton.Group
+                open={openFloatbuttonGroup}
+                trigger="click"
+                onClick={() => setOpenFloatbuttonGroup(!openFloatbuttonGroup)}
+                style={{ right: 24 }}
+                icon={<QuestionCircleOutlined />}
+                shape="square"
+                type="primary"
+            >
+                <FloatButton onClick={() => {
+                    placeOrder("whatsapp")
+                    setOpenFloatbuttonGroup(!openFloatbuttonGroup)
+                }} tooltip={"Order via whatsapp"} icon={<WhatsAppOutlined />} />
+                <FloatButton onClick={() => {
+                    placeOrder("insta")
+                    setOpenFloatbuttonGroup(!openFloatbuttonGroup)
+                }} tooltip={"Order via instagram"} icon={<InstagramOutlined />} />
+                <FloatButton onClick={() => {
+                    placeOrder("website")
+                    setOpenFloatbuttonGroup(!openFloatbuttonGroup)
+                }} tooltip={"Order via website"} icon={<img src="/static/images/splash-logo.png" />} />
+                <FloatButton onClick={() => {
+                    copyToClipboard()
+                    setOpenFloatbuttonGroup(!openFloatbuttonGroup)
+                }} tooltip={"Copy to clipboard"} icon={<CopyOutlined />} />
+                <FloatButton onClick={() => {
+                    getAllBreads()
+                    setOpenFloatbuttonGroup(!openFloatbuttonGroup)
+                }} tooltip={"Refresh stock"} icon={<ReloadOutlined />} />
+            </FloatButton.Group>
+
+            <Modal
+                visible={showIgRedirectionModal}
+                wrapClassName={"redirectionModal"}
+                closeIcon={null}
+                centered={true}
+                width={300}
+                footer={null}>
+                <p>Order details are copied to clipboard. You will need to paste in the chatbox</p>
+                <br />
+                <p>Opening instagram chat box in {timerRedirect}...</p>
+            </Modal>
+
+            <Modal
+                visible={showCheckoutModal}
+                closeIcon={null}
+                centered={true}
+                width={350}
+                footer={null}>
+                <div className="add-cart-success">
+                    <div className="icon">
+                        <ModalBread />
+                    </div>
+                    <div className="message">{showCheckoutModal}</div>
+                    <div className="actions">
+                        <button
+                            className="continue"
+                            onClick={() => {
+                                location.href = "/cart"
+                            }}
+                        >
+                            Checkout
+                        </button>
+                        <button
+                            className="go-checkout"
+                            onClick={() => setShowCheckoutModal(false)}
+                        >
+                            Continue Shopping
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </Main >
     );
 };

@@ -1,6 +1,6 @@
 import { withRouter } from "next/router";
 import React, { Component } from "react";
-import { STORE_ID } from "../../constants";
+import { API_BASE_URL, STORE_ID } from "../../constants";
 import axios from "axios";
 import { zupaGetRequest } from "../../api";
 
@@ -35,7 +35,7 @@ class StoreProvider extends Component {
       });
      */
 
-      const res = await axios.get(`https://api.zupa.ng/auth/stores/${STORE_ID}`);
+      const res = await axios.get(`${API_BASE_URL}auth/stores/${STORE_ID}`);
 
       localStorage.setItem("STORE_INFO__SAVED", true);
       localStorage.setItem("STORE_INFO", JSON.stringify(res.data));
