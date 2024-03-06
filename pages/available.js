@@ -8,7 +8,7 @@ import { Checkbox, TextField } from "../components/FormElements";
 import { API_BASE_URL } from "../constants";
 import { v4 as uuidv4 } from 'uuid';
 import { FloatButton, message, Modal } from 'antd';
-import { WhatsAppOutlined, InstagramOutlined, ReloadOutlined, QuestionCircleOutlined, CopyOutlined } from '@ant-design/icons';
+import { WhatsAppOutlined, InstagramOutlined, ReloadOutlined, QuestionCircleOutlined, CopyOutlined, PlusOutlined } from '@ant-design/icons';
 import { ModalBread } from "../public/static/vectors";
 import { useRouter } from "next/router";
 
@@ -163,10 +163,11 @@ const AvailableBreads = () => {
         return true
     }
 
-    const copyToClipboard = async () => {
+    const copyToClipboard = async (txtToAppend = "") => {
         if (!validateSelectedItems()) return
-        await navigator.clipboard.writeText(getTxtToCopy())
+        await navigator.clipboard.writeText(`${txtToAppend}${getTxtToCopy()}`)
         setClipboardStatus("Copied")
+        message.success(`Copied to clipboard`)
     }
 
     const [showCheckoutModal, setShowCheckoutModal] = useState(false)
@@ -180,7 +181,7 @@ const AvailableBreads = () => {
             window.open(whatsappUrl, "_blank");
         }
         else if (source === "insta") {
-            copyToClipboard()
+            copyToClipboard(`Hello, I want to order these items: \n\n`)
             setShowIgRedirectionModal(true)
             interval.current = setInterval(() => {
                 setTimerRedirect(prevTimer => prevTimer - 1);
@@ -378,7 +379,7 @@ const AvailableBreads = () => {
                 trigger="click"
                 onClick={() => setOpenFloatbuttonGroup(!openFloatbuttonGroup)}
                 style={{ right: 24 }}
-                icon={<QuestionCircleOutlined />}
+                icon={<PlusOutlined />}
                 shape="square"
                 type="primary"
             >
@@ -395,7 +396,7 @@ const AvailableBreads = () => {
                     setOpenFloatbuttonGroup(!openFloatbuttonGroup)
                 }} tooltip={"Order via website"} icon={<img src="/static/images/splash-logo.png" />} />
                 <FloatButton onClick={() => {
-                    copyToClipboard()
+                    copyToClipboard(`Hello, I want to order these items: \n\n`)
                     setOpenFloatbuttonGroup(!openFloatbuttonGroup)
                 }} tooltip={"Copy to clipboard"} icon={<CopyOutlined />} />
                 <FloatButton onClick={() => {
@@ -413,7 +414,7 @@ const AvailableBreads = () => {
                 footer={null}>
                 <p>Order details are copied to clipboard. You will need to paste in the chatbox</p>
                 <br />
-                <p>Opening instagram chat box in {timerRedirect}...</p>
+                <p style={{ fontWeight: 600 }}>Opening instagram chat box in {timerRedirect}...</p>
             </Modal>
 
             <Modal
