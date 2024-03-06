@@ -20,7 +20,6 @@ const AvailableBreads = () => {
     const [selectedSize, setSelectedSize] = useState("All");
     const [filteredData, setFilteredData] = useState([]);
     const [searchQ, setSearchQ] = useState("")
-    const [clipboardStatus, setClipboardStatus] = useState("Copy to clipboard")
 
     const [timerRedirect, setTimerRedirect] = useState(5)
 
@@ -108,10 +107,7 @@ const AvailableBreads = () => {
         else
             filteredDataTmp.find(x => x.size === size.size).items.map(x => x.checked = false)
 
-        // setTtlChecked([].concat.apply([], filteredDataTmp.map(x => x.items)).filter(x => x.checked).length)
-
         setFilteredData(filteredDataTmp)
-        setClipboardStatus("Copy to clipboard")
     }
 
     const checkItem = (size, item, e) => {
@@ -119,16 +115,15 @@ const AvailableBreads = () => {
         filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).checked = e.target.checked
         if (!e.target.checked) {
             filteredDataTmp.find(x => x.size === size.size).checked = false
-            filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).quantityToPurchase = 0
-        }
+            filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).quantityToPurchase = ""
+        } else if (e.target.checked && filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).stockQty > 0)
+            filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).quantityToPurchase = 1
 
         if (!filteredDataTmp.find(x => x.size === size.size).items.find(x => !x.checked))
             filteredDataTmp.find(x => x.size === size.size).checked = true
 
-        // setTtlChecked([].concat.apply([], filteredDataTmp.map(x => x.items)).filter(x => x.checked).length)
-
         setFilteredData(filteredDataTmp)
-        setClipboardStatus("Copy to clipboard")
+        setOpenFloatbuttonGroup(true)
     }
 
     const getTxtToCopy = () => {
@@ -166,7 +161,6 @@ const AvailableBreads = () => {
     const copyToClipboard = async (txtToAppend = "") => {
         if (!validateSelectedItems()) return
         await navigator.clipboard.writeText(`${txtToAppend}${getTxtToCopy()}`)
-        setClipboardStatus("Copied")
         message.success(`Copied to clipboard`)
     }
 
@@ -191,13 +185,14 @@ const AvailableBreads = () => {
             const cartItems = localStorage.getItem("gourmettwistcart") ? JSON.parse(localStorage.getItem("gourmettwistcart")) : [];
             filteredData.filter(x => x.items.filter(i => i.checked).length).forEach(x => {
                 x.items.filter(i => i.checked).forEach(item => {
-                    if (cartItems.find(c => c.id === item.id))
+                    if (cartItems.find(c => c.id === item.id)) {
+                        const newQty = cartItems[cartItems.findIndex(c => c.id === item.id)].quantity + parseInt(item.quantityToPurchase)
                         cartItems[cartItems.findIndex(c => c.id === item.id)] = {
                             ...cartItems.find(c => c.id === item.id),
-                            quantity: item.quantityToPurchase,
-                            totalCost: parseInt(item.quantityToPurchase) * item.unitPrice
+                            quantity: newQty,
+                            totalCost: newQty * item.unitPrice
                         }
-                    else cartItems.push({
+                    } else cartItems.push({
                         uuid: uuidv4(),
                         id: item.id,
                         size: x.size,
@@ -321,8 +316,8 @@ const AvailableBreads = () => {
                                                     </li>
                                                     <li style={{ display: "inline-block", float: "right", paddingRight: 15 }}>
                                                         {
-                                                            i.checked && <input placeholder="1"
-                                                                value={i.quantityToPurchase || ""}
+                                                            i.checked && <input placeholder="0"
+                                                                value={i.quantityToPurchase}
                                                                 style={{
                                                                     marginRight: 20,
                                                                     height: 25,
@@ -346,32 +341,6 @@ const AvailableBreads = () => {
                 </div>
                 <div style={{ flex: 0.3 }}></div>
                 <div style={{ flex: 0.3 }}></div>
-                {/* {
-                    ttlChecked > 0 && <span style={{
-                        cursor: "pointer",
-                        position: "fixed",
-                        bottom: "40px",
-                        right: "50px",
-                        background: "white",
-                        padding: "10px",
-                        color: "#756464",
-                        fontWeight: "bold",
-                        borderRadius: "10px",
-                        width: "fit-content",
-                        height: "50px",
-                        textAlign: "center",
-                        lineHeight: "30px",
-                        boxShadow:
-                            "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
-                        fontSize: "14px",
-                        display: "flex",
-                        alignItems: "center"
-                    }} onClick={copyToClipboard}>
-                        <img src="/copy-to-clipboard.png" width="20px" />
-                        &nbsp;
-                        <span>{clipboardStatus}</span>
-                    </span>
-                } */}
             </div>
 
             <FloatButton.Group
@@ -383,26 +352,42 @@ const AvailableBreads = () => {
                 shape="square"
                 type="primary"
             >
-                <FloatButton onClick={() => {
+                <span id="orderNowHeader">Order now!</span>
+                <div className="floatButtonsContainer" onClick={() => {
                     placeOrder("whatsapp")
                     setOpenFloatbuttonGroup(!openFloatbuttonGroup)
-                }} tooltip={"Order via whatsapp"} icon={<WhatsAppOutlined />} />
-                <FloatButton onClick={() => {
+                }} >
+                    <FloatButton style={{ display: "inline-block" }} tooltip={"Order via whatsapp"} icon={<WhatsAppOutlined />} />
+                    <span className="orderNowApps">Whatsapp</span>
+                </div>
+                <div className="floatButtonsContainer" onClick={() => {
                     placeOrder("insta")
                     setOpenFloatbuttonGroup(!openFloatbuttonGroup)
-                }} tooltip={"Order via instagram"} icon={<InstagramOutlined />} />
-                <FloatButton onClick={() => {
+                }} >
+                    <FloatButton style={{ display: "inline-block" }} tooltip={"Order via instagram"} icon={<InstagramOutlined />} />
+                    <span className="orderNowApps">Instagram</span>
+                </div>
+                <div className="floatButtonsContainer" onClick={() => {
                     placeOrder("website")
                     setOpenFloatbuttonGroup(!openFloatbuttonGroup)
-                }} tooltip={"Order via website"} icon={<img src="/static/images/splash-logo.png" />} />
-                <FloatButton onClick={() => {
+                }} >
+                    <FloatButton style={{ display: "inline-block" }} tooltip={"Order via website"} icon={<img src="/static/images/splash-logo.png" />} />
+                    <span className="orderNowApps">Website</span>
+                </div>
+                <div className="floatButtonsContainer" onClick={() => {
                     copyToClipboard(`Hello, I want to order these items: \n\n`)
                     setOpenFloatbuttonGroup(!openFloatbuttonGroup)
-                }} tooltip={"Copy to clipboard"} icon={<CopyOutlined />} />
-                <FloatButton onClick={() => {
+                }} >
+                    <FloatButton style={{ display: "inline-block" }} tooltip={"Copy to clipboard"} icon={<CopyOutlined />} />
+                    <span className="orderNowApps">Clipboard</span>
+                </div>
+                <div className="floatButtonsContainer" onClick={() => {
                     getAllBreads()
                     setOpenFloatbuttonGroup(!openFloatbuttonGroup)
-                }} tooltip={"Refresh stock"} icon={<ReloadOutlined />} />
+                }} >
+                    <FloatButton style={{ display: "inline-block" }} tooltip={"Refresh stock"} icon={<ReloadOutlined />} />
+                    <span className="orderNowApps">Refresh</span>
+                </div>
             </FloatButton.Group>
 
             <Modal

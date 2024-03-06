@@ -1,0 +1,24 @@
+#orderNowHeader {
+    display: block;
+    font-weight: 500;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.orderNowApps {
+    display: inline-block !important;
+}
+
+.floatButtonsContainer{
+    display: flex !important;
+    align-items: center !important;
+    cursor: pointer !important;
+}
+
+.ant-float-btn-group-wrap{
+    background-color: white !important;
+    width: 140px;
+    position: absolute;
+    top: 0px;
+    left: -100px;
+}

@@ -5,6 +5,8 @@ import smoothscroll from "smoothscroll-polyfill";
 
 import "../styles/style.sass";
 
+import "../styles/customStyles.css"
+
 import AuthenticationProvider from "../providers/AuthenticationProvider";
 import ProductsProvider from "../providers/ProductsProvider";
 import CartProvider from "../providers/CartProvider";
