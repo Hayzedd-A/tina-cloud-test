@@ -175,7 +175,7 @@ const AvailableBreads = () => {
         if (!validateSelectedItems()) return
         var message = encodeURIComponent(`Hello, I want to order these items: \n\n${getTxtToCopy()} `);
         if (source === "whatsapp") {
-            var phoneNumber = "923125847735";
+            var phoneNumber = "2347018249203";
             var whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
             window.open(whatsappUrl, "_blank");
         }
@@ -217,7 +217,7 @@ const AvailableBreads = () => {
     useEffect(() => {
         if (timerRedirect <= 1) {
             clearInterval(interval.current)
-            window.open(`https://ig.me/m/junaidulqayyum`, "_blank")
+            window.open(`https://ig.me/m/gourmettwist`, "_blank")
             setShowIgRedirectionModal(false)
             setTimerRedirect(5)
         }
