@@ -1,7 +1,8 @@
 import axios from "axios";
+import { API_BASE_URL } from "../constants";
 
 export const API = axios.create({
-  baseURL: "https://api.zupa.ng/",
+  baseURL: API_BASE_URL,
   headers: {},
 });
 
