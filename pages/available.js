@@ -39,6 +39,8 @@ const AvailableBreads = () => {
         searchBread()
     }, [searchQ])
 
+    const [cart, setCart] = useState([])
+
     const getAllBreads = async () => {
         setIsLoadingProducts(true)
         const breadsStock = await axios.get(`${API_BASE_URL}auth/gt-breads-stock`);
@@ -111,27 +113,26 @@ const AvailableBreads = () => {
     }
 
     const checkItem = (size, item, e) => {
-        const filteredDataTmp = JSON.parse(JSON.stringify(filteredData))
-        filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).checked = e.target.checked
-        if (!e.target.checked) {
-            filteredDataTmp.find(x => x.size === size.size).checked = false
-            filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).quantityToPurchase = ""
-        } else if (e.target.checked && filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).stockQty > 0)
-            filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).quantityToPurchase = 1
+        let cartTmp = JSON.parse(JSON.stringify(cart))
 
-        if (!filteredDataTmp.find(x => x.size === size.size).items.find(x => !x.checked))
-            filteredDataTmp.find(x => x.size === size.size).checked = true
+        if (e.target.checked)
+            cartTmp.push({
+                id: item.id,
+                quantityToPurchase: 1
+            });
+        else
+            cartTmp = cartTmp.filter(x => x.id !== item.id)
 
-        setFilteredData(filteredDataTmp)
+        setCart(cartTmp)
         setOpenFloatbuttonGroup(true)
     }
 
     const getTxtToCopy = () => {
-        const toCopy = [].concat.apply([], filteredData.map(x => x.items)).filter(x => x.checked).map(x => {
+        const toCopy = [].concat.apply([], filteredData.map(x => x.items)).filter(x => cart.find(c => c.id === x.id)).map(x => {
             return {
                 name: x.name,
                 stockQty: x.stockQty,
-                quantityToPurchase: x.quantityToPurchase,
+                quantityToPurchase: cart.find(c => c.id === x.id).quantityToPurchase,
                 size: x.size
             }
         });
@@ -144,13 +145,7 @@ const AvailableBreads = () => {
     }
 
     const validateSelectedItems = () => {
-        if ([].concat.apply([], filteredData.map(x => x.items)).filter(x => x.quantityToPurchase).length !== [].concat.apply([], filteredData.map(x => x.items)).filter(x => x.checked).length) {
-            message.warning("Please provide quantity for all selected items")
-            return false
-        }
-        if (
-            ![].concat.apply([], filteredData.map(x => x.items)).filter(x => x.checked).length
-        ) {
+        if (!cart.length) {
             message.warning("Please select a product first")
             return false
         }
@@ -183,10 +178,10 @@ const AvailableBreads = () => {
         }
         else if (source === "website") {
             const cartItems = localStorage.getItem("gourmettwistcart") ? JSON.parse(localStorage.getItem("gourmettwistcart")) : [];
-            filteredData.filter(x => x.items.filter(i => i.checked).length).forEach(x => {
-                x.items.filter(i => i.checked).forEach(item => {
+            filteredData.filter(x => x.items.filter(i => cart.find(c => c.id === i.id)).length).forEach(x => {
+                x.items.filter(i => cart.find(c => c.id === i.id)).forEach(item => {
                     if (cartItems.find(c => c.id === item.id)) {
-                        const newQty = cartItems[cartItems.findIndex(c => c.id === item.id)].quantity + parseInt(item.quantityToPurchase)
+                        const newQty = parseInt(cartItems[cartItems.findIndex(c => c.id === item.id)].quantity) + parseInt(cart.find(c => c.id === item.id).quantityToPurchase)
                         cartItems[cartItems.findIndex(c => c.id === item.id)] = {
                             ...cartItems.find(c => c.id === item.id),
                             quantity: newQty,
@@ -199,9 +194,9 @@ const AvailableBreads = () => {
                         unitPrice: item.unitPrice,
                         imageUrl: item.imageUrl,
                         name: item.name,
-                        quantity: item.quantityToPurchase,
+                        quantity: cart.find(c => c.id === item.id).quantityToPurchase,
                         toppings: [],
-                        totalCost: parseInt(item.quantityToPurchase) * item.unitPrice
+                        totalCost: cart.find(c => c.id === item.id).quantityToPurchase * item.unitPrice
                     })
                 });
             });
@@ -220,10 +215,11 @@ const AvailableBreads = () => {
     }, [timerRedirect])
 
     const changePurchaseQty = (size, item, e) => {
-        const filteredDataTmp = JSON.parse(JSON.stringify(filteredData));
-        if (filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).stockQty < parseInt(e.target.value)) return message.warning("Please do not provide quantity more than available stock")
-        filteredDataTmp.find(x => x.size === size.size).items.find(x => x.id === item.id).quantityToPurchase = e.target.value
-        setFilteredData(filteredDataTmp)
+        if (filteredData.find(x => x.size === size.size).items.find(x => x.id === item.id).stockQty < parseInt(e.target.value)) return message.warning("Please do not provide quantity more than available stock")
+
+        const cartTmp = JSON.parse(JSON.stringify(cart))
+        cartTmp.find(c => c.id === item.id).quantityToPurchase = e.target.value
+        setCart(cartTmp)
     }
 
     return (
@@ -310,14 +306,14 @@ const AvailableBreads = () => {
                                                 }}>
                                                     <li style={{ display: "inline-block", paddingLeft: 15 }}>
                                                         <Checkbox
-                                                            checked={i.checked}
+                                                            checked={cart.find(c => c.id === i.id)}
                                                             onChange={e => checkItem(d, i, e)}
                                                             availableBreadChildLabel={i.name} />
                                                     </li>
                                                     <li style={{ display: "inline-block", float: "right", paddingRight: 15 }}>
                                                         {
-                                                            i.checked && <input placeholder="0"
-                                                                value={i.quantityToPurchase}
+                                                            cart.find(c => c.id === i.id) && <input placeholder="0"
+                                                                value={cart.find(c => c.id === i.id).quantityToPurchase}
                                                                 style={{
                                                                     marginRight: 20,
                                                                     height: 25,
