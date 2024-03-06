@@ -104,10 +104,33 @@ const AvailableBreads = () => {
     const checkSize = (size, e) => {
         const filteredDataTmp = JSON.parse(JSON.stringify(filteredData))
         filteredDataTmp.find(x => x.size === size.size).checked = e.target.checked
+
+        let cartTmp = JSON.parse(JSON.stringify(cart))
         if (e.target.checked)
-            filteredDataTmp.find(x => x.size === size.size).items.map(x => x.checked = true)
+            filteredDataTmp.find(x => x.size === size.size).items.map(x => {
+                if (!cartTmp.find(c => c.id === x.id)) {
+                    if (
+                        (
+                            searchQ && (
+                                x.name.trim().toLowerCase().includes(searchQ.trim().toLowerCase()) ||
+                                x.size.trim().toLowerCase().includes(searchQ.trim().toLowerCase())
+                            )
+                        ) || !searchQ
+                    )
+                        cartTmp.push({
+                            id: x.id,
+                            name: x.name,
+                            stockQty: x.stockQty,
+                            quantityToPurchase: 1,
+                            size: size.size
+                        })
+                }
+            })
         else
-            filteredDataTmp.find(x => x.size === size.size).items.map(x => x.checked = false)
+            cartTmp = cartTmp.filter(c => c.size !== size.size)
+
+        debugger
+        setCart(cartTmp)
 
         setFilteredData(filteredDataTmp)
     }
@@ -118,7 +141,10 @@ const AvailableBreads = () => {
         if (e.target.checked)
             cartTmp.push({
                 id: item.id,
-                quantityToPurchase: 1
+                quantityToPurchase: 1,
+                name: item.name,
+                stockQty: item.stockQty,
+                size: size.size
             });
         else
             cartTmp = cartTmp.filter(x => x.id !== item.id)
@@ -128,7 +154,7 @@ const AvailableBreads = () => {
     }
 
     const getTxtToCopy = () => {
-        const toCopy = [].concat.apply([], filteredData.map(x => x.items)).filter(x => cart.find(c => c.id === x.id)).map(x => {
+        const toCopy = cart.map(x => {
             return {
                 name: x.name,
                 stockQty: x.stockQty,
@@ -306,7 +332,7 @@ const AvailableBreads = () => {
                                                 }}>
                                                     <li style={{ display: "inline-block", paddingLeft: 15 }}>
                                                         <Checkbox
-                                                            checked={cart.find(c => c.id === i.id)}
+                                                            checked={cart.find(c => c.id === i.id) ? true : false}
                                                             onChange={e => checkItem(d, i, e)}
                                                             availableBreadChildLabel={i.name} />
                                                     </li>
