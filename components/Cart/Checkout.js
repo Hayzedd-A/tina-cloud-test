@@ -366,6 +366,7 @@ class Checkout extends Component {
         name,
         phoneNumber,
         address,
+        email
       },
       recipient: {
         name,
