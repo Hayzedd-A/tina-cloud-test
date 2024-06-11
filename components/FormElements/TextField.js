@@ -40,7 +40,7 @@ class TextField extends Component {
 
       if (value === "" || (re.test(value) && value.length <= 11)) {
         isValid = value.length === 11;
-        
+
         onChange({ target: { name, value } }, isValid);
       }
     } else if (type === "custom-number") {
@@ -94,6 +94,7 @@ class TextField extends Component {
       min,
       mobile,
       hint,
+      loyaltyPointsAvailable,
       ...rest
     } = this.props;
 
@@ -109,10 +110,22 @@ class TextField extends Component {
       >
         {label && (
           <label>
-            {label} {required && <sup className="marked">*</sup>} 
+            {label} {required && <sup className="marked">*</sup>}
             {hint && <i style={{ textTransform: 'capitalize', color: '#333', fontWeight: 'bold' }}>{hint}</i>}
           </label>
         )}
+        {
+          loyaltyPointsAvailable?.available &&
+          <i>
+            <span style={{
+              display: "block",
+              fontSize: 14,
+              marginBottom: 10
+            }}>
+              Loyalty Points Discount Available <b>(N{(loyaltyPointsAvailable.available * loyaltyPointsAvailable.discountPerPoint).toLocaleString()})</b>
+            </span>
+          </i>
+        }
         <div onClick={e => e.stopPropagation()}>
           <input
             ref={this.textFieldRef}

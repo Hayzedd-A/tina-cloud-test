@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CartConsumer } from "../providers/CartProvider";
 import Toaster from "../components/Toaster";
@@ -9,8 +9,9 @@ import { getRequest } from "../api";
 import { STORE_ID } from "../constants";
 import Modal from "../components/Modal";
 import { ModalBread } from "../public/static/vectors";
+import { reduceArray } from "../utils/functions";
 
-const CartPage = () => {
+const CartPage = ({ cart }) => {
   const [isCheckoutActive, showCheckout] = useState(false);
 
   // const [modalOpen, setModalOpen] = useState(true);
@@ -21,6 +22,12 @@ const CartPage = () => {
   const [toaster, setToaster] = useState(null);
   const [couponObject, setCouponObject] = useState(null);
   const [couponCode, setCouponCode] = useState({
+    value: "",
+    valid: false,
+  });
+
+  const [loyaltyPointsAvailable, setLoyaltyPointsAvailable] = useState(null);
+  const [loyaltyPointApplied, setLoyaltyPointApplied] = useState({
     value: "",
     valid: false,
   });
@@ -41,6 +48,56 @@ const CartPage = () => {
       value: target.value,
       valid,
     });
+  };
+
+  useEffect(() => {
+    if (!cart?.length) return
+    if (!loyaltyPointApplied?.value || !loyaltyPointsAvailable?.available) return
+    const subTotal = reduceArray(cart, "totalCost");
+    const loyaltyDiscount = parseFloat(loyaltyPointApplied.value)
+    if (
+      loyaltyDiscount > subTotal
+    ) {
+      setLoyaltyPointApplied({
+        ...loyaltyPointApplied,
+        value: subTotal
+      });
+      openToaster("error", "You can not redeem more points than order amount");
+    } else if (loyaltyDiscount > (loyaltyPointsAvailable.available * loyaltyPointsAvailable.discountPerPoint)) {
+      setLoyaltyPointApplied({
+        ...loyaltyPointApplied,
+        value: loyaltyPointsAvailable.available * loyaltyPointsAvailable.discountPerPoint
+      });
+      openToaster("error", "You can not redeem more discount than available");
+    }
+
+  }, [loyaltyPointApplied])
+
+  const handleChangeLoyaltyPoints = ({ target }, valid) => {
+    setLoyaltyPointApplied({
+      value: isNaN(target.value) ? "" : target.value,
+      valid,
+    });
+  };
+
+  useEffect(() => {
+    getLoyaltyDiscountAvailable()
+  }, [])
+
+  const getLoyaltyDiscountAvailable = async () => {
+    const { value } = couponCode;
+    try {
+      const res = await getRequest({
+        url: `/customer-requests/stores/${STORE_ID}/loyalty-points-available`,
+        token: true
+      });
+      setLoyaltyPointsAvailable((res.data?.length ? res.data[0] : null));
+    } catch (error) {
+      console.log(error);
+      // const message = getRequestError(error);
+
+      openToaster("error", "An error occurred, please try again later");
+    }
   };
 
   const handleApplyCouponCode = async () => {
@@ -98,13 +155,18 @@ const CartPage = () => {
         <Checkout
           goBack={() => showCheckout(false)}
           couponObject={couponObject}
+          loyaltyPointsAvailable={loyaltyPointsAvailable}
+          loyaltyPointApplied={loyaltyPointApplied}
           showCheckoutSuccess={showCheckoutSuccess}
         />
       ) : (
         <Cart
+          loyaltyPointApplied={loyaltyPointApplied}
+          loyaltyPointsAvailable={loyaltyPointsAvailable}
           couponCode={couponCode}
           couponObject={couponObject}
           checkout={() => showCheckout(true)}
+          handleChangeLoyaltyPoints={handleChangeLoyaltyPoints}
           handleApplyCouponCode={handleApplyCouponCode}
           handleChangeCouponCode={handleChangeCouponCode}
         />

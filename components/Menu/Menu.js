@@ -57,6 +57,24 @@ const Menu = ({ cart }) => {
         </div>
 
         <div className="menu-item">
+          <Link href="/loyalty-points">
+            <a>
+              <span className="icon">
+                <img
+                  src={
+                    router.pathname === "/loyalty-points"
+                      ? "/static/svgs/my-orders-active.svg"
+                      : "/static/svgs/my-orders.svg"
+                  }
+                  alt=""
+                />
+              </span>
+              <span className="text">Loyalty Points</span>
+            </a>
+          </Link>
+        </div>
+
+        <div className="menu-item">
           <Link href="/cart">
             <a>
               <span className="cart-count">{cartQuantity}</span>
