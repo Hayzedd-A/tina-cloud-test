@@ -31,6 +31,12 @@ class Cart extends Component {
         valid: false,
       },
     },
+    formData: {
+      loyaltyPointApplied: {
+        value: "",
+        valid: false,
+      },
+    },
     isApplyingCouponCode: false,
     isMenuActive: false,
     showCouponSection: false,
@@ -77,6 +83,16 @@ class Cart extends Component {
     });
   };
 
+  handleApplyLoyaltyDiscount = async () => {
+    const {
+      formData: { loyaltyPointApplied },
+    } = this.state;
+    await this.props.handleApplyCouponCode();
+    this.setState({
+      isApplyingCouponCode: false,
+    });
+  };
+
   openToaster = (status, message) => {
     this.setState({
       toaster: {
@@ -101,20 +117,23 @@ class Cart extends Component {
     const { isLoadingCart, cart, checkout, router } = this.props;
     const { isMenuActive, showCouponSection, isApplyingCouponCode } =
       this.state;
-    const { couponCode, couponObject } = this.props;
+    const { couponCode, couponObject, loyaltyPointApplied, loyaltyPointsAvailable } = this.props;
 
     const subTotal = reduceArray(cart, "totalCost");
     const minimumAmount = 4500;
 
-    console.log(subTotal, couponObject);
+    const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
 
-    const discountAmount = couponObject
+    let discountAmount = couponObject
       ? couponObject.discountType === "percent"
-        ? // ? ((couponObject.value * subTotal) / 100).toLocaleString()
+        ?
         (couponObject.value * subTotal) / 100
         : couponObject.value
       : null;
-    // return <div>Hello</div>
+
+    if (loyaltyDiscountApplied)
+      discountAmount = (discountAmount || 0) + (loyaltyDiscountApplied);
+
     return (
       <div className="cart-container full-height">
         <div className="cart-header">
@@ -286,6 +305,27 @@ class Cart extends Component {
                     </div>
                   </div>
                 </div>
+                {
+                  loyaltyPointsAvailable?.available && <div className="container">
+                    <div className="row" style={{ alignItems: "flex-end" }}>
+                      <div className="col-12">
+                        <div className="row" style={{ alignItems: "flex-end" }}>
+                          <div className="col-12">
+                            <TextField
+                              label="Loyalty Discount"
+                              placeholder="Provide discount amount"
+                              name="loyaltyPointApplied"
+                              loyaltyPointsAvailable={loyaltyPointsAvailable}
+                              value={loyaltyPointApplied.value}
+                              onChange={this.props.handleChangeLoyaltyPoints}
+                              className="mb-40"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
                 <div className="sub-total">
                   <div className="container">
                     <span className="title">Sub Total</span>

@@ -108,9 +108,9 @@ class Checkout extends Component {
         address:
           target.name === "shippingMethod"
             ? {
-                value: "",
-                valid: false,
-              }
+              value: "",
+              valid: false,
+            }
             : this.state.formData.address,
       },
       isLoadingDeliveryPrice: false,
@@ -217,7 +217,7 @@ class Checkout extends Component {
       (value) =>
         value.valid &&
         (rest.shippingMethod.value === "delivery" ||
-        rest.shippingMethod.value === "s-delivery"
+          rest.shippingMethod.value === "s-delivery"
           ? address.valid
           : true)
     );
@@ -305,7 +305,7 @@ class Checkout extends Component {
     }
   };
 
-  onSuggestNoResults = (userInput) => {};
+  onSuggestNoResults = (userInput) => { };
 
   computeDistance(pointA, pointB) {
     const lat1 = pointA.location.lat;
@@ -341,7 +341,7 @@ class Checkout extends Component {
       shippingMethod,
       deliveryDate,
     } = getFormValues(formData);
-    const { cart, user, couponObject } = this.props;
+    const { cart, user, couponObject, loyaltyPointApplied, loyaltyPointsAvailable } = this.props;
 
     const orderItems = cart.map(({ id, quantity, toppings }) => ({
       productId: id,
@@ -381,6 +381,11 @@ class Checkout extends Component {
       payload.discountValue = couponObject.value;
     }
 
+    if (loyaltyPointApplied?.value) {
+      payload.loyaltyPointsDiscountRedeemed = (parseFloat(loyaltyPointApplied.value));
+      payload.loyaltyPointsRedeemed = Math.ceil((parseFloat(loyaltyPointApplied.value)) / loyaltyPointsAvailable.discountPerPoint);
+    }
+
     shippingMethod === "pickup" && delete payload.deliveryLocation;
     shippingMethod === "s-pickup" && delete payload.deliveryLocation;
 
@@ -393,12 +398,18 @@ class Checkout extends Component {
       const { paymentReference, amount } = res.data;
       const subTotal = reduceArray(cart, "totalCost");
 
-      const discountAmount = couponObject
+      debugger
+      let discountAmount = couponObject
         ? couponObject.discountType === "percent"
-          ? // ? ((couponObject.value * subTotal) / 100).toLocaleString()
-            (couponObject.value * subTotal) / 100
+          ?
+          (couponObject.value * subTotal) / 100
           : couponObject.value
         : null;
+
+      const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
+
+      if (loyaltyDiscountApplied)
+        discountAmount = (discountAmount || 0) + (loyaltyDiscountApplied);
 
       let metadata = {
         storeID: "8a7a28dc-b54d-4841-b949-efe60dbae709",
@@ -615,7 +626,7 @@ class Checkout extends Component {
       isMenuActive,
       initialValue,
     } = this.state;
-    const { cart, goBack, couponObject } = this.props;
+    const { cart, goBack, couponObject, loyaltyPointApplied } = this.props;
     const { name, phoneNumber, email, shippingMethod, note, deliveryDate } =
       formData;
 
@@ -632,11 +643,16 @@ class Checkout extends Component {
       },
     };
 
-    const discountAmount = couponObject
+    const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
+
+    let discountAmount = couponObject
       ? couponObject.discountType === "percent"
         ? (couponObject.value * subTotal) / 100
         : couponObject.value
       : null;
+
+    if (loyaltyDiscountApplied)
+      discountAmount = (discountAmount || 0) + (loyaltyDiscountApplied);
 
     return (
       <div className="cart-container">
@@ -939,10 +955,10 @@ class Checkout extends Component {
               className={classNames("checkout-button", {
                 disabled:
                   !this.state.priceCheck ||
-                  !this.checkFormValidity() ||
-                  isCheckingOut ||
-                  isLoadingDeliveryPrice ||
-                  Object.entries(this.state.chosenCity).length === 0
+                    !this.checkFormValidity() ||
+                    isCheckingOut ||
+                    isLoadingDeliveryPrice ||
+                    Object.entries(this.state.chosenCity).length === 0
                     ? true
                     : false,
               })}
