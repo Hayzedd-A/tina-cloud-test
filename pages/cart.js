@@ -93,10 +93,9 @@ const CartPage = ({ cart }) => {
       });
       setLoyaltyPointsAvailable((res.data?.length ? res.data[0] : null));
     } catch (error) {
-      console.log(error);
+      console.log(`LOYALTY POINTS NOT FETCHED BECAUSE NOT LOGGED IN`)
       // const message = getRequestError(error);
-
-      openToaster("error", "An error occurred, please try again later");
+      // openToaster("error", "An error occurred, please try again later");
     }
   };
 
