@@ -14,7 +14,7 @@ const LoyaltyPoints = ({ loyaltyPoints, isLoadingLoyaltyPoints, showOrderDetails
   const columnsEarned = [
     {
       label: "Date",
-      render: ({ createdAt }) => moment(createdAt).format("DD/MM/YY")
+      render: ({ createdAt }) => moment(createdAt).format("DD/MM/YY hh:mm a")
     },
     {
       label: "Order Amount",
@@ -33,7 +33,7 @@ const LoyaltyPoints = ({ loyaltyPoints, isLoadingLoyaltyPoints, showOrderDetails
   const columnsReward = [
     {
       label: "Date",
-      render: ({ createdAt }) => moment(createdAt).format("DD/MM/YY")
+      render: ({ createdAt }) => moment(createdAt).format("DD/MM/YY hh:mm a")
     },
     {
       label: "Redeemed Points",
@@ -57,7 +57,7 @@ const LoyaltyPoints = ({ loyaltyPoints, isLoadingLoyaltyPoints, showOrderDetails
     earned.reduce((acc, nxt) => acc + nxt.pointsToAwardIncludingStandardPoints, 0) +
     redeemed.reduce((acc, nxt) => acc + nxt.pointsToAwardIncludingStandardPoints, 0);
 
-  const remainingDiscount = remainingPoints * (loyaltyPoints?.length ? loyaltyPoints[0].discountPerPoint : 0)
+  const remainingDiscount = remainingPoints * (loyaltyPoints?.length ? loyaltyPoints[0].discountPerPointRealtime : 0)
 
   const columnsRemaining = [
     {

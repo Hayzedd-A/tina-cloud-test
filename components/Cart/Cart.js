@@ -4,6 +4,8 @@ import classNames from "classnames";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 import { getRequest } from "../../api";
 
+import Link from "next/link";
+
 import { CartConsumer } from "../../providers/CartProvider";
 import { StoreConsumer } from "../../providers/StoreProvider";
 import { TextField, Radio } from "../FormElements";
@@ -305,6 +307,23 @@ class Cart extends Component {
                     </div>
                   </div>
                 </div>
+                {
+                  !JSON.parse(localStorage.getItem("gourmet-twist-user")) && <div className="container" style={{ marginTop: 5 }}>
+                    <div className="row">
+                      <div className="col-12">
+                        <div
+                          style={{
+                            marginBottom: "20px",
+                            // textDecoration: "underline",
+                            width: "fit-content",
+                          }}
+                        >
+                          <Link href="/login">Have reward points? Login to avail discount</Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
                 {
                   loyaltyPointsAvailable?.available && <div className="container">
                     <div className="row" style={{ alignItems: "flex-end" }}>
