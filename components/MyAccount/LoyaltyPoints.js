@@ -108,7 +108,7 @@ const LoyaltyPoints = ({ loyaltyPoints, isLoadingLoyaltyPoints, showOrderDetails
               <div className="section-title">Remaining</div>
               <Table
                 columns={columnsRemaining}
-                rows={redeemed}
+                rows={[redeemed[0]]}
               />
             </div>
           </>
