@@ -36,6 +36,10 @@ class CreateLogin extends Component {
           value: "",
           valid: false,
         },
+        referredBy: {
+          value: "",
+          valid: true,
+        },
       },
       currentTab: newUser ? 1 : 0,
       isTabActive: false,
@@ -48,7 +52,7 @@ class CreateLogin extends Component {
       formData: {
         ...this.state.formData,
         [target.name]: {
-          value: target.value,
+          value: target.name === "referredBy" ? target.value.toUpperCase() : target.value,
           valid,
         },
       },
@@ -69,6 +73,11 @@ class CreateLogin extends Component {
 
     const data = isSignUp ? formData : { phoneNumber, pin };
 
+    console.log(`***********`)
+    console.log(`***********`)
+    console.log(`***********`)
+    console.log(formData)
+
     return Object.values(data).every(
       (value) =>
         value.valid && (isSignUp ? pin.value === confirmPin.value : true)
@@ -78,23 +87,23 @@ class CreateLogin extends Component {
   login = () => {
     const { isSignUp } = this.state;
     const { login, register, router } = this.props;
-    const { phoneNumber, pin } = getFormValues(this.state.formData);
+    const { phoneNumber, referredBy, pin } = getFormValues(this.state.formData);
 
     isSignUp
       ? register(
-          { phoneNumber, pin, storeId: STORE_ID },
-          () => router.push("/my-account"),
-          (error) =>
-            this.openToaster(
-              "error",
-              error || `An error occurred. Please try again.`
-            )
-        )
+        { phoneNumber, referredBy, pin, storeId: STORE_ID },
+        () => router.push("/my-account"),
+        (error) =>
+          this.openToaster(
+            "error",
+            error || `An error occurred. Please try again.`
+          )
+      )
       : login(
-          { phoneNumber, pin },
-          () => router.push("/my-account"),
-          (error) => this.openToaster("error", error || `Invalid login details`)
-        );
+        { phoneNumber, pin },
+        () => router.push("/my-account"),
+        (error) => this.openToaster("error", error || `Invalid login details`)
+      );
   };
 
   openToaster = (status, message) => {
@@ -150,7 +159,7 @@ class CreateLogin extends Component {
     const { currentTab, toaster, isTabActive, isSignUp, formData } = this.state;
     const { isLoggingIn, router } = this.props;
 
-    const { phoneNumber, pin, confirmPin } = formData;
+    const { referredBy, phoneNumber, pin, confirmPin } = formData;
 
     const tabs = ["Login", "Sign up"];
 
@@ -206,6 +215,7 @@ class CreateLogin extends Component {
                   <Pin
                     label="Confirm PIN"
                     name="confirmPin"
+                    className="mb-40"
                     onChange={this.handleChange}
                     required
                     hint={
@@ -214,6 +224,16 @@ class CreateLogin extends Component {
                         <span className="hint red">The pins don't match</span>
                       )
                     }
+                  />
+                )}
+                {isSignUp && (
+                  <TextField
+                    label="Referred by (Optional)"
+                    placeholder="YXCBE"
+                    name="referredBy"
+                    max={5}
+                    onChange={this.handleChange}
+                    value={referredBy.value}
                   />
                 )}
               </div>

@@ -10,6 +10,9 @@ import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
 import { RightArrow } from "../../public/static/vectors";
 import { patchFormValues, getFormValues } from "../../utils/functions";
 
+import axios from "axios";
+import { API_BASE_URL } from "../../constants";
+
 const initialFormData = {
   name: {
     value: "",
@@ -47,8 +50,8 @@ class MyInfo extends Component {
   };
 
   onSuggestSelect = suggest => {
-    console.log(suggest);
     if (suggest) {
+      debugger
       this.setState({
         formData: {
           ...this.state.formData,
@@ -97,16 +100,29 @@ class MyInfo extends Component {
         JSON.parse(currentUser).customer
       );
 
-      this.setState({
-        formData: { ...formData }
-      });
+      this.getReferralCode(formData)
     }
+  }
+
+  async getReferralCode(formData) {
+    const data = await axios.get(`${API_BASE_URL}auth/customer/referral-code`, {
+      headers: {
+        "Authorization": `Bearer ${JSON.parse(localStorage.getItem("gourmet-twist-user")).jwt}`
+      }
+    });
+
+    return this.setState({
+      formData: {
+        ...formData,
+        referralCode: data.data.customer.referralCode
+      }
+    });
   }
 
   render() {
     const { toaster, formData } = this.state;
     const { isUpdatingProfile } = this.props;
-    const { name, phoneNumber, email } = formData;
+    const { name, phoneNumber, referralCode, email } = formData;
 
     return (
       <>
@@ -139,6 +155,15 @@ class MyInfo extends Component {
             onChange={this.handleChange}
             className="mb-40"
             required
+          />
+          <TextField
+            label="My Referral Code"
+            type="text"
+            referralCode={referralCode}
+            value={referralCode}
+            className="mb-40"
+            readOnly
+            onChange={this.handleChange}
           />
         </div>
         <div className="cart-actions">
