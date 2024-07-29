@@ -1,5 +1,7 @@
 import React, { Component, createRef } from "react";
 import classNames from "classnames";
+import { CopyOutlined } from '@ant-design/icons';
+import { message } from 'antd';
 
 class TextField extends Component {
   state = {
@@ -94,6 +96,7 @@ class TextField extends Component {
       min,
       mobile,
       hint,
+      referralCode,
       loyaltyPointsAvailable,
       ...rest
     } = this.props;
@@ -101,6 +104,12 @@ class TextField extends Component {
     if (name === "phoneNumber") {
       console.log(isBlurred, isValid)
     }
+
+    const copyToClipboard = async () => {
+      await navigator.clipboard.writeText(referralCode)
+      message.success(`Copied to clipboard`)
+    }
+
     return (
       <div
         className={classNames(`input-container ${className || ""}`, {
@@ -126,7 +135,7 @@ class TextField extends Component {
             </span>
           </i>
         }
-        <div onClick={e => e.stopPropagation()}>
+        <div onClick={e => e.stopPropagation()} style={{ position: referralCode && "relative" }}>
           <input
             ref={this.textFieldRef}
             className="input"
@@ -135,6 +144,9 @@ class TextField extends Component {
             onChange={this.onChange}
             onFocus={this.onFocus}
           />
+          {
+            referralCode && <CopyOutlined onClick={copyToClipboard} style={{ cursor: "pointer", fontSize: 18, position: "absolute", top: 20, right: 30 }} />
+          }
         </div>
       </div>
     );
