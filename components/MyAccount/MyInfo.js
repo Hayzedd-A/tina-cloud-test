@@ -46,12 +46,13 @@ class MyInfo extends Component {
   };
 
   checkFormValidity = () => {
-    return Object.values(this.state.formData).every(value => value.valid);
+    return Object.values(this.state.formData).filter(item =>
+      typeof item === 'object' && 'value' in item && 'valid' in item
+    ).every(value => value.valid);
   };
 
   onSuggestSelect = suggest => {
     if (suggest) {
-      debugger
       this.setState({
         formData: {
           ...this.state.formData,

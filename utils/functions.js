@@ -26,6 +26,9 @@ export const getFormValues = (formFields) => {
 
   let formValues = {};
 
+  if (formFields.referralCode)
+    delete formFields.referralCode
+
   Object.keys(formFields).forEach((key) => {
     formValues[key] =
       typeof formFields[key] === "string"
@@ -67,7 +70,7 @@ export const reduceLinearArray = (array) => {
 };
 
 export const getDays = () => {
-  const days = new Array(31).fill(0).map(({}, index) => {
+  const days = new Array(31).fill(0).map(({ }, index) => {
     const day = ("0" + (index + 1).toString()).slice(-2);
 
     return {
@@ -80,7 +83,7 @@ export const getDays = () => {
 };
 
 export const getMonths = () => {
-  const months = new Array(12).fill(0).map(({}, index) => ({
+  const months = new Array(12).fill(0).map(({ }, index) => ({
     label: moment(index + 1, "M").format("MMMM"),
     value: moment(index + 1, "M").format("MM"),
   }));
@@ -89,7 +92,7 @@ export const getMonths = () => {
 };
 
 export const getYears = () => {
-  const years = new Array(99).fill(0).map(({}, index) => {
+  const years = new Array(99).fill(0).map(({ }, index) => {
     const year = (moment().format("YYYY") - index).toString();
 
     return {
