@@ -228,7 +228,7 @@ class CreateLogin extends Component {
                 )}
                 {isSignUp && (
                   <TextField
-                    label="Referred by (Optional)"
+                    label="Referral Code"
                     placeholder="YXCBE"
                     name="referredBy"
                     max={5}

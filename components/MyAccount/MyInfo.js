@@ -106,6 +106,7 @@ class MyInfo extends Component {
   }
 
   async getReferralCode(formData) {
+
     const data = await axios.get(`${API_BASE_URL}auth/customer/referral-code`, {
       headers: {
         "Authorization": `Bearer ${JSON.parse(localStorage.getItem("gourmet-twist-user")).jwt}`
@@ -160,6 +161,7 @@ class MyInfo extends Component {
           <TextField
             label="My Referral Code"
             type="text"
+            style={{ background: "#e5e5e1" }}
             referralCode={referralCode}
             value={referralCode}
             className="mb-40"
