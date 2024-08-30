@@ -16,7 +16,7 @@ const Menu = ({ cart }) => {
       <div>
         <div className="menu-item" style={{
           position: "absolute",
-          bottom: "100px"
+          bottom: "80px"
         }}>
           <ElfsightWidget
             widgetID="c3a6bd0a-949c-43de-961e-ad614a018677"
