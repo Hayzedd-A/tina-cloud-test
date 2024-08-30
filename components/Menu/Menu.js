@@ -69,7 +69,7 @@ const Menu = ({ cart }) => {
                   alt=""
                 />
               </span>
-              <span className="text">Loyalty Points</span>
+              <span className="text">Loyalty</span>
             </a>
           </Link>
         </div>

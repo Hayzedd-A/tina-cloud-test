@@ -12,7 +12,7 @@ export const menu = [
     value: "/my-orders",
   },
   {
-    label: "Loyalty Points",
+    label: "Loyalty",
     value: "/loyalty-points",
   },
   {
