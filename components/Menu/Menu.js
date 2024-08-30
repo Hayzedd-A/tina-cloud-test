@@ -14,7 +14,10 @@ const Menu = ({ cart }) => {
   return (
     <div className="menu-container">
       <div>
-        <div className="menu-item">
+        <div className="menu-item" style={{
+          position: "absolute",
+          bottom: "100px"
+        }}>
           <ElfsightWidget
             widgetID="c3a6bd0a-949c-43de-961e-ad614a018677"
           />
@@ -51,7 +54,7 @@ const Menu = ({ cart }) => {
                   alt=""
                 />
               </span>
-              <span className="text">My Orders</span>
+              <span className="text">Orders</span>
             </a>
           </Link>
         </div>

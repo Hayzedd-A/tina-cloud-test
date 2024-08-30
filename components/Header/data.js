@@ -8,7 +8,7 @@ export const menu = [
     value: "/my-account",
   },
   {
-    label: "My Orders",
+    label: "Orders",
     value: "/my-orders",
   },
   {
