@@ -137,7 +137,6 @@ class ShopItemDetails extends Component {
         } successfully to the cart`
       );
       this.setState({
-        ...this.state,
         marketingJSON: {
           "data": [
             {
