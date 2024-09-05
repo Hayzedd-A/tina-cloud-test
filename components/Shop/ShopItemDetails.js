@@ -32,7 +32,8 @@ class ShopItemDetails extends Component {
       tempCart: [],
       toaster: {},
       loadingImg: true,
-      isMenuActive: false
+      isMenuActive: false,
+      marketingJSON: null
     };
     this.counter = createRef(0);
     this.scrollContainerRef = createRef(null);
@@ -135,6 +136,26 @@ class ShopItemDetails extends Component {
         `Added x${this.getTotalQuantity()} ${this.getTotalQuantity() === 1 ? "item" : "items"
         } successfully to the cart`
       );
+      this.setState({
+        ...this.state,
+        marketingJSON: {
+          "data": [
+            {
+              "event_name": "AddToCart",
+              "event_time": 1725525528,
+              "action_source": "website",
+              "user_data": {
+                "em": "7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068",
+                "ph": "d36e83082288d9f2c98b3f3f87cd317a31e95527cb09972090d3456a7430ad4d"
+              },
+              "custom_data": {
+                "currency": "USD",
+                "value": "142.52"
+              }
+            }
+          ]
+        }
+      })
     });
   };
 
@@ -399,7 +420,7 @@ class ShopItemDetails extends Component {
             <div className="description">
               {selectedItem?.description !== undefined
                 ? selectedItem?.description.charAt(0).toUpperCase() +
-                  selectedItem?.description.slice(1)
+                selectedItem?.description.slice(1)
                 : ""}
             </div>
           </div>
@@ -445,7 +466,7 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         </div>
-        
+
         {selectedItem.toppings && !!selectedItem.toppings.length && (
           <div className="select-section">
             <div className="container">
@@ -457,11 +478,10 @@ class ShopItemDetails extends Component {
                 onClick={this.toggleToppingsForm}
               >
                 {this.getSelectedToppings().length
-                  ? `${
-                      this.getSelectedToppings().length === 1
-                        ? `${this.getSelectedToppings().length} TOPPING`
-                        : `${this.getSelectedToppings().length} TOPPINGS`
-                    }`
+                  ? `${this.getSelectedToppings().length === 1
+                    ? `${this.getSelectedToppings().length} TOPPING`
+                    : `${this.getSelectedToppings().length} TOPPINGS`
+                  }`
                   : "ADD TOPPINGS"}
               </div>
             </div>
@@ -475,6 +495,9 @@ class ShopItemDetails extends Component {
             onClick={this.cartAction}
           >
             <div className="container">
+              {
+                this.state.marketingJSON && <span style={{ display: "none" }} id="marketingJson">{JSON.stringify(this.state.marketingJSON)}</span>
+              }
               <span>Add {this.getTotalQuantity()} to Order</span>
               <div>
                 <span className="total-price">
