@@ -11,6 +11,9 @@ import Modal from "../components/Modal";
 import { ModalBread } from "../public/static/vectors";
 import { reduceArray } from "../utils/functions";
 
+import axios from "axios";
+import { API_BASE_URL } from "../constants";
+
 const CartPage = ({ cart }) => {
   const [isCheckoutActive, showCheckout] = useState(false);
 
@@ -123,6 +126,33 @@ const CartPage = ({ cart }) => {
     });
   };
 
+  const initiateCheckoutFacebookPixel = async _ => {
+
+    const subTotal = reduceArray(cart, "totalCost");
+
+    await axios.post(`${API_BASE_URL}auth/customer/facebook-pixel-api`, {
+      "data": [
+        {
+          "event_name": "InitiateCheckout",
+          "event_time": new Date().getTime(),
+          "action_source": "website",
+          "user_data": {
+            "em": [
+              "7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068"
+            ],
+            "ph": [
+              null
+            ]
+          },
+          "custom_data": {
+            "currency": "N",
+            "value": subTotal
+          }
+        }
+      ]
+    });
+  }
+
   return (
     <Main>
       {modalOpen && (
@@ -164,7 +194,10 @@ const CartPage = ({ cart }) => {
           loyaltyPointsAvailable={loyaltyPointsAvailable}
           couponCode={couponCode}
           couponObject={couponObject}
-          checkout={() => showCheckout(true)}
+          checkout={() => {
+            initiateCheckoutFacebookPixel()
+            showCheckout(true)
+          }}
           handleChangeLoyaltyPoints={handleChangeLoyaltyPoints}
           handleApplyCouponCode={handleApplyCouponCode}
           handleChangeCouponCode={handleChangeCouponCode}
