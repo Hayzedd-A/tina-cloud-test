@@ -20,6 +20,9 @@ import Toaster from "../Toaster";
 import Modal from "../Modal";
 import { HeaderMenu } from "../Header";
 
+import axios from "axios";
+import { API_BASE_URL } from "../../constants";
+
 class ShopItemDetails extends Component {
 
   constructor(props) {
@@ -32,8 +35,7 @@ class ShopItemDetails extends Component {
       tempCart: [],
       toaster: {},
       loadingImg: true,
-      isMenuActive: false,
-      marketingJSON: null
+      isMenuActive: false
     };
     this.counter = createRef(0);
     this.scrollContainerRef = createRef(null);
@@ -136,25 +138,7 @@ class ShopItemDetails extends Component {
         `Added x${this.getTotalQuantity()} ${this.getTotalQuantity() === 1 ? "item" : "items"
         } successfully to the cart`
       );
-      this.setState({
-        marketingJSON: {
-          "data": [
-            {
-              "event_name": "AddToCart",
-              "event_time": 1725525528,
-              "action_source": "website",
-              "user_data": {
-                "em": "7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068",
-                "ph": "d36e83082288d9f2c98b3f3f87cd317a31e95527cb09972090d3456a7430ad4d"
-              },
-              "custom_data": {
-                "currency": "USD",
-                "value": "142.52"
-              }
-            }
-          ]
-        }
-      })
+
     });
   };
 
@@ -271,7 +255,7 @@ class ShopItemDetails extends Component {
     );
   };
 
-  selectItem = itemId => {
+  selectItem = async itemId => {
     const selectedItem = this.state.allProducts.find(({ id }) => id === itemId);
 
     if (selectedItem) {
@@ -303,6 +287,32 @@ class ShopItemDetails extends Component {
           });
         }
       );
+
+      const ttlQty = reduceArray(this.state.tempCart, "quantity");
+
+      if (ttlQty)
+        await axios.post(`${API_BASE_URL}auth/customer/facebook-pixel-api`, {
+          "data": [
+            {
+              "event_name": "AddToCart",
+              "event_time": new Date().getTime(),
+              "action_source": "website",
+              "user_data": {
+                "em": [
+                  "7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068"
+                ],
+                "ph": [
+                  null
+                ]
+              },
+              "custom_data": {
+                "currency": "N",
+                "value": this.getTotalCost().toString()
+              }
+            }
+          ]
+        });
+
     }
   };
 
@@ -494,9 +504,6 @@ class ShopItemDetails extends Component {
             onClick={this.cartAction}
           >
             <div className="container">
-              {
-                this.state.marketingJSON && <span style={{ display: "none" }} id="marketingJson">{JSON.stringify(this.state.marketingJSON)}</span>
-              }
               <span>Add {this.getTotalQuantity()} to Order</span>
               <div>
                 <span className="total-price">
