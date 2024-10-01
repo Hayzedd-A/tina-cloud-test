@@ -582,7 +582,7 @@ class Checkout extends Component {
                 <div className="input-container mb-40">
                   <label>Pickup Address</label>
                   <div className="pickup-address mb-40">
-                    14B Africa Ln, Lekki Phase 1, Lekki
+                    19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria
                   </div>
                 </div>
               ) : shippingMethod.value === "s-delivery" ? (
@@ -634,7 +634,7 @@ class Checkout extends Component {
                   <div className="input-container mb-40">
                     <label>Pickup Address</label>
                     <div className="pickup-address mb-40">
-                      14B Africa Ln, Lekki Phase 1, Lekki
+                      19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria
                     </div>
                   </div>
                   <div className="input-container mb-40">
