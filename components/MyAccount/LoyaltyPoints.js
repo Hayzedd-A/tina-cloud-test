@@ -65,12 +65,12 @@ const LoyaltyPoints = ({ loyaltyPoints, isLoadingLoyaltyPoints, showOrderDetails
       render: () => <span></span>,
     },
     {
-      label: "Points",
+      label: "Total Available Points",
       render: () => <span>{remainingPoints?.toLocaleString()}</span>,
       className: "text-center"
     },
     {
-      label: "Discount",
+      label: "Total Available Discount",
       render: () => (
         <span className="price">₦ {remainingDiscount?.toLocaleString()}</span>
       ),
