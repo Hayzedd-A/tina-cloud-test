@@ -9,16 +9,56 @@
     display: inline-block !important;
 }
 
-.floatButtonsContainer{
+.floatButtonsContainer {
     display: flex !important;
     align-items: center !important;
     cursor: pointer !important;
 }
 
-.ant-float-btn-group-wrap{
+.ant-float-btn-group-wrap {
     background-color: white !important;
     width: 140px;
     position: absolute;
     top: 0px;
     left: -100px;
+}
+
+@media only screen and (min-width: 450px) and (max-width: 658px) {
+    .parentItemFooter {
+        position: absolute;
+        bottom: 50px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .custom-item-footer{
+        width: 400px !important;
+        font-size: 14pt !important;
+    }
+
+    .custom-item-footer .add-to-cart{
+        border-radius: 10px !important;
+        height: 70px !important;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .parentItemFooter {
+        position: absolute;
+        bottom: 50px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .custom-item-footer{
+        width: 300px !important;
+        font-size: 12pt !important;
+    }
+
+    .custom-item-footer .add-to-cart{
+        border-radius: 10px !important;
+        height: 65px !important;
+    }
 }

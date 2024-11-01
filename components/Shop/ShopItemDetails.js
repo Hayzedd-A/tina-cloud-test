@@ -496,23 +496,26 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         )}
-        <div className="item-footer">
-          <div
-            className={classNames("add-to-cart", {
-              disabled: !this.getTotalQuantity(),
-            })}
-            onClick={this.cartAction}
-          >
-            <div className="container">
-              <span>Add {this.getTotalQuantity()} to Order</span>
-              <div>
-                <span className="total-price">
-                  ₦ {this.getTotalCost().toLocaleString()}
-                </span>
-                <RightArrow />
+        <div className="parentItemFooter">
+          <div className="item-footer custom-item-footer">
+            <div
+              className={classNames("add-to-cart", {
+                disabled: !this.getTotalQuantity(),
+              })}
+              onClick={this.cartAction}
+            >
+              <div className="container">
+                <span>Add {this.getTotalQuantity()} to Order</span>
+                <div>
+                  <span className="total-price">
+                    ₦ {this.getTotalCost().toLocaleString()}
+                  </span>
+                  <RightArrow />
+                </div>
               </div>
-            </div>
           </div>
+        </div>
+
         </div>
         <CSSTransitionGroup
           transitionName="toppings-overlay-animation"
