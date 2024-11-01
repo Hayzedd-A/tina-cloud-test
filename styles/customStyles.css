@@ -40,6 +40,7 @@
     .custom-item-footer .add-to-cart{
         border-radius: 10px !important;
         height: 70px !important;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
     }
 }
 
@@ -60,5 +61,10 @@
     .custom-item-footer .add-to-cart{
         border-radius: 10px !important;
         height: 65px !important;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
     }
+}
+
+.continue{
+    color: black !important;
 }
