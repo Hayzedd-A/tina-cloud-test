@@ -75,7 +75,6 @@ class Cart extends Component {
     const {
       formData: { couponCode },
     } = this.state;
-    console.log("I got here: ", couponCode.value);
     this.setState({
       isApplyingCouponCode: true,
     });
@@ -119,7 +118,12 @@ class Cart extends Component {
     const { isLoadingCart, cart, checkout, router } = this.props;
     const { isMenuActive, showCouponSection, isApplyingCouponCode } =
       this.state;
-    const { couponCode, couponObject, loyaltyPointApplied, loyaltyPointsAvailable } = this.props;
+    const {
+      couponCode,
+      couponObject,
+      loyaltyPointApplied,
+      loyaltyPointsAvailable,
+    } = this.props;
 
     const subTotal = reduceArray(cart, "totalCost");
     const minimumAmount = 4500;
@@ -128,13 +132,12 @@ class Cart extends Component {
 
     let discountAmount = couponObject
       ? couponObject.discountType === "percent"
-        ?
-        (couponObject.value * subTotal) / 100
+        ? (couponObject.value * subTotal) / 100
         : couponObject.value
       : null;
 
     if (loyaltyDiscountApplied)
-      discountAmount = (discountAmount || 0) + (loyaltyDiscountApplied);
+      discountAmount = (discountAmount || 0) + loyaltyDiscountApplied;
 
     return (
       <div className="cart-container full-height">
@@ -307,8 +310,8 @@ class Cart extends Component {
                     </div>
                   </div>
                 </div>
-                {
-                  !JSON.parse(localStorage.getItem("gourmet-twist-user")) && <div className="container" style={{ marginTop: 5 }}>
+                {!JSON.parse(localStorage.getItem("gourmet-twist-user")) && (
+                  <div className="container" style={{ marginTop: 5 }}>
                     <div className="row">
                       <div className="col-12">
                         <div
@@ -318,14 +321,16 @@ class Cart extends Component {
                             width: "fit-content",
                           }}
                         >
-                          <Link href="/login">Have reward points? Login to avail discount</Link>
+                          <Link href="/login">
+                            Have reward points? Login to avail discount
+                          </Link>
                         </div>
                       </div>
                     </div>
                   </div>
-                }
-                {
-                  loyaltyPointsAvailable?.available && <div className="container">
+                )}
+                {loyaltyPointsAvailable?.available && (
+                  <div className="container">
                     <div className="row" style={{ alignItems: "flex-end" }}>
                       <div className="col-12">
                         <div className="row" style={{ alignItems: "flex-end" }}>
@@ -344,7 +349,7 @@ class Cart extends Component {
                       </div>
                     </div>
                   </div>
-                }
+                )}
                 <div className="sub-total">
                   <div className="container">
                     <span className="title">Sub Total</span>
