@@ -16,21 +16,21 @@ import { API_BASE_URL } from "../../constants";
 const initialFormData = {
   name: {
     value: "",
-    valid: false
+    valid: false,
   },
   phoneNumber: {
     value: "",
-    valid: false
+    valid: false,
   },
   email: {
     value: "",
-    valid: false
-  }
+    valid: false,
+  },
 };
 
 class MyInfo extends Component {
   state = {
-    formData: { ...initialFormData }
+    formData: { ...initialFormData },
   };
 
   handleChange = ({ target }, valid) => {
@@ -39,33 +39,35 @@ class MyInfo extends Component {
         ...this.state.formData,
         [target.name]: {
           value: target.value,
-          valid
-        }
-      }
+          valid,
+        },
+      },
     });
   };
 
   checkFormValidity = () => {
-    return Object.values(this.state.formData).filter(item =>
-      typeof item === 'object' && 'value' in item && 'valid' in item
-    ).every(value => value.valid);
+    return Object.values(this.state.formData)
+      .filter(
+        (item) => typeof item === "object" && "value" in item && "valid" in item
+      )
+      .every((value) => value.valid);
   };
 
-  onSuggestSelect = suggest => {
+  onSuggestSelect = (suggest) => {
     if (suggest) {
       this.setState({
         formData: {
           ...this.state.formData,
           address: {
             value: suggest.gmaps.formatted_address,
-            valid: true
-          }
-        }
+            valid: true,
+          },
+        },
       });
     }
   };
 
-  onSuggestNoResults = userInput => {
+  onSuggestNoResults = (userInput) => {
     console.log("no results for " + userInput);
   };
 
@@ -73,14 +75,14 @@ class MyInfo extends Component {
     this.setState({
       toaster: {
         status,
-        message
-      }
+        message,
+      },
     });
   };
 
   closeToaster = () => {
     this.setState({
-      toaster: null
+      toaster: null,
     });
   };
 
@@ -101,23 +103,24 @@ class MyInfo extends Component {
         JSON.parse(currentUser).customer
       );
 
-      this.getReferralCode(formData)
+      this.getReferralCode(formData);
     }
   }
 
   async getReferralCode(formData) {
-
     const data = await axios.get(`${API_BASE_URL}auth/customer/referral-code`, {
       headers: {
-        "Authorization": `Bearer ${JSON.parse(localStorage.getItem("gourmet-twist-user")).jwt}`
-      }
+        Authorization: `Bearer ${
+          JSON.parse(localStorage.getItem("gourmet-twist-user")).jwt
+        }`,
+      },
     });
 
     return this.setState({
       formData: {
         ...formData,
-        referralCode: data.data.customer.referralCode
-      }
+        referralCode: data.data.customer.referralCode,
+      },
     });
   }
 
@@ -153,6 +156,7 @@ class MyInfo extends Component {
             placeholder="Enter your phone number"
             name="phoneNumber"
             type="phone"
+            readOnly
             value={phoneNumber.value}
             onChange={this.handleChange}
             className="mb-40"
@@ -172,7 +176,7 @@ class MyInfo extends Component {
         <div className="cart-actions">
           <div
             className={classNames("checkout-button", {
-              disabled: !this.checkFormValidity() || isUpdatingProfile
+              disabled: !this.checkFormValidity() || isUpdatingProfile,
             })}
             onClick={this.submit}
           >

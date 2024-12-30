@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import { getRequest, postRequest, patchRequest } from "../../api";
 import { getRequestError } from "../../utils/functions";
+import { STORE_ID } from "../../constants";
 
 const AuthenticationContext = React.createContext();
 
@@ -19,7 +20,7 @@ class AuthenticationProvider extends Component {
       loginMessage: "",
       loginOutcome: "",
       profileMessage: "",
-      profileOutcome: ""
+      profileOutcome: "",
     };
   }
 
@@ -30,7 +31,7 @@ class AuthenticationProvider extends Component {
       loginMessage: "",
       loginOutcome: "",
       profileMessage: "",
-      profileOutcome: ""
+      profileOutcome: "",
     });
   };
 
@@ -38,7 +39,7 @@ class AuthenticationProvider extends Component {
     const currentUser = localStorage.getItem("gourmet-twist-user");
 
     this.setState({
-      user: currentUser ? JSON.parse(currentUser) : null
+      user: currentUser ? JSON.parse(currentUser) : null,
     });
   };
 
@@ -46,13 +47,13 @@ class AuthenticationProvider extends Component {
     this.resetState();
 
     this.setState({
-      isLoggingIn: true
+      isLoggingIn: true,
     });
 
     try {
       const res = await postRequest({
         url: "/auth/customer/register",
-        data
+        data,
       });
 
       localStorage.setItem("gourmet-twist-user", JSON.stringify(res.data));
@@ -60,7 +61,7 @@ class AuthenticationProvider extends Component {
       this.setState({
         isLoggingIn: false,
         loginOutcome: "success",
-        user: res.data
+        user: res.data,
       });
 
       successCallback && successCallback();
@@ -70,10 +71,10 @@ class AuthenticationProvider extends Component {
       this.setState({
         isLoggingIn: false,
         loginOutcome: "error",
-        loginMessage: message
+        loginMessage: message,
       });
 
-      errorCallback && errorCallback(message)
+      errorCallback && errorCallback(message);
     }
   };
 
@@ -81,13 +82,16 @@ class AuthenticationProvider extends Component {
     this.resetState();
 
     this.setState({
-      isLoggingIn: true
+      isLoggingIn: true,
     });
 
     try {
       const res = await postRequest({
         url: "/auth/customer/login",
-        data
+        data: {
+          ...data,
+          storeId: STORE_ID,
+        },
       });
 
       localStorage.setItem("gourmet-twist-user", JSON.stringify(res.data));
@@ -95,7 +99,7 @@ class AuthenticationProvider extends Component {
       this.setState({
         isLoggingIn: false,
         loginOutcome: "success",
-        user: res.data
+        user: res.data,
       });
 
       successCallback && successCallback();
@@ -105,17 +109,17 @@ class AuthenticationProvider extends Component {
       this.setState({
         isLoggingIn: false,
         loginOutcome: "error",
-        loginMessage: message
+        loginMessage: message,
       });
 
-      errorCallback && errorCallback(message)
+      errorCallback && errorCallback(message);
     }
   };
 
   logout = () => {
     localStorage.removeItem("gourmet-twist-user");
     this.setState({
-      user: null
+      user: null,
     });
   };
 
@@ -125,26 +129,26 @@ class AuthenticationProvider extends Component {
 
     if (user) {
       this.setState({
-        isLoadingProfile: true
+        isLoadingProfile: true,
       });
 
       try {
         const res = await getRequest({
           url: `users/${user.customer.id}`,
-          token: true
+          token: true,
         });
 
         const userProfile = res.data;
 
         this.setState({
           isLoadingProfile: false,
-          userProfile
+          userProfile,
         });
       } catch (error) {
         const message = getRequestError(error);
 
         this.setState({
-          isLoadingProfile: false
+          isLoadingProfile: false,
         });
       }
     }
@@ -155,14 +159,14 @@ class AuthenticationProvider extends Component {
     let user = { ...this.state.user };
 
     this.setState({
-      isUpdatingProfile: true
+      isUpdatingProfile: true,
     });
 
     try {
       const res = await patchRequest({
         url: `/auth/customer/profile`,
         token: true,
-        data
+        data,
       });
 
       user.customer = res.data.customer;
@@ -172,7 +176,7 @@ class AuthenticationProvider extends Component {
       this.setState({
         isUpdatingProfile: false,
         updateProfileStatus: true,
-        user
+        user,
       });
 
       callback && callback("success", "Profile updated successfully!");
@@ -183,7 +187,7 @@ class AuthenticationProvider extends Component {
         isUpdatingProfile: false,
         updateProfileStatus: false,
         profileOutcome: "error",
-        profileMessage: message
+        profileMessage: message,
       });
 
       callback && callback("error", message);
@@ -204,7 +208,7 @@ class AuthenticationProvider extends Component {
           login: this.login,
           logout: this.logout,
           getProfile: this.getProfile,
-          updateProfile: this.updateProfile
+          updateProfile: this.updateProfile,
         }}
       >
         {this.props.children}
@@ -213,7 +217,7 @@ class AuthenticationProvider extends Component {
   }
 }
 
-const AuthenticationConsumer = Component => {
+const AuthenticationConsumer = (Component) => {
   return class Consumer extends React.Component {
     static getInitialProps(ctx) {
       return Component.getInitialProps ? Component.getInitialProps(ctx) : {};
@@ -222,7 +226,7 @@ const AuthenticationConsumer = Component => {
     render() {
       return (
         <AuthenticationContext.Consumer>
-          {data => <Component {...this.props} {...data} />}
+          {(data) => <Component {...this.props} {...data} />}
         </AuthenticationContext.Consumer>
       );
     }
