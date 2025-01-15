@@ -541,6 +541,7 @@ class Cart extends Component {
                       textAlign: "center",
                       padding: "0px 20px",
                       lineHeight: "20px",
+                      zIndex: 999999999999,
                     }}
                   >
                     {subTotal >= minimumAmount ? (
