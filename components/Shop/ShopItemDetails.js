@@ -550,6 +550,7 @@ class ShopItemDetails extends Component {
             <div
               style={{
                 width: "100%",
+                height: "65px",
               }}
               className={classNames("add-to-cart", {
                 disabled: !this.getTotalQuantity(),
