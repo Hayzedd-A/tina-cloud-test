@@ -607,7 +607,7 @@ class ShopItemDetails extends Component {
                   className="continue"
                   onClick={() => router.push("/cart")}
                 >
-                  Checkout 123
+                  Checkout
                 </button>
                 <button
                   className="go-checkout"
