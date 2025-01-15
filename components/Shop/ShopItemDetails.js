@@ -442,7 +442,13 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         </div>
-        <div className="select-section sizes-section">
+        <div
+          className="select-section sizes-section"
+          style={{
+            maxHeight: "31vh",
+            overflow: "auto",
+          }}
+        >
           <div
             className="container"
             style={{ position: "relative", padding: "0px 20px" }}
@@ -533,10 +539,18 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         )}
-        <div className="parentItemFooter">
-          <div className="item-footer custom-item-footer">
+        <div className="menu-container">
+          <div
+            className="item-footer"
+            style={{
+              left: 0,
+            }}
+          >
             {/* custom-item-footer */}
             <div
+              style={{
+                width: "100%",
+              }}
               className={classNames("add-to-cart", {
                 disabled: !this.getTotalQuantity(),
               })}
