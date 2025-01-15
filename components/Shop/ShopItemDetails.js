@@ -4,7 +4,7 @@ import Link from "next/link";
 import { withRouter } from "next/router";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 import * as shallowequal from "shallowequal";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 import { ProductsConsumer } from "../../providers/ProductsProvider";
 import { CartConsumer } from "../../providers/CartProvider";
@@ -12,7 +12,11 @@ import { CartConsumer } from "../../providers/CartProvider";
 import NumberSelector from "../FormElements/NumberSelector";
 import { ToppingsForm } from "./";
 
-import { RightArrow, ModalBread, ArrowRight } from "../../public/static/vectors";
+import {
+  RightArrow,
+  ModalBread,
+  ArrowRight,
+} from "../../public/static/vectors";
 // import ArrowRight from "../public/static/svg/arrow-right";
 
 import { reduceLinearArray, reduceArray } from "../../utils/functions";
@@ -24,7 +28,6 @@ import axios from "axios";
 import { API_BASE_URL } from "../../constants";
 
 class ShopItemDetails extends Component {
-
   constructor(props) {
     super(props);
 
@@ -35,31 +38,31 @@ class ShopItemDetails extends Component {
       tempCart: [],
       toaster: {},
       loadingImg: true,
-      isMenuActive: false
+      isMenuActive: false,
     };
     this.counter = createRef(0);
     this.scrollContainerRef = createRef(null);
   }
 
   setLoading = (value) => {
-    this.setState({ isMenuActive: value })
-  }
+    this.setState({ isMenuActive: value });
+  };
 
   imageLoaded = () => {
     this.counter += 1;
     if (this.counter >= 1) {
       setLoading(false);
     }
-  }
+  };
 
-  selectSize = selectedSize => {
+  selectSize = (selectedSize) => {
     this.setState({
-      selectedSize
+      selectedSize,
     });
   };
 
-  handleQuantity = _quantity => {
-    let quantity = ((_quantity === "") || isNaN(_quantity)) ? 0 : _quantity;
+  handleQuantity = (_quantity) => {
+    let quantity = _quantity === "" || isNaN(_quantity) ? 0 : _quantity;
     let tempCart = JSON.parse(JSON.stringify(this.state.tempCart));
 
     const tempCartItem = tempCart.find(
@@ -67,9 +70,9 @@ class ShopItemDetails extends Component {
     );
 
     tempCartItem.quantity = quantity;
-    tempCartItem.toppings = tempCartItem.toppings.map(topping => ({
+    tempCartItem.toppings = tempCartItem.toppings.map((topping) => ({
       ...topping,
-      quantity
+      quantity,
     }));
 
     const toppingsPrices = tempCartItem.toppings.map(
@@ -82,13 +85,13 @@ class ShopItemDetails extends Component {
 
     console.log("tempCart: ", tempCart);
     this.setState({
-      tempCart
+      tempCart,
     });
   };
 
   toggleToppingsForm = () => {
     this.setState({
-      isToppingsFormActive: !this.state.isToppingsFormActive
+      isToppingsFormActive: !this.state.isToppingsFormActive,
     });
   };
 
@@ -120,7 +123,7 @@ class ShopItemDetails extends Component {
       reduceLinearArray(toppingsPrices);
 
     this.setState({
-      tempCart
+      tempCart,
     });
   };
 
@@ -135,14 +138,14 @@ class ShopItemDetails extends Component {
       name && id && this.selectItem(id);
       this.openToaster(
         "success",
-        `Added x${this.getTotalQuantity()} ${this.getTotalQuantity() === 1 ? "item" : "items"
+        `Added x${this.getTotalQuantity()} ${
+          this.getTotalQuantity() === 1 ? "item" : "items"
         } successfully to the cart`
       );
-
     });
   };
 
-  getSelectedItemDetails = currentSize => {
+  getSelectedItemDetails = (currentSize) => {
     const { selectedSize, selectedItem } = this.state;
     const { sizes } = selectedItem;
 
@@ -180,7 +183,7 @@ class ShopItemDetails extends Component {
 
     totalCost = itemsPricesTotal + toppingsPrices;
 
-    console.log(totalCost, itemsPrices, itemsPricesTotal, toppingsPrices)
+    console.log(totalCost, itemsPrices, itemsPricesTotal, toppingsPrices);
 
     return totalCost;
   };
@@ -196,24 +199,24 @@ class ShopItemDetails extends Component {
     this.setState({
       toaster: {
         status,
-        message
-      }
+        message,
+      },
     });
   };
 
   closeToaster = () => {
     this.setState({
-      toaster: {}
+      toaster: {},
     });
   };
 
-  checkCart = itemId => {
+  checkCart = (itemId) => {
     const inCart = this.props.cart.find(({ id }) => id === itemId);
 
     return inCart;
   };
 
-  checkQuantity = currentSize => {
+  checkQuantity = (currentSize) => {
     const { selectedSize, tempCart } = this.state;
     const currentQuantity = tempCart.find(
       ({ size }) => size === (currentSize || selectedSize)
@@ -229,7 +232,7 @@ class ShopItemDetails extends Component {
     return currentQuantity ? currentQuantity.toppings : [];
   };
 
-  formatProducts = callback => {
+  formatProducts = (callback) => {
     const { products } = this.props;
 
     let allProducts = [];
@@ -237,9 +240,9 @@ class ShopItemDetails extends Component {
     for (let i = 0; i < products.length; i++) {
       const element = JSON.parse(JSON.stringify(products[i]));
 
-      element.products = element.products.map(product => ({
+      element.products = element.products.map((product) => ({
         ...product,
-        toppings: element.toppings
+        toppings: element.toppings,
       }));
 
       allProducts = allProducts.concat(element.products);
@@ -247,7 +250,7 @@ class ShopItemDetails extends Component {
 
     this.setState(
       {
-        allProducts
+        allProducts,
       },
       () => {
         callback && callback();
@@ -255,35 +258,43 @@ class ShopItemDetails extends Component {
     );
   };
 
-  selectItem = async itemId => {
+  selectItem = async (itemId) => {
     const selectedItem = this.state.allProducts.find(({ id }) => id === itemId);
 
     if (selectedItem) {
-      const activeSizes = selectedItem.sizes ? Object.keys(selectedItem.sizes).filter((item) => selectedItem.sizes[item] && selectedItem.sizes[item].length > 0) : [];
+      const activeSizes = selectedItem.sizes
+        ? Object.keys(selectedItem.sizes).filter(
+            (item) =>
+              selectedItem.sizes[item] && selectedItem.sizes[item].length > 0
+          )
+        : [];
       this.setState(
         {
           selectedItem,
-          selectedSize: activeSizes ? activeSizes[0] : ''
+          selectedSize: activeSizes ? activeSizes[0] : "",
         },
         () => {
-          console.log(selectedItem.sizes)
+          console.log(selectedItem.sizes);
           this.setState({
-            tempCart: Object.keys(selectedItem.sizes).filter((item) => {
-              return selectedItem.sizes[item].length > 0;
-            }).map(size => {
-              const { id, name, unitPrice, imageUrl } = this.getSelectedItemDetails(size) || {};
+            tempCart: Object.keys(selectedItem.sizes)
+              .filter((item) => {
+                return selectedItem.sizes[item].length > 0;
+              })
+              .map((size) => {
+                const { id, name, unitPrice, imageUrl } =
+                  this.getSelectedItemDetails(size) || {};
 
-              return {
-                uuid: uuidv4(),
-                id,
-                size,
-                unitPrice,
-                imageUrl,
-                name,
-                quantity: 0,
-                toppings: []
-              };
-            })
+                return {
+                  uuid: uuidv4(),
+                  id,
+                  size,
+                  unitPrice,
+                  imageUrl,
+                  name,
+                  quantity: 0,
+                  toppings: [],
+                };
+              }),
           });
         }
       );
@@ -292,33 +303,30 @@ class ShopItemDetails extends Component {
 
       if (ttlQty)
         await axios.post(`${API_BASE_URL}auth/customer/facebook-pixel-api`, {
-          "data": [
+          data: [
             {
-              "event_name": "AddToCart",
-              "event_time": new Date().getTime(),
-              "action_source": "website",
-              "user_data": {
-                "em": [
-                  "7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068"
+              event_name: "AddToCart",
+              event_time: new Date().getTime(),
+              action_source: "website",
+              user_data: {
+                em: [
+                  "7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068",
                 ],
-                "ph": [
-                  null
-                ]
+                ph: [null],
               },
-              "custom_data": {
-                "currency": "N",
-                "value": this.getTotalCost().toString()
-              }
-            }
-          ]
+              custom_data: {
+                currency: "N",
+                value: this.getTotalCost().toString(),
+              },
+            },
+          ],
         });
-
     }
   };
 
   showMenu = (isMenuActive) => {
-    this.setState({ isMenuActive })
-  }
+    this.setState({ isMenuActive });
+  };
 
   componentDidMount() {
     const { router } = this.props;
@@ -349,14 +357,14 @@ class ShopItemDetails extends Component {
     const elemDimensions = element && element.getBoundingClientRect();
     // setScrollContainerDimensions(elemDimensions);
     element.scrollLeft -= 300;
-  }
+  };
 
   rightClick = () => {
     const element = this.scrollContainerRef.current;
     const elemDimensions = element && element.getBoundingClientRect();
     // setScrollContainerDimensions(elemDimensions);
     element.scrollLeft += 300;
-  }
+  };
 
   render() {
     const { router } = this.props;
@@ -365,17 +373,17 @@ class ShopItemDetails extends Component {
       isToppingsFormActive,
       toaster,
       selectedItem,
-      isMenuActive
+      isMenuActive,
     } = this.state;
     const { sizes } = selectedItem;
-    const activeSizes = sizes ? Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0) : [];
+    const activeSizes = sizes
+      ? Object.keys(sizes).filter(
+          (item) => sizes[item] && sizes[item].length > 0
+        )
+      : [];
 
-    const {
-      imageUrl,
-      name,
-      unitPrice,
-      description
-    } = this.getSelectedItemDetails() || {};
+    const { imageUrl, name, unitPrice, description } =
+      this.getSelectedItemDetails() || {};
 
     return (
       <div className="shop-item-details">
@@ -429,16 +437,47 @@ class ShopItemDetails extends Component {
             <div className="description">
               {selectedItem?.description !== undefined
                 ? selectedItem?.description.charAt(0).toUpperCase() +
-                selectedItem?.description.slice(1)
+                  selectedItem?.description.slice(1)
                 : ""}
             </div>
           </div>
         </div>
         <div className="select-section sizes-section">
-          <div className="container" style={{ position: "relative" }}>
-            <span className="title">SELECT SIZE</span>
-            <div className="left-arrow" onClick={this.leftClick}>
-              <ArrowRight style={{ transform: "rotate(180deg" }} />
+          <div
+            className="container"
+            style={{ position: "relative", padding: "0px 20px" }}
+          >
+            <span
+              className="title"
+              style={{
+                paddingLeft: 0,
+              }}
+            >
+              SELECT SIZE
+            </span>
+            <div
+              style={{
+                position: "relative",
+              }}
+            >
+              <div
+                className="left-arrow"
+                style={{
+                  top: 15,
+                }}
+                onClick={this.leftClick}
+              >
+                <ArrowRight style={{ transform: "rotate(180deg" }} />
+              </div>
+              <div
+                className="right-arrow"
+                style={{
+                  top: 15,
+                }}
+                onClick={this.rightClick}
+              >
+                <ArrowRight />
+              </div>
             </div>
             <div className="sizes" ref={this.scrollContainerRef}>
               {activeSizes &&
@@ -458,9 +497,6 @@ class ShopItemDetails extends Component {
                     )}
                   </span>
                 ))}
-            </div>
-            <div className="right-arrow" onClick={this.rightClick}>
-              <ArrowRight />
             </div>
           </div>
         </div>
@@ -487,17 +523,19 @@ class ShopItemDetails extends Component {
                 onClick={this.toggleToppingsForm}
               >
                 {this.getSelectedToppings().length
-                  ? `${this.getSelectedToppings().length === 1
-                    ? `${this.getSelectedToppings().length} TOPPING`
-                    : `${this.getSelectedToppings().length} TOPPINGS`
-                  }`
+                  ? `${
+                      this.getSelectedToppings().length === 1
+                        ? `${this.getSelectedToppings().length} TOPPING`
+                        : `${this.getSelectedToppings().length} TOPPINGS`
+                    }`
                   : "ADD TOPPINGS"}
               </div>
             </div>
           </div>
         )}
-        <div className="parentItemFooter">
-          <div className="item-footer custom-item-footer">
+        <div className="">
+          <div className="item-footer">
+            {/* custom-item-footer */}
             <div
               className={classNames("add-to-cart", {
                 disabled: !this.getTotalQuantity(),
@@ -513,9 +551,8 @@ class ShopItemDetails extends Component {
                   <RightArrow />
                 </div>
               </div>
+            </div>
           </div>
-        </div>
-
         </div>
         <CSSTransitionGroup
           transitionName="toppings-overlay-animation"
