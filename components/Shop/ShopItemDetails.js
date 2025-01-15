@@ -533,8 +533,8 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         )}
-        <div className="">
-          <div className="item-footer">
+        <div className="parentItemFooter">
+          <div className="item-footer custom-item-footer">
             {/* custom-item-footer */}
             <div
               className={classNames("add-to-cart", {
@@ -592,7 +592,7 @@ class ShopItemDetails extends Component {
                   className="continue"
                   onClick={() => router.push("/cart")}
                 >
-                  Checkout
+                  Checkout 123
                 </button>
                 <button
                   className="go-checkout"
