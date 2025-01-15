@@ -13,6 +13,7 @@ import { reduceArray } from "../utils/functions";
 
 import axios from "axios";
 import { API_BASE_URL } from "../constants";
+import moment from "moment";
 
 const CartPage = ({ cart }) => {
   const [isCheckoutActive, showCheckout] = useState(false);
@@ -157,6 +158,17 @@ const CartPage = ({ cart }) => {
         url: `/customer-requests/stores/${STORE_ID}/gift-card/${value}`,
       });
       if (!res.data.data || res?.data?.data?.remainingValue <= 0) {
+        setGiftCardObject(null);
+        return openToaster("error", "Gift card does not exist");
+      }
+      if (
+        !moment().isBetween(
+          moment(res.data.data.startDate),
+          moment(res.data.data.endDate),
+          "day",
+          "[]"
+        )
+      ) {
         setGiftCardObject(null);
         return openToaster("error", "Gift card does not exist");
       }
