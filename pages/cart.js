@@ -29,6 +29,12 @@ const CartPage = ({ cart }) => {
     valid: false,
   });
 
+  const [giftCardObject, setGiftCardObject] = useState(null);
+  const [giftCardCode, setGiftCardCode] = useState({
+    value: "",
+    valid: false,
+  });
+
   const [loyaltyPointsAvailable, setLoyaltyPointsAvailable] = useState(null);
   const [loyaltyPointApplied, setLoyaltyPointApplied] = useState({
     value: "",
@@ -47,6 +53,13 @@ const CartPage = ({ cart }) => {
   };
 
   const handleChangeCouponCode = ({ target }, valid) => {
+    if (!target?.value) {
+      setCouponObject(null);
+      return setCouponCode({
+        value: "",
+        valid: false,
+      });
+    }
     setCouponCode({
       value: target.value,
       valid,
@@ -54,27 +67,30 @@ const CartPage = ({ cart }) => {
   };
 
   useEffect(() => {
-    if (!cart?.length) return
-    if (!loyaltyPointApplied?.value || !loyaltyPointsAvailable?.available) return
+    if (!cart?.length) return;
+    if (!loyaltyPointApplied?.value || !loyaltyPointsAvailable?.available)
+      return;
     const subTotal = reduceArray(cart, "totalCost");
-    const loyaltyDiscount = parseFloat(loyaltyPointApplied.value)
-    if (
-      loyaltyDiscount > subTotal
+    const loyaltyDiscount = parseFloat(loyaltyPointApplied.value);
+    if (loyaltyDiscount > subTotal) {
+      setLoyaltyPointApplied({
+        ...loyaltyPointApplied,
+        value: subTotal,
+      });
+      openToaster("error", "You can not redeem more points than order amount");
+    } else if (
+      loyaltyDiscount >
+      loyaltyPointsAvailable.available * loyaltyPointsAvailable.discountPerPoint
     ) {
       setLoyaltyPointApplied({
         ...loyaltyPointApplied,
-        value: subTotal
-      });
-      openToaster("error", "You can not redeem more points than order amount");
-    } else if (loyaltyDiscount > (loyaltyPointsAvailable.available * loyaltyPointsAvailable.discountPerPoint)) {
-      setLoyaltyPointApplied({
-        ...loyaltyPointApplied,
-        value: loyaltyPointsAvailable.available * loyaltyPointsAvailable.discountPerPoint
+        value:
+          loyaltyPointsAvailable.available *
+          loyaltyPointsAvailable.discountPerPoint,
       });
       openToaster("error", "You can not redeem more discount than available");
     }
-
-  }, [loyaltyPointApplied])
+  }, [loyaltyPointApplied]);
 
   const handleChangeLoyaltyPoints = ({ target }, valid) => {
     setLoyaltyPointApplied({
@@ -84,19 +100,19 @@ const CartPage = ({ cart }) => {
   };
 
   useEffect(() => {
-    getLoyaltyDiscountAvailable()
-  }, [])
+    getLoyaltyDiscountAvailable();
+  }, []);
 
   const getLoyaltyDiscountAvailable = async () => {
     const { value } = couponCode;
     try {
       const res = await getRequest({
         url: `/customer-requests/stores/${STORE_ID}/loyalty-points-available`,
-        token: true
+        token: true,
       });
-      setLoyaltyPointsAvailable((res.data?.length ? res.data[0] : null));
+      setLoyaltyPointsAvailable(res.data?.length ? res.data[0] : null);
     } catch (error) {
-      console.log(`LOYALTY POINTS NOT FETCHED BECAUSE NOT LOGGED IN`)
+      console.log(`LOYALTY POINTS NOT FETCHED BECAUSE NOT LOGGED IN`);
       // const message = getRequestError(error);
       // openToaster("error", "An error occurred, please try again later");
     }
@@ -120,38 +136,65 @@ const CartPage = ({ cart }) => {
     }
   };
 
+  const handleChangeGiftCardCode = ({ target }, valid) => {
+    if (!target?.value) {
+      setGiftCardObject(null);
+      return setGiftCardCode({
+        value: "",
+        valid: false,
+      });
+    }
+    setGiftCardCode({
+      value: target.value,
+      valid,
+    });
+  };
+
+  const handleApplyGCCode = async () => {
+    const { value } = giftCardCode;
+    try {
+      const res = await getRequest({
+        url: `/customer-requests/stores/${STORE_ID}/gift-card/${value}`,
+      });
+      if (!res.data.data || res?.data?.data?.remainingValue <= 0) {
+        setGiftCardObject(null);
+        return openToaster("error", "Gift card does not exist");
+      }
+      setGiftCardObject(res.data.data);
+    } catch (error) {
+      openToaster("error", "An error occurred, please try again later");
+    }
+  };
+
   const closeModal = () => {
     this.setState({
       toaster: {},
     });
   };
 
-  const initiateCheckoutFacebookPixel = async _ => {
-
+  const initiateCheckoutFacebookPixel = async (_) => {
     const subTotal = reduceArray(cart, "totalCost");
 
     await axios.post(`${API_BASE_URL}auth/customer/facebook-pixel-api`, {
-      "data": [
+      data: [
         {
-          "event_name": "InitiateCheckout",
-          "event_time": new Date().getTime(),
-          "action_source": "website",
-          "user_data": {
-            "em": [
-              "7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068"
+          event_name: "InitiateCheckout",
+          event_time: new Date().getTime(),
+          action_source: "website",
+          user_data: {
+            em: [
+              "7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068",
             ],
-            "ph": [
-              null
-            ]
+            ph: [null],
           },
-          "custom_data": {
-            "currency": "N",
-            "value": subTotal
-          }
-        }
-      ]
+          custom_data: {
+            currency: "N",
+            value: subTotal,
+          },
+        },
+      ],
     });
-  }
+  };
 
   return (
     <Main>
@@ -163,7 +206,8 @@ const CartPage = ({ cart }) => {
             </div>
 
             <div className="message">
-              We are fully booked for delivery on Feb 14. Orders placed now will be processed on the 15th.
+              We are fully booked for delivery on Feb 14. Orders placed now will
+              be processed on the 15th.
               <br />
               Thanks for your patronage.
             </div>
@@ -177,13 +221,13 @@ const CartPage = ({ cart }) => {
         </Modal>
       )}
 
-
       {isCheckoutSuccessActive ? (
         <CheckoutSuccess />
       ) : isCheckoutActive ? (
         <Checkout
           goBack={() => showCheckout(false)}
           couponObject={couponObject}
+          giftCardObject={giftCardObject}
           loyaltyPointsAvailable={loyaltyPointsAvailable}
           loyaltyPointApplied={loyaltyPointApplied}
           showCheckoutSuccess={showCheckoutSuccess}
@@ -192,15 +236,19 @@ const CartPage = ({ cart }) => {
         <Cart
           loyaltyPointApplied={loyaltyPointApplied}
           loyaltyPointsAvailable={loyaltyPointsAvailable}
+          giftCardCode={giftCardCode}
+          giftCardObject={giftCardObject}
           couponCode={couponCode}
           couponObject={couponObject}
           checkout={() => {
-            initiateCheckoutFacebookPixel()
-            showCheckout(true)
+            initiateCheckoutFacebookPixel();
+            showCheckout(true);
           }}
           handleChangeLoyaltyPoints={handleChangeLoyaltyPoints}
           handleApplyCouponCode={handleApplyCouponCode}
           handleChangeCouponCode={handleChangeCouponCode}
+          handleApplyGCCode={handleApplyGCCode}
+          handleChangeGiftCardCode={handleChangeGiftCardCode}
         />
       )}
       {toaster && <Toaster {...toaster} closeToaster={closeToaster} />}

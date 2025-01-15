@@ -108,9 +108,9 @@ class Checkout extends Component {
         address:
           target.name === "shippingMethod"
             ? {
-              value: "",
-              valid: false,
-            }
+                value: "",
+                valid: false,
+              }
             : this.state.formData.address,
       },
       isLoadingDeliveryPrice: false,
@@ -217,7 +217,7 @@ class Checkout extends Component {
       (value) =>
         value.valid &&
         (rest.shippingMethod.value === "delivery" ||
-          rest.shippingMethod.value === "s-delivery"
+        rest.shippingMethod.value === "s-delivery"
           ? address.valid
           : true)
     );
@@ -305,7 +305,7 @@ class Checkout extends Component {
     }
   };
 
-  onSuggestNoResults = (userInput) => { };
+  onSuggestNoResults = (userInput) => {};
 
   computeDistance(pointA, pointB) {
     const lat1 = pointA.location.lat;
@@ -341,7 +341,14 @@ class Checkout extends Component {
       shippingMethod,
       deliveryDate,
     } = getFormValues(formData);
-    const { cart, user, couponObject, loyaltyPointApplied, loyaltyPointsAvailable } = this.props;
+    const {
+      cart,
+      user,
+      couponObject,
+      giftCardObject,
+      loyaltyPointApplied,
+      loyaltyPointsAvailable,
+    } = this.props;
 
     const orderItems = cart.map(({ id, quantity, toppings }) => ({
       productId: id,
@@ -366,7 +373,7 @@ class Checkout extends Component {
         name,
         phoneNumber,
         address,
-        email
+        email,
       },
       recipient: {
         name,
@@ -381,9 +388,57 @@ class Checkout extends Component {
       payload.discountValue = couponObject.value;
     }
 
-    if (loyaltyPointApplied?.value) {
-      payload.loyaltyPointsDiscountRedeemed = (parseFloat(loyaltyPointApplied.value));
-      payload.loyaltyPointsRedeemed = Math.ceil((parseFloat(loyaltyPointApplied.value)) / loyaltyPointsAvailable.discountPerPoint);
+    const subTotal = reduceArray(cart, "totalCost");
+
+    const ttlGcDiscount = giftCardObject?.remainingValue || 0;
+
+    let discountAmountGc =
+      ttlGcDiscount > subTotal + deliveryCost
+        ? subTotal + deliveryCost
+        : ttlGcDiscount;
+
+    if (giftCardObject) {
+      payload.discountGcCode = giftCardObject.code;
+      payload.discountValueGc = discountAmountGc;
+    }
+
+    if (
+      loyaltyPointApplied?.value &&
+      discountAmountGc < subTotal + deliveryCost
+    ) {
+      //If loyaltyPoints are applied and a gift card is also applied then this if condition
+
+      let loyaltyPointsToRedeem = parseFloat(loyaltyPointApplied.value);
+
+      /*
+      Below condition checks:
+      
+      if giftCardDiscount is applied AND giftCardDiscount is not covering the total order amount
+      AND ALSO
+      if loyaltyDiscount is being redeemed, then check does (giftCardDiscount + loyaltyDiscount) covers the total amount or not
+      if it covers the total amount then check that on top of giftCardDiscount, how many loyalty points can be redeemed before the order is covered completely
+      FOR EXAMPLE:
+      totalOrderAmount = 10k
+      giftCardDiscount = 9.5k
+      loyaltyDiscount = 1k
+
+      So if we redeem the discount and also apply the gift card, it will exceed the order amount, instead we will deduct only enough discount that can cover the order amount so in above scenario:
+
+      totalOrderAmount = 10k
+      giftCardDiscount = 9.5k
+      loyaltyDiscount = 0.5k (out of 1k total, we are only redeeming .5k so that rest of the .5k can be redeemed later if customer wants to)
+      */
+      if (
+        parseFloat(ttlGcDiscount) + loyaltyPointsToRedeem >
+        subTotal + deliveryCost
+      )
+        loyaltyPointsToRedeem =
+          subTotal + deliveryCost - parseFloat(ttlGcDiscount);
+
+      payload.loyaltyPointsDiscountRedeemed = loyaltyPointsToRedeem;
+      payload.loyaltyPointsRedeemed = Math.ceil(
+        loyaltyPointsToRedeem / loyaltyPointsAvailable.discountPerPoint
+      );
     }
 
     shippingMethod === "pickup" && delete payload.deliveryLocation;
@@ -396,35 +451,32 @@ class Checkout extends Component {
       });
 
       const { paymentReference, amount } = res.data;
-      const subTotal = reduceArray(cart, "totalCost");
 
-      debugger
       let discountAmount = couponObject
         ? couponObject.discountType === "percent"
-          ?
-          (couponObject.value * subTotal) / 100
+          ? (couponObject.value * subTotal) / 100
           : couponObject.value
         : null;
 
       const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
 
       if (loyaltyDiscountApplied)
-        discountAmount = (discountAmount || 0) + (loyaltyDiscountApplied);
+        discountAmount = (discountAmount || 0) + loyaltyDiscountApplied;
+
+      if (ttlGcDiscount) discountAmount = (discountAmount || 0) + ttlGcDiscount;
 
       let metadata = {
         storeID: "8a7a28dc-b54d-4841-b949-efe60dbae709",
       };
 
-      console.log({
-        email,
-        paymentReference,
-        metadata,
-      });
+      let finalAmount = subTotal + deliveryCost - discountAmount;
+
+      if (finalAmount <= 0) finalAmount = 0;
 
       paystack(
         email,
         paymentReference,
-        parseFloat(amount - (discountAmount || 0)) * 100,
+        parseFloat(finalAmount == 0 ? 0.01 : finalAmount) * 100,
         this.handlePaystackSuccess,
         this.handlePaystackClose,
         metadata
@@ -626,7 +678,8 @@ class Checkout extends Component {
       isMenuActive,
       initialValue,
     } = this.state;
-    const { cart, goBack, couponObject, loyaltyPointApplied } = this.props;
+    const { cart, goBack, couponObject, giftCardObject, loyaltyPointApplied } =
+      this.props;
     const { name, phoneNumber, email, shippingMethod, note, deliveryDate } =
       formData;
 
@@ -645,6 +698,8 @@ class Checkout extends Component {
 
     const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
 
+    const ttlGcDiscount = giftCardObject?.remainingValue || 0;
+
     let discountAmount = couponObject
       ? couponObject.discountType === "percent"
         ? (couponObject.value * subTotal) / 100
@@ -652,7 +707,13 @@ class Checkout extends Component {
       : null;
 
     if (loyaltyDiscountApplied)
-      discountAmount = (discountAmount || 0) + (loyaltyDiscountApplied);
+      discountAmount = (discountAmount || 0) + loyaltyDiscountApplied;
+
+    if (ttlGcDiscount) discountAmount = (discountAmount || 0) + ttlGcDiscount;
+
+    let finalAmount = subTotal + deliveryCost - discountAmount;
+
+    if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
 
     return (
       <div className="cart-container">
@@ -955,10 +1016,10 @@ class Checkout extends Component {
               className={classNames("checkout-button", {
                 disabled:
                   !this.state.priceCheck ||
-                    !this.checkFormValidity() ||
-                    isCheckingOut ||
-                    isLoadingDeliveryPrice ||
-                    Object.entries(this.state.chosenCity).length === 0
+                  !this.checkFormValidity() ||
+                  isCheckingOut ||
+                  isLoadingDeliveryPrice ||
+                  Object.entries(this.state.chosenCity).length === 0
                     ? true
                     : false,
               })}
@@ -967,11 +1028,7 @@ class Checkout extends Component {
               <div className="container">
                 <span>
                   {isCheckingOut ? "Paying..." : "Pay"} ₦
-                  {(
-                    subTotal +
-                    deliveryCost -
-                    (discountAmount || 0)
-                  ).toLocaleString()}
+                  {finalAmount.toLocaleString()}
                   {discountAmount && (
                     <small style={{ marginLeft: "10px" }}>
                       <strike>
@@ -997,11 +1054,7 @@ class Checkout extends Component {
               <div className="container">
                 <span>
                   {isCheckingOut ? "Paying..." : "Pay"} ₦
-                  {(
-                    subTotal +
-                    deliveryCost -
-                    (discountAmount || 0)
-                  ).toLocaleString()}
+                  {finalAmount.toLocaleString()}
                   {discountAmount && (
                     <small style={{ marginLeft: "10px" }}>
                       <strike>

@@ -42,6 +42,7 @@ class Cart extends Component {
     isApplyingCouponCode: false,
     isMenuActive: false,
     showCouponSection: false,
+    showGCSection: false,
   };
 
   cartAction = (item, quantity) => {
@@ -94,6 +95,19 @@ class Cart extends Component {
     });
   };
 
+  handleApplyGCCode = async () => {
+    const {
+      formData: { giftCardCode },
+    } = this.state;
+    this.setState({
+      isApplyingGC: true,
+    });
+    await this.props.handleApplyGCCode();
+    this.setState({
+      isApplyingGC: false,
+    });
+  };
+
   openToaster = (status, message) => {
     this.setState({
       toaster: {
@@ -123,10 +137,16 @@ class Cart extends Component {
       couponObject,
       loyaltyPointApplied,
       loyaltyPointsAvailable,
+      giftCardCode,
+      giftCardObject,
     } = this.props;
+
+    const { showGCSection, isApplyingGC } = this.state;
 
     const subTotal = reduceArray(cart, "totalCost");
     const minimumAmount = 4500;
+
+    const discountAmountGc = giftCardObject ? giftCardObject.remainingValue : 0;
 
     const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
 
@@ -138,6 +158,12 @@ class Cart extends Component {
 
     if (loyaltyDiscountApplied)
       discountAmount = (discountAmount || 0) + loyaltyDiscountApplied;
+
+    if (discountAmountGc)
+      discountAmount = (discountAmount || 0) + discountAmountGc;
+
+    let finalAmount = subTotal - discountAmount;
+    if (finalAmount <= 0) finalAmount = 0;
 
     return (
       <div className="cart-container full-height">
@@ -263,53 +289,58 @@ class Cart extends Component {
                     );
                   })}
                 </div>
-                <div className="container">
-                  <div className="row" style={{ alignItems: "flex-end" }}>
-                    <div className="col-12">
-                      <div
-                        style={{
-                          marginBottom: "20px",
-                          textDecoration: "underline",
-                          width: "fit-content",
-                        }}
-                        onClick={() =>
-                          this.setState({
-                            showCouponSection: !showCouponSection,
-                          })
-                        }
-                      >
-                        I have a coupon code
-                      </div>
-                      {showCouponSection && (
-                        <div className="row" style={{ alignItems: "flex-end" }}>
-                          <div className="col-8">
-                            <TextField
-                              label="Coupon Code"
-                              placeholder="Enter a coupon code for discount"
-                              name="couponCode"
-                              value={couponCode.value}
-                              onChange={this.props.handleChangeCouponCode}
-                              className="mb-40"
-                            />
-                          </div>
-                          <div className="col-4">
-                            <button
-                              onClick={this.handleApplyCouponCode}
-                              className={classNames("button-coupon mb-40", {
-                                disabled:
-                                  !couponCode.value || isApplyingCouponCode,
-                              })}
-                            >
-                              {isApplyingCouponCode
-                                ? "Applying..."
-                                : "Apply Code"}
-                            </button>
-                          </div>
+                {!giftCardObject && (
+                  <div className="container">
+                    <div className="row" style={{ alignItems: "flex-end" }}>
+                      <div className="col-12">
+                        <div
+                          style={{
+                            marginBottom: "20px",
+                            textDecoration: "underline",
+                            width: "fit-content",
+                          }}
+                          onClick={() =>
+                            this.setState({
+                              showCouponSection: !showCouponSection,
+                            })
+                          }
+                        >
+                          I have a coupon code
                         </div>
-                      )}
+                        {showCouponSection && (
+                          <div
+                            className="row"
+                            style={{ alignItems: "flex-end" }}
+                          >
+                            <div className="col-8">
+                              <TextField
+                                label="Coupon Code"
+                                placeholder="Enter a coupon code for discount"
+                                name="couponCode"
+                                value={couponCode.value}
+                                onChange={this.props.handleChangeCouponCode}
+                                className="mb-40"
+                              />
+                            </div>
+                            <div className="col-4">
+                              <button
+                                onClick={this.handleApplyCouponCode}
+                                className={classNames("button-coupon mb-40", {
+                                  disabled:
+                                    !couponCode.value || isApplyingCouponCode,
+                                })}
+                              >
+                                {isApplyingCouponCode
+                                  ? "Applying..."
+                                  : "Apply Code"}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
                 {!JSON.parse(localStorage.getItem("gourmet-twist-user")) && (
                   <div className="container" style={{ marginTop: 5 }}>
                     <div className="row">
@@ -325,6 +356,58 @@ class Cart extends Component {
                             Have reward points? Login to avail discount
                           </Link>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!couponObject && (
+                  <div className="container">
+                    <div className="row" style={{ alignItems: "flex-end" }}>
+                      <div className="col-12">
+                        <div
+                          style={{
+                            marginBottom: "20px",
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                            width: "fit-content",
+                          }}
+                          onClick={() =>
+                            this.setState({
+                              showGCSection: !showGCSection,
+                            })
+                          }
+                        >
+                          I have a gift card
+                        </div>
+                        {showGCSection && (
+                          <div
+                            className="row"
+                            style={{ alignItems: "flex-end" }}
+                          >
+                            <div className="col-8">
+                              <TextField
+                                label="Gift Card Code"
+                                placeholder="Enter a gift card code for discount"
+                                name="giftCard"
+                                value={giftCardCode.value}
+                                onChange={this.props.handleChangeGiftCardCode}
+                                className="mb-40"
+                              />
+                            </div>
+                            <div className="col-4">
+                              <button
+                                onClick={this.handleApplyGCCode}
+                                className={classNames("button-coupon mb-40", {
+                                  disabled: !giftCardCode.value || isApplyingGC,
+                                })}
+                              >
+                                {isApplyingGC
+                                  ? "Applying..."
+                                  : "Apply Gift Card"}
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -357,7 +440,7 @@ class Cart extends Component {
                       className="value"
                       style={{ display: "flex", alignItems: "center" }}
                     >
-                      ₦ {(subTotal - discountAmount).toLocaleString()}
+                      ₦ {finalAmount.toLocaleString()}
                       {discountAmount && (
                         <span style={{ fontSize: "16px", marginLeft: "10px" }}>
                           <strike className="small">
@@ -378,8 +461,70 @@ class Cart extends Component {
                       <span className="text">
                         {couponObject.discountType === "percent" &&
                           `${couponObject.value}% discount - `}
-                        ₦{discountAmount?.toLocaleString()} will be deducted - (
-                        {couponObject.name})
+                        ₦
+                        {(discountAmount > subTotal
+                          ? subTotal
+                          : discountAmount
+                        )?.toLocaleString()}{" "}
+                        will be deducted - ({couponObject.name})
+                      </span>
+                      <span
+                        onClick={() =>
+                          this.props.handleChangeCouponCode({
+                            value: 0,
+                            valid: false,
+                          })
+                        }
+                        style={{
+                          background: "black",
+                          color: "white",
+                          padding: "5px 10px",
+                          cursor: "pointer",
+                          fontSize: 12,
+                          marginLeft: 10,
+                        }}
+                      >
+                        CLEAR
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {!!giftCardObject && (
+                  <div className="delivery-fees-notice">
+                    <div className="container">
+                      <span
+                        className="text"
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span>
+                          ₦
+                          {(discountAmount > subTotal
+                            ? subTotal
+                            : discountAmount
+                          )?.toLocaleString()}{" "}
+                          will be deducted - ({giftCardObject.name})
+                        </span>
+                      </span>
+                      <span
+                        onClick={() =>
+                          this.props.handleChangeGiftCardCode({
+                            value: 0,
+                            valid: false,
+                          })
+                        }
+                        style={{
+                          background: "black",
+                          color: "white",
+                          padding: "5px 10px",
+                          cursor: "pointer",
+                          fontSize: 12,
+                        }}
+                      >
+                        CLEAR
                       </span>
                     </div>
                   </div>
