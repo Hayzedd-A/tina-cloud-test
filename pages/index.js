@@ -16,7 +16,7 @@ class Home extends Component {
     selectedItem: {},
     showDetails: false,
     showSplash: true,
-    showModal: false
+    showModal: true,
   };
 
   selectItem = ({ name, id }) => {
@@ -41,7 +41,7 @@ class Home extends Component {
     this.setState({
       showModal: false,
     });
-  }
+  };
 
   render() {
     const { isLoadingProducts } = this.props;
@@ -52,17 +52,16 @@ class Home extends Component {
           <SplashScreen />
         ) : (
           <>
-            {
-              this.state.showModal && <Modal closeModal={this.closeModal}>
+            {this.state.showModal && (
+              <Modal closeModal={this.closeModal}>
                 <div className="add-cart-success">
                   <div className="icon">
                     <Logo />
                   </div>
 
                   <div className="message">
-                    Dear customer, orders placed today will be processed on Monday, September 30 as we are relocating today.
-                    <br />
-                    Our new address is 19B Fola Osibo, Lekki.
+                    Dear customer, orders placed today will be processed on
+                    Saturday, February 15th.
                   </div>
 
                   <div className="actions">
@@ -72,7 +71,7 @@ class Home extends Component {
                   </div>
                 </div>
               </Modal>
-            }
+            )}
             <Shop selectItem={this.selectItem} />
           </>
         )}
