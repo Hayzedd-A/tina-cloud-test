@@ -539,11 +539,17 @@ class ShopItemDetails extends Component {
             </div>
           </div>
         )}
-        <div className="menu-container">
+        <div
+          className="menu-container"
+          style={{
+            padding: 0,
+          }}
+        >
           <div
             className="item-footer"
             style={{
               left: 0,
+              display: "contents",
             }}
           >
             {/* custom-item-footer */}
