@@ -113,6 +113,7 @@ const LoyaltyPoints = ({
             paddingTop: 20,
             textAlign: "center",
             fontWeight: "bold",
+            fontSize: "15pt",
           }}
         >
           <span>Only orders above N5,000 qualify for loyalty points</span>
