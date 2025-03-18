@@ -16,7 +16,7 @@ class Home extends Component {
     selectedItem: {},
     showDetails: false,
     showSplash: true,
-    showModal: true,
+    showModal: false,
   };
 
   selectItem = ({ name, id }) => {
