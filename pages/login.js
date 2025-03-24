@@ -52,7 +52,10 @@ class CreateLogin extends Component {
       formData: {
         ...this.state.formData,
         [target.name]: {
-          value: target.name === "referredBy" ? target.value.toUpperCase() : target.value,
+          value:
+            target.name === "referredBy"
+              ? target.value.toUpperCase()
+              : target.value,
           valid,
         },
       },
@@ -73,10 +76,10 @@ class CreateLogin extends Component {
 
     const data = isSignUp ? formData : { phoneNumber, pin };
 
-    console.log(`***********`)
-    console.log(`***********`)
-    console.log(`***********`)
-    console.log(formData)
+    console.log(`***********`);
+    console.log(`***********`);
+    console.log(`***********`);
+    console.log(formData);
 
     return Object.values(data).every(
       (value) =>
@@ -91,19 +94,19 @@ class CreateLogin extends Component {
 
     isSignUp
       ? register(
-        { phoneNumber, referredBy, pin, storeId: STORE_ID },
-        () => router.push("/my-account"),
-        (error) =>
-          this.openToaster(
-            "error",
-            error || `An error occurred. Please try again.`
-          )
-      )
+          { phoneNumber, referredBy, pin, storeId: STORE_ID },
+          () => router.push("/my-account"),
+          (error) =>
+            this.openToaster(
+              "error",
+              error || `An error occurred. Please try again.`
+            )
+        )
       : login(
-        { phoneNumber, pin },
-        () => router.push("/my-account"),
-        (error) => this.openToaster("error", error || `Invalid login details`)
-      );
+          { phoneNumber, pin },
+          () => router.push("/my-account"),
+          (error) => this.openToaster("error", error || `Invalid login details`)
+        );
   };
 
   openToaster = (status, message) => {
@@ -231,7 +234,7 @@ class CreateLogin extends Component {
                     label="Referral Code"
                     placeholder="YXCBE"
                     name="referredBy"
-                    max={5}
+                    max={6}
                     onChange={this.handleChange}
                     value={referredBy.value}
                   />
