@@ -1,4 +1,4 @@
-import { Component, Fragment } from "react";
+import { Component, Fragment, useEffect } from "react";
 import Geosuggest from "react-geosuggest";
 import * as classNames from "classnames";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
@@ -23,10 +23,13 @@ import {
 
 import { deliveryPoints } from "../../utils/data";
 import { HeaderMenu } from "../Header";
-import { STORE_ID } from "../../constants";
+import { API_BASE_URL, STORE_ID } from "../../constants";
 import SelectField from "../FormElements/SelectField";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
+import { SearchOutlined } from "@ant-design/icons";
+import { Button, message } from "antd";
+import Axios from "axios";
 
 const deliveryArr = ["delivery", "s-delivery"];
 
@@ -36,6 +39,10 @@ const initialFormData = {
     valid: false,
   },
   phoneNumber: {
+    value: "",
+    valid: false,
+  },
+  deliveryDiscountCode: {
     value: "",
     valid: false,
   },
@@ -65,6 +72,7 @@ class Checkout extends Component {
   state = {
     formData: { ...initialFormData },
     deliveryCost: 0,
+    discountDeliveryType: null,
     isMenuActive: false,
     isLoadingDeliveryPrice: false,
     pickUpAddress: {},
@@ -98,6 +106,9 @@ class Checkout extends Component {
   };
 
   handleChange = ({ target }, valid) => {
+    if (target.name === "deliveryDiscountCode") {
+      debugger;
+    }
     this.setState({
       formData: {
         ...this.state.formData,
@@ -114,8 +125,16 @@ class Checkout extends Component {
             : this.state.formData.address,
       },
       isLoadingDeliveryPrice: false,
+      discountDeliveryType:
+        target.name === "deliveryDiscountCode"
+          ? null
+          : this.state.discountDeliveryType,
       deliveryCost:
-        target.name === "shippingMethod" ? 0 : this.state.deliveryCost,
+        target.name === "shippingMethod"
+          ? 0
+          : target.name === "deliveryDiscountCode"
+          ? parseInt(this.state.chosenCity?.price)
+          : this.state.deliveryCost,
     });
     1;
   };
@@ -168,6 +187,7 @@ class Checkout extends Component {
   };
 
   resetDelivery = (value) => {
+    debugger;
     this.setState({
       formData: {
         ...this.state.formData,
@@ -183,8 +203,13 @@ class Checkout extends Component {
           value: "",
           valid: true,
         },
+        deliveryDiscountCode: {
+          value: "",
+          valid: true,
+        },
       },
       deliveryCost: 0,
+      discountDeliveryType: null,
       chosenState: "lagos",
       chosenCity: {},
       touched: false,
@@ -272,8 +297,13 @@ class Checkout extends Component {
   onSuggestChange = async (suggest) => {
     if (suggest && suggest.length > 0) {
       this.setState({
+        discountDeliveryType: null,
         formData: {
           ...this.state.formData,
+          deliveryDiscountCode: {
+            value: "",
+            valid: true,
+          },
           address: {
             value: suggest,
             valid: true,
@@ -292,8 +322,13 @@ class Checkout extends Component {
       });
     } else {
       this.setState({
+        discountDeliveryType: null,
         formData: {
           ...this.state.formData,
+          deliveryDiscountCode: {
+            value: "",
+            valid: true,
+          },
           address: {
             value: "",
             valid: false,
@@ -331,10 +366,17 @@ class Checkout extends Component {
   }
 
   checkout = async () => {
-    const { formData, deliveryCost, chosenCity, deliveryLocation } = this.state;
+    const {
+      formData,
+      deliveryCost,
+      chosenCity,
+      deliveryLocation,
+      discountDeliveryType,
+    } = this.state;
     const {
       name,
       phoneNumber,
+      deliveryDiscountCode,
       address,
       email,
       note,
@@ -366,7 +408,8 @@ class Checkout extends Component {
     const payload = {
       state: "lagos",
       city: chosenCity?.label,
-      deliveryTypeId: chosenCity?.key,
+      deliveryTypeId: discountDeliveryType?.id || chosenCity?.key,
+      originalDeliveryTypeId: chosenCity?.key,
       specialNote: note,
       orderItems,
       customer: {
@@ -600,14 +643,13 @@ class Checkout extends Component {
 
       currentStore &&
         currentStore.delivery_types.sort(dynamicSort("name")).map((item) => {
-          // if (item?.price > 0) {
           let newObj = {};
           newObj.key = item.id;
-          newObj.label = this.capitalizeWord(item.name.toLowerCase());
-          // newObj.label = item.name;
+          newObj.label = `${this.capitalizeWord(
+            item.name.toLowerCase()
+          )} - (N${item.price.toLocaleString()})`;
           newObj.price = item.price;
           newStateArr.push(newObj);
-          // }
         });
 
       let sortedArr = newStateArr.sort(function (a, b) {
@@ -637,6 +679,17 @@ class Checkout extends Component {
     }
   };
 
+  componentDidUpdate(_, prevState) {
+    const { deliveryCost } = this.state;
+    const subTotal = reduceArray(this.props.cart, "totalCost");
+    const discountEligible = subTotal >= 25000 && deliveryCost <= 3000;
+
+    if (!discountEligible && this.state.discountDeliveryType !== null) {
+      debugger;
+      this.setState({ discountDeliveryType: null });
+    }
+  }
+
   handleCityChange = (e) => {
     let cityIndex = e.target.value;
     if (isNaN(e)) {
@@ -644,8 +697,16 @@ class Checkout extends Component {
       if (!isNaN(index)) {
         this.openToaster("error", "Please choose a valid delivery option");
         this.setState({
+          formData: {
+            ...this.state.formData,
+            deliveryDiscountCode: {
+              value: "",
+              valid: true,
+            },
+          },
           chosenCity: {},
           deliveryCost: 0,
+          discountDeliveryType: null,
         });
       } else {
         let found = this.state.cities.find((elem) => {
@@ -654,16 +715,32 @@ class Checkout extends Component {
         if (found) {
           if (Object.entries(found).length > 0) {
             this.setState({
+              formData: {
+                ...this.state.formData,
+                deliveryDiscountCode: {
+                  value: "",
+                  valid: true,
+                },
+              },
               chosenCity: { ...found },
               deliveryCost: parseInt(found.price),
+              discountDeliveryType: null,
             });
           }
         }
       }
     } else {
       this.setState({
+        formData: {
+          ...this.state.formData,
+          deliveryDiscountCode: {
+            value: "",
+            valid: true,
+          },
+        },
         chosenCity: {},
         deliveryCost: 0,
+        discountDeliveryType: null,
       });
     }
   };
@@ -680,8 +757,15 @@ class Checkout extends Component {
     } = this.state;
     const { cart, goBack, couponObject, giftCardObject, loyaltyPointApplied } =
       this.props;
-    const { name, phoneNumber, email, shippingMethod, note, deliveryDate } =
-      formData;
+    const {
+      name,
+      phoneNumber,
+      email,
+      shippingMethod,
+      note,
+      deliveryDate,
+      deliveryDiscountCode,
+    } = formData;
 
     const subTotal = reduceArray(cart, "totalCost");
     let tomorrow = new Date();
@@ -713,7 +797,37 @@ class Checkout extends Component {
 
     let finalAmount = subTotal + deliveryCost - discountAmount;
 
+    let finalAmountWithoutDeliveryFee = subTotal - discountAmount;
+
+    const allowDeliveryDiscount = (ttlWithoutDelivFee, delivFee) => {
+      return ttlWithoutDelivFee >= 25000 && delivFee <= 3000;
+    };
+
     if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
+
+    const searchDeliveryDiscountCode = async (_) => {
+      const data = await Axios.post(
+        `${API_BASE_URL}auth/verify-delivery-discount-code`,
+        {
+          deliveryDiscountCode: deliveryDiscountCode.value,
+        }
+      ).catch((e) => {});
+      if (data?.status == 200) {
+        this.setState({
+          ...this.state,
+          discountDeliveryType: data.data.message,
+          deliveryCost: data.data.message.price,
+        });
+        message.success("Delivery discount applied");
+      } else {
+        this.setState({
+          ...this.state,
+          discountDeliveryType: null,
+          deliveryCost: parseInt(this.state.chosenCity?.price) || 0,
+        });
+        message.error("Invalid delivery discount");
+      }
+    };
 
     return (
       <div className="cart-container">
@@ -885,6 +999,37 @@ class Checkout extends Component {
                       city e.g Lekki Phase 1 or Surulere
                     </span> */}
                   </div>
+                  {this.state.chosenCity?.price &&
+                    allowDeliveryDiscount(
+                      finalAmountWithoutDeliveryFee,
+                      deliveryCost
+                    ) && (
+                      <div style={{ display: "flex" }} className="mb-40">
+                        <TextField
+                          label="Delivery discount code"
+                          placeholder="Enter the delivery discount code"
+                          name="deliveryDiscountCode"
+                          value={deliveryDiscountCode.value}
+                          onChange={this.handleChange}
+                          style={{
+                            borderTopRightRadius: 0,
+                            borderBottomRightRadius: 0,
+                          }}
+                        />
+                        <Button
+                          type="primary"
+                          onClick={searchDeliveryDiscountCode}
+                          style={{
+                            marginTop: 33,
+                            height: 62,
+                            borderTopLeftRadius: 0,
+                            borderBottomLeftRadius: 0,
+                          }}
+                        >
+                          <SearchOutlined />
+                        </Button>
+                      </div>
+                    )}
                 </Fragment>
               ) : shippingMethod.value === "pickup" ? (
                 <div className="input-container mb-40">
@@ -994,7 +1139,7 @@ class Checkout extends Component {
           </div>
         </div>
         <div className="cart-actions no-margin fixed">
-          {!!deliveryCost &&
+          {deliveryCost >= 0 &&
             (shippingMethod.value === "delivery" ||
               shippingMethod.value === "s-delivery") && (
               <div className="delivery-fees-notice">
@@ -1003,8 +1148,21 @@ class Checkout extends Component {
                     <img src="/static/images/delivery.png" alt="" />
                   </span>
                   <span className="text">
-                    ₦{deliveryCost.toLocaleString()} will be charged for
-                    delivery
+                    {this.state.discountDeliveryType?.id ? (
+                      <>
+                        <strike>
+                          ₦{this.state.chosenCity?.price.toLocaleString()}
+                        </strike>
+                        &nbsp;₦
+                        {this.state.discountDeliveryType?.price.toLocaleString()}
+                      </>
+                    ) : (
+                      `₦${deliveryCost.toLocaleString()}`
+                    )}
+                    &nbsp;will be charged for delivery{" "}
+                    {/* {this.state.discountDeliveryType?.price > 0
+                      ? ` (Balance of amount can be made during payment confirmation)`
+                      : ``} */}
                   </span>
                 </div>
               </div>

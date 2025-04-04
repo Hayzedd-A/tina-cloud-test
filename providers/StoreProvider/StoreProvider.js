@@ -25,7 +25,7 @@ class StoreProvider extends Component {
     });
 
     try {
-    /*
+      /*
       const token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwNDgwNjMxOSwiZXhwIjoxNzM2MzYzOTE5fQ.JLjMqDwrn_ZnI313S9HliCnkin7K2sf1QfLaT080g0w";
 

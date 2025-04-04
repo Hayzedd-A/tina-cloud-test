@@ -1,29 +1,21 @@
 import React, { Component, createRef } from "react";
 import classNames from "classnames";
-import { CopyOutlined } from '@ant-design/icons';
-import { message } from 'antd';
+import { CopyOutlined } from "@ant-design/icons";
+import { message } from "antd";
 
 class TextField extends Component {
   state = {
     active: false,
     isValid: false,
-    isBlurred: false
+    isBlurred: false,
   };
 
   textFieldRef = createRef();
 
   onChange = ({ target }, isBlurred) => {
     let { isValid } = this.state;
-    const {
-      type,
-      required,
-      min,
-      mobile,
-      max,
-      name,
-      onBlur,
-      onChange
-    } = this.props;
+    const { type, required, min, mobile, max, name, onBlur, onChange } =
+      this.props;
     const { value } = target;
 
     isValid = required ? value !== "" : true;
@@ -66,7 +58,7 @@ class TextField extends Component {
     this.setState({
       isValid,
       isBlurred,
-      isFocused: !isBlurred
+      isFocused: !isBlurred,
     });
 
     isBlurred && onBlur && onBlur();
@@ -77,7 +69,7 @@ class TextField extends Component {
 
     this.setState(
       {
-        isFocused: true
+        isFocused: true,
       },
       () => onFocus && onFocus()
     );
@@ -102,51 +94,85 @@ class TextField extends Component {
     } = this.props;
 
     if (name === "phoneNumber") {
-      console.log(isBlurred, isValid)
+      console.log(isBlurred, isValid);
     }
 
     const copyToClipboard = async () => {
-      await navigator.clipboard.writeText(referralCode)
-      message.success(`Copied to clipboard`)
-    }
+      await navigator.clipboard.writeText(referralCode);
+      message.success(`Copied to clipboard`);
+    };
 
     return (
       <div
         className={classNames(`input-container ${className || ""}`, {
           isFocused,
-          error: !isValid && isBlurred
+          error: !isValid && isBlurred,
         })}
+        style={{
+          flex: 1,
+        }}
       >
         {label && (
           <label>
             {label} {required && <sup className="marked">*</sup>}
-            {hint && <i style={{ textTransform: 'capitalize', color: '#333', fontWeight: 'bold' }}>{hint}</i>}
+            {hint && (
+              <i
+                style={{
+                  textTransform: "capitalize",
+                  color: "#333",
+                  fontWeight: "bold",
+                }}
+              >
+                {hint}
+              </i>
+            )}
           </label>
         )}
-        {
-          loyaltyPointsAvailable?.available &&
+        {loyaltyPointsAvailable?.available && (
           <i>
-            <span style={{
-              display: "block",
-              fontSize: 14,
-              marginBottom: 10
-            }}>
-              Loyalty Points Discount Available <b>(N{(loyaltyPointsAvailable.available * loyaltyPointsAvailable.discountPerPoint).toLocaleString()})</b>
+            <span
+              style={{
+                display: "block",
+                fontSize: 14,
+                marginBottom: 10,
+              }}
+            >
+              Loyalty Points Discount Available{" "}
+              <b>
+                (N
+                {(
+                  loyaltyPointsAvailable.available *
+                  loyaltyPointsAvailable.discountPerPoint
+                ).toLocaleString()}
+                )
+              </b>
             </span>
           </i>
-        }
-        <div onClick={e => e.stopPropagation()} style={{ position: referralCode && "relative" }}>
+        )}
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{ position: referralCode && "relative" }}
+        >
           <input
             ref={this.textFieldRef}
             className="input"
             {...rest}
-            onBlur={e => this.onChange(e, true)}
+            onBlur={(e) => this.onChange(e, true)}
             onChange={this.onChange}
             onFocus={this.onFocus}
           />
-          {
-            referralCode && <CopyOutlined onClick={copyToClipboard} style={{ cursor: "pointer", fontSize: 18, position: "absolute", top: 20, right: 30 }} />
-          }
+          {referralCode && (
+            <CopyOutlined
+              onClick={copyToClipboard}
+              style={{
+                cursor: "pointer",
+                fontSize: 18,
+                position: "absolute",
+                top: 20,
+                right: 30,
+              }}
+            />
+          )}
         </div>
       </div>
     );
