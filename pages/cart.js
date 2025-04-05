@@ -38,7 +38,7 @@ const CartPage = ({ cart }) => {
 
   const [deliveryDiscountObject, setDeliveryDiscountObject] = useState(null);
   const [deliveryDiscountCode, setDeliveryDiscountCode] = useState({
-    value: "CODE001",
+    value: "",
     valid: false,
   });
 
