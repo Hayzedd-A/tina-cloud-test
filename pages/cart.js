@@ -36,6 +36,12 @@ const CartPage = ({ cart }) => {
     valid: false,
   });
 
+  const [deliveryDiscountObject, setDeliveryDiscountObject] = useState(null);
+  const [deliveryDiscountCode, setDeliveryDiscountCode] = useState({
+    value: "",
+    valid: false,
+  });
+
   const [loyaltyPointsAvailable, setLoyaltyPointsAvailable] = useState(null);
   const [loyaltyPointApplied, setLoyaltyPointApplied] = useState({
     value: "",
@@ -178,6 +184,45 @@ const CartPage = ({ cart }) => {
     }
   };
 
+  const resetDeliveryDiscount = () => {
+    setDeliveryDiscountObject(null);
+    setDeliveryDiscountCode({
+      value: "",
+      valid: false,
+    });
+  };
+
+  const handleChangeDeliveryDiscountCode = ({ target }, valid) => {
+    if (!target?.value) {
+      setDeliveryDiscountObject(null);
+      return setDeliveryDiscountCode({
+        value: "",
+        valid: false,
+      });
+    }
+    setDeliveryDiscountCode({
+      value: target.value,
+      valid,
+    });
+  };
+
+  const handleApplyDCCode = async () => {
+    const { value } = deliveryDiscountCode;
+    try {
+      const res = await getRequest({
+        url: `/customer-requests/stores/${STORE_ID}/delivery-discount-code/${value}`,
+      });
+      if (!res.data.data) {
+        setDeliveryDiscountObject(null);
+        return openToaster("error", "Delivery discount code does not exist");
+      }
+      openToaster("success", "Delivery discount applied");
+      setDeliveryDiscountObject(res.data.data);
+    } catch (error) {
+      openToaster("error", "Invalid discount code applied");
+    }
+  };
+
   const closeModal = () => {
     this.setState({
       toaster: {},
@@ -240,6 +285,7 @@ const CartPage = ({ cart }) => {
           goBack={() => showCheckout(false)}
           couponObject={couponObject}
           giftCardObject={giftCardObject}
+          deliveryDiscountObject={deliveryDiscountObject}
           loyaltyPointsAvailable={loyaltyPointsAvailable}
           loyaltyPointApplied={loyaltyPointApplied}
           showCheckoutSuccess={showCheckoutSuccess}
@@ -250,6 +296,8 @@ const CartPage = ({ cart }) => {
           loyaltyPointsAvailable={loyaltyPointsAvailable}
           giftCardCode={giftCardCode}
           giftCardObject={giftCardObject}
+          deliveryDiscountCode={deliveryDiscountCode}
+          deliveryDiscountObject={deliveryDiscountObject}
           couponCode={couponCode}
           couponObject={couponObject}
           checkout={() => {
@@ -261,6 +309,9 @@ const CartPage = ({ cart }) => {
           handleChangeCouponCode={handleChangeCouponCode}
           handleApplyGCCode={handleApplyGCCode}
           handleChangeGiftCardCode={handleChangeGiftCardCode}
+          handleApplyDCCode={handleApplyDCCode}
+          handleChangeDeliveryDiscountCode={handleChangeDeliveryDiscountCode}
+          resetDeliveryDiscount={resetDeliveryDiscount}
         />
       )}
       {toaster && <Toaster {...toaster} closeToaster={closeToaster} />}

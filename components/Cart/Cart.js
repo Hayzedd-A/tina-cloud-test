@@ -108,6 +108,16 @@ class Cart extends Component {
     });
   };
 
+  handleApplyDCCode = async () => {
+    this.setState({
+      isApplyingDC: true,
+    });
+    await this.props.handleApplyDCCode();
+    this.setState({
+      isApplyingDC: false,
+    });
+  };
+
   openToaster = (status, message) => {
     this.setState({
       toaster: {
@@ -128,6 +138,34 @@ class Cart extends Component {
     window.scrollTo(0, 0);
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    const { cart, couponObject, loyaltyPointApplied, giftCardObject } =
+      this.props;
+
+    const subTotal = reduceArray(cart, "totalCost");
+    const discountAmountGc = giftCardObject ? giftCardObject.remainingValue : 0;
+    const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
+
+    let discountAmount = couponObject
+      ? couponObject.discountType === "percent"
+        ? (couponObject.value * subTotal) / 100
+        : couponObject.value
+      : 0;
+
+    if (loyaltyDiscountApplied) discountAmount += loyaltyDiscountApplied;
+    if (discountAmountGc) discountAmount += discountAmountGc;
+
+    let finalAmount = subTotal - discountAmount;
+    if (finalAmount < 0) finalAmount = 0;
+
+    if (
+      finalAmount < 25000 &&
+      this.props.deliveryDiscountObject?.id &&
+      this.props.deliveryDiscountCode
+    )
+      this.props.resetDeliveryDiscount();
+  }
+
   render() {
     const { isLoadingCart, cart, checkout, router } = this.props;
     const { isMenuActive, showCouponSection, isApplyingCouponCode } =
@@ -139,9 +177,13 @@ class Cart extends Component {
       loyaltyPointsAvailable,
       giftCardCode,
       giftCardObject,
+      deliveryDiscountCode,
+      deliveryDiscountObject,
     } = this.props;
 
     const { showGCSection, isApplyingGC } = this.state;
+
+    const { showDCSection, isApplyingDC } = this.state;
 
     const subTotal = reduceArray(cart, "totalCost");
     const minimumAmount = 4500;
@@ -412,6 +454,62 @@ class Cart extends Component {
                     </div>
                   </div>
                 )}
+                {finalAmount >= 25000 && (
+                  <div className="container">
+                    <div className="row" style={{ alignItems: "flex-end" }}>
+                      <div className="col-12">
+                        <div
+                          style={{
+                            marginBottom: "20px",
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                            width: "fit-content",
+                          }}
+                          onClick={() =>
+                            this.setState({
+                              showDCSection: !showDCSection,
+                            })
+                          }
+                        >
+                          I have a discount code
+                        </div>
+                        {showDCSection && (
+                          <div
+                            className="row"
+                            style={{ alignItems: "flex-end" }}
+                          >
+                            <div className="col-8">
+                              <TextField
+                                label="Delivery Discount Code"
+                                placeholder="Enter a delivery discount code for discount"
+                                name="deliveryDiscountCode"
+                                value={deliveryDiscountCode.value}
+                                onChange={
+                                  this.props.handleChangeDeliveryDiscountCode
+                                }
+                                className="mb-40"
+                              />
+                            </div>
+                            <div className="col-4">
+                              <button
+                                onClick={this.handleApplyDCCode}
+                                className={classNames("button-coupon mb-40", {
+                                  disabled:
+                                    !deliveryDiscountCode.value || isApplyingGC,
+                                })}
+                              >
+                                {isApplyingGC
+                                  ? "Applying..."
+                                  : "Apply Discount"}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {loyaltyPointsAvailable?.available && (
                   <div className="container">
                     <div className="row" style={{ alignItems: "flex-end" }}>
