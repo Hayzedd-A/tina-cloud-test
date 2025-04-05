@@ -495,10 +495,10 @@ class Cart extends Component {
                                 onClick={this.handleApplyDCCode}
                                 className={classNames("button-coupon mb-40", {
                                   disabled:
-                                    !deliveryDiscountCode.value || isApplyingGC,
+                                    !deliveryDiscountCode.value || isApplyingDC,
                                 })}
                               >
-                                {isApplyingGC
+                                {isApplyingDC
                                   ? "Applying..."
                                   : "Apply Discount"}
                               </button>
