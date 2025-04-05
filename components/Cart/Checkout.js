@@ -1061,7 +1061,7 @@ class Checkout extends Component {
                         {this.state.chosenCity?.price <= 3000 &&
                           `₦${this.props.deliveryDiscountObject?.price.toLocaleString()}`}
                         {this.state.chosenCity?.price > 3000 &&
-                          `Balace of N${(
+                          `Balance of N${(
                             this.state.chosenCity?.price - 3000
                           ).toLocaleString()} will be outstanding.`}
                       </>

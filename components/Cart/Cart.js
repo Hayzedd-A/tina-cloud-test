@@ -458,61 +458,6 @@ class Cart extends Component {
                     </div>
                   </div>
                 )}
-                {/* {finalAmount >= 25000 && (
-                  <div className="container">
-                    <div className="row" style={{ alignItems: "flex-end" }}>
-                      <div className="col-12">
-                        <div
-                          style={{
-                            marginBottom: "20px",
-                            textDecoration: "underline",
-                            cursor: "pointer",
-                            width: "fit-content",
-                          }}
-                          onClick={() =>
-                            this.setState({
-                              showDCSection: !showDCSection,
-                            })
-                          }
-                        >
-                          I have a discount code
-                        </div>
-                        {showDCSection && (
-                          <div
-                            className="row"
-                            style={{ alignItems: "flex-end" }}
-                          >
-                            <div className="col-8">
-                              <TextField
-                                label="Delivery Discount Code"
-                                placeholder="Enter a delivery discount code for discount"
-                                name="deliveryDiscountCode"
-                                value={deliveryDiscountCode.value}
-                                onChange={
-                                  this.props.handleChangeDeliveryDiscountCode
-                                }
-                                className="mb-40"
-                              />
-                            </div>
-                            <div className="col-4">
-                              <button
-                                onClick={this.handleApplyDCCode}
-                                className={classNames("button-coupon mb-40", {
-                                  disabled:
-                                    !deliveryDiscountCode.value || isApplyingDC,
-                                })}
-                              >
-                                {isApplyingDC
-                                  ? "Applying..."
-                                  : "Apply Discount"}
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )} */}
 
                 {loyaltyPointsAvailable?.available && (
                   <div className="container">
