@@ -377,9 +377,7 @@ class Checkout extends Component {
     const payload = {
       state: "lagos",
       city: chosenCity?.label,
-      deliveryTypeId:
-        (isDeliveryDiscountEligible && deliveryDiscountObject?.id) ||
-        chosenCity?.key,
+      deliveryTypeId: deliveryDiscountObject?.id || chosenCity?.key,
       originalDeliveryTypeId: chosenCity?.key,
       specialNote: note,
       orderItems,
@@ -1063,17 +1061,18 @@ class Checkout extends Component {
                         {this.state.chosenCity?.price <= 3000 &&
                           `₦${this.props.deliveryDiscountObject?.price.toLocaleString()}`}
                         {this.state.chosenCity?.price > 3000 &&
-                          ` Delivery discount of N3,000 applied. A rep will reach of for the balance of N${
+                          `Balace of N${(
                             this.state.chosenCity?.price - 3000
-                          }.`}
+                          ).toLocaleString()} will be outstanding.`}
                       </>
                     ) : (
-                      `₦${deliveryCost.toLocaleString()}`
+                      `₦${deliveryCost.toLocaleString()} will be charged for delivery`
                     )}
-                    &nbsp;will be charged for delivery{" "}
-                    {/* {this.props.deliveryDiscountObject?.price > 0
-                      ? ` (Balance of amount can be made during payment confirmation)`
-                      : ``} */}
+                    {(!this.props.deliveryDiscountObject?.id ||
+                      (this.props.deliveryDiscountObject?.id &&
+                        this.state.chosenCity?.price <= 3000)) && (
+                      <>&nbsp;will be charged for delivery</>
+                    )}
                   </span>
                 </div>
               </div>

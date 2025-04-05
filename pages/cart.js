@@ -38,7 +38,7 @@ const CartPage = ({ cart }) => {
 
   const [deliveryDiscountObject, setDeliveryDiscountObject] = useState(null);
   const [deliveryDiscountCode, setDeliveryDiscountCode] = useState({
-    value: "",
+    value: "CODE001",
     valid: false,
   });
 
@@ -194,11 +194,7 @@ const CartPage = ({ cart }) => {
 
   const handleChangeDeliveryDiscountCode = ({ target }, valid) => {
     if (!target?.value) {
-      setDeliveryDiscountObject(null);
-      return setDeliveryDiscountCode({
-        value: "",
-        valid: false,
-      });
+      return resetDeliveryDiscount();
     }
     setDeliveryDiscountCode({
       value: target.value,
@@ -219,6 +215,7 @@ const CartPage = ({ cart }) => {
       openToaster("success", "Delivery discount applied");
       setDeliveryDiscountObject(res.data.data);
     } catch (error) {
+      resetDeliveryDiscount();
       openToaster("error", "Invalid discount code applied");
     }
   };
