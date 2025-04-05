@@ -808,6 +808,7 @@ class Checkout extends Component {
         `${API_BASE_URL}auth/verify-delivery-discount-code`,
         {
           deliveryDiscountCode: deliveryDiscountCode.value,
+          storeId: STORE_ID,
         }
       ).catch((e) => {});
       if (data?.status == 200) {
