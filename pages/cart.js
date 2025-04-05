@@ -38,7 +38,7 @@ const CartPage = ({ cart }) => {
 
   const [deliveryDiscountObject, setDeliveryDiscountObject] = useState(null);
   const [deliveryDiscountCode, setDeliveryDiscountCode] = useState({
-    value: "",
+    value: "GTFREE",
     valid: false,
   });
 
@@ -206,13 +206,13 @@ const CartPage = ({ cart }) => {
     const { value } = deliveryDiscountCode;
     try {
       const res = await getRequest({
-        url: `/customer-requests/stores/${STORE_ID}/delivery-discount-code/${value}`,
+        url: `/customer-requests/stores/${STORE_ID}/delivery-discount-code/GTFREE`,
       });
       if (!res.data.data) {
         setDeliveryDiscountObject(null);
         return openToaster("error", "Delivery discount code does not exist");
       }
-      openToaster("success", "Delivery discount applied");
+      // openToaster("success", "Delivery discount applied");
       setDeliveryDiscountObject(res.data.data);
     } catch (error) {
       resetDeliveryDiscount();

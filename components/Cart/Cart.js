@@ -109,6 +109,7 @@ class Cart extends Component {
   };
 
   handleApplyDCCode = async () => {
+    debugger;
     this.setState({
       isApplyingDC: true,
     });
@@ -158,12 +159,15 @@ class Cart extends Component {
     let finalAmount = subTotal - discountAmount;
     if (finalAmount < 0) finalAmount = 0;
 
-    if (
-      finalAmount < 25000 &&
-      this.props.deliveryDiscountObject?.id &&
-      this.props.deliveryDiscountCode
-    )
+    if (finalAmount < 25000 && this.props.deliveryDiscountObject?.id) {
       this.props.resetDeliveryDiscount();
+    } else if (
+      finalAmount >= 25000 &&
+      !this.props.deliveryDiscountObject?.id &&
+      !this.state.isApplyingDC
+    ) {
+      this.handleApplyDCCode();
+    }
   }
 
   render() {
@@ -454,7 +458,7 @@ class Cart extends Component {
                     </div>
                   </div>
                 )}
-                {finalAmount >= 25000 && (
+                {/* {finalAmount >= 25000 && (
                   <div className="container">
                     <div className="row" style={{ alignItems: "flex-end" }}>
                       <div className="col-12">
@@ -508,7 +512,7 @@ class Cart extends Component {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {loyaltyPointsAvailable?.available && (
                   <div className="container">
