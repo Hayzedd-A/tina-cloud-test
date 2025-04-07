@@ -482,8 +482,17 @@ class Checkout extends Component {
       };
 
       let finalAmount = subTotal + deliveryCost - discountAmount;
+      let finalAmountWithoutDeliveryFee = subTotal - discountAmount;
 
       if (finalAmount <= 0) finalAmount = 0;
+
+      if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
+
+      if (deliveryDiscountObject?.id) {
+        if (this.state.chosenCity?.price > 3000)
+          finalAmountWithoutDeliveryFee += this.state.chosenCity?.price - 3000;
+        finalAmount = finalAmountWithoutDeliveryFee;
+      }
 
       paystack(
         email,
@@ -759,9 +768,10 @@ class Checkout extends Component {
 
     let finalAmount = subTotal + deliveryCost - discountAmount;
 
-    let finalAmountWithoutDeliveryFee = subTotal - discountAmount;
-
     if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
+
+    if (this.state.chosenCity?.price > 3000 && deliveryDiscountObject?.id)
+      finalAmount += this.state.chosenCity?.price - 3000;
 
     return (
       <div className="cart-container">
@@ -1061,9 +1071,9 @@ class Checkout extends Component {
                         {this.state.chosenCity?.price <= 3000 &&
                           `₦${this.props.deliveryDiscountObject?.price.toLocaleString()}`}
                         {this.state.chosenCity?.price > 3000 &&
-                          `Balance of N${(
+                          `Shipping discount applied. Fee reduced to N${(
                             this.state.chosenCity?.price - 3000
-                          ).toLocaleString()} will be outstanding.`}
+                          ).toLocaleString()}`}
                       </>
                     ) : (
                       `₦${deliveryCost.toLocaleString()} will be charged for delivery`
@@ -1097,13 +1107,13 @@ class Checkout extends Component {
                 <span>
                   {isCheckingOut ? "Paying..." : "Pay"} ₦
                   {finalAmount.toLocaleString()}
-                  {discountAmount && (
+                  {discountAmount ? (
                     <small style={{ marginLeft: "10px" }}>
                       <strike>
                         {(subTotal + deliveryCost).toLocaleString()}
                       </strike>
                     </small>
-                  )}
+                  ) : null}
                 </span>
                 <RightArrow />
               </div>

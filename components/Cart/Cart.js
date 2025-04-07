@@ -109,7 +109,6 @@ class Cart extends Component {
   };
 
   handleApplyDCCode = async () => {
-    debugger;
     this.setState({
       isApplyingDC: true,
     });
