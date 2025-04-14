@@ -16,7 +16,7 @@ class Home extends Component {
     selectedItem: {},
     showDetails: false,
     showSplash: true,
-    showModal: false,
+    showModal: true,
   };
 
   selectItem = ({ name, id }) => {
@@ -60,8 +60,10 @@ class Home extends Component {
                   </div>
 
                   <div className="message">
-                    Dear Twister! Due to our physical launch today, orders
-                    placed today will be fulfilled on Monday March 17th
+                    Enjoy FREE delivery when you order above 25k.
+                    <span style={{ display: "block", fontSize: 15 }}>
+                      If delivery exceeds N3,000 you only pay the difference!
+                    </span>
                   </div>
 
                   <div className="actions">
