@@ -30,7 +30,7 @@ class FAQ extends Component {
       faq: [
         {
           Q: "Can I pick up my order?",
-          A: "Pick-ups are available for pre-paid orders. Our pick-up location is 14B Africa Lane, Off Admiralty Road, Lekki Phase 1, Lagos.",
+          A: "Yes. You can walk in to our Bakery/Restaurant and to dine in or pick up your orders. We are located at 19B Fola Osibo Street, Lekki Phase 1, Lagos.",
         },
         {
           Q: "Can I cancel my order after placing it?",
