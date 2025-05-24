@@ -698,13 +698,13 @@ class Checkout extends Component {
                   deliveryCost -
                   (discountAmount || 0)
                 ).toLocaleString()}
-                {discountAmount && (
+                {discountAmount ? (
                   <small style={{ marginLeft: "10px" }}>
                     <strike>
                       {(subTotal + deliveryCost).toLocaleString()}
                     </strike>
                   </small>
-                )}
+                ) : null}
               </span>
               <RightArrow />
             </div>

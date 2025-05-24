@@ -487,14 +487,14 @@ class Cart extends Component {
                       style={{ display: "flex", alignItems: "center" }}
                     >
                       ₦ {finalAmount.toLocaleString()}
-                      {discountAmount && (
+                      {discountAmount ? (
                         <span style={{ fontSize: "16px", marginLeft: "10px" }}>
                           <strike className="small">
                             {" "}
                             {subTotal.toLocaleString()}
                           </strike>{" "}
                         </span>
-                      )}
+                      ) : null}
                     </span>
                   </div>
                 </div>

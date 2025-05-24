@@ -1133,13 +1133,13 @@ class Checkout extends Component {
                 <span>
                   {isCheckingOut ? "Paying..." : "Pay"} ₦
                   {finalAmount.toLocaleString()}
-                  {discountAmount && (
+                  {discountAmount ? (
                     <small style={{ marginLeft: "10px" }}>
                       <strike>
                         {(subTotal + deliveryCost).toLocaleString()}
                       </strike>
                     </small>
-                  )}
+                  ) : null}
                 </span>
                 <RightArrow />
               </div>
