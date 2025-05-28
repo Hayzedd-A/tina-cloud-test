@@ -622,6 +622,11 @@ class Checkout extends Component {
       currentStore &&
         currentStore.delivery_types.sort(dynamicSort("name")).map((item) => {
           let newObj = {};
+          if (
+            item.name.toLowerCase().includes("gtfree") ||
+            item.name.toLowerCase().includes("gtlove")
+          )
+            return;
           newObj.key = item.id;
           newObj.label = `${this.capitalizeWord(item.name.toLowerCase())}`;
           newObj.price = item.price;
