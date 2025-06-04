@@ -1,16 +1,13 @@
 import { Component } from "react";
 
-import { ShopItem } from "./";
 import Header from "../Header";
-import Tabs from "../Tabs";
 import Menu from "../Menu";
+import Tabs from "../Tabs";
+import { ShopItem } from "./";
 
 import { ProductsConsumer } from "../../providers/ProductsProvider";
 import { EmptyStore } from "../../public/static/vectors";
 import { slugify } from "../../utils/functions";
-
-import Modal from "../Modal";
-import { ModalBread } from "../../public/static/vectors";
 
 class Shop extends Component {
   state = {

@@ -15,9 +15,9 @@ const Header = () => {
   const [isMenuActive, showMenu] = useState(false);
   const [isSearchInputActive, showSearchInput] = useState(!!q);
 
-  const handleSearch = value => {
+  const handleSearch = (value) => {
     router.push(`/search?q=${value}`, undefined, {
-      shallow: true
+      shallow: true,
     });
   };
 

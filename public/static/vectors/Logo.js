@@ -1,8 +1,8 @@
-const Logo = () => (
+const Logo = ({ width, height }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="655"
-    height="655"
+    width={width || "655"}
+    height={height || "655"}
     viewBox="0 0 655 655"
   >
     <g fill="none" fillRule="evenodd" stroke="none" strokeWidth="1">
