@@ -458,27 +458,31 @@ class Cart extends Component {
                   </div>
                 )}
 
-                {loyaltyPointsAvailable?.available && (
-                  <div className="container">
-                    <div className="row" style={{ alignItems: "flex-end" }}>
-                      <div className="col-12">
-                        <div className="row" style={{ alignItems: "flex-end" }}>
-                          <div className="col-12">
-                            <TextField
-                              label="Loyalty Discount"
-                              placeholder="Provide discount amount"
-                              name="loyaltyPointApplied"
-                              loyaltyPointsAvailable={loyaltyPointsAvailable}
-                              value={loyaltyPointApplied.value}
-                              onChange={this.props.handleChangeLoyaltyPoints}
-                              className="mb-40"
-                            />
+                {loyaltyPointsAvailable?.available &&
+                  parseInt(loyaltyPointsAvailable?.available) > 0 && (
+                    <div className="container">
+                      <div className="row" style={{ alignItems: "flex-end" }}>
+                        <div className="col-12">
+                          <div
+                            className="row"
+                            style={{ alignItems: "flex-end" }}
+                          >
+                            <div className="col-12">
+                              <TextField
+                                label="Loyalty Discount"
+                                placeholder="Provide discount amount"
+                                name="loyaltyPointApplied"
+                                loyaltyPointsAvailable={loyaltyPointsAvailable}
+                                value={loyaltyPointApplied.value}
+                                onChange={this.props.handleChangeLoyaltyPoints}
+                                className="mb-40"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 <div className="sub-total">
                   <div className="container">
                     <span className="title">Sub Total</span>

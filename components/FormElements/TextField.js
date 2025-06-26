@@ -128,27 +128,28 @@ class TextField extends Component {
             )}
           </label>
         )}
-        {loyaltyPointsAvailable?.available && (
-          <i>
-            <span
-              style={{
-                display: "block",
-                fontSize: 14,
-                marginBottom: 10,
-              }}
-            >
-              Loyalty Points Discount Available{" "}
-              <b>
-                (N
-                {(
-                  loyaltyPointsAvailable.available *
-                  loyaltyPointsAvailable.discountPerPoint
-                ).toLocaleString()}
-                )
-              </b>
-            </span>
-          </i>
-        )}
+        {loyaltyPointsAvailable?.available &&
+          parseInt(loyaltyPointsAvailable?.available) > 0 && (
+            <i>
+              <span
+                style={{
+                  display: "block",
+                  fontSize: 14,
+                  marginBottom: 10,
+                }}
+              >
+                Loyalty Points Discount Available{" "}
+                <b>
+                  (N
+                  {(
+                    loyaltyPointsAvailable.available *
+                    loyaltyPointsAvailable.discountPerPoint
+                  ).toLocaleString()}
+                  )
+                </b>
+              </span>
+            </i>
+          )}
         <div
           onClick={(e) => e.stopPropagation()}
           style={{ position: referralCode && "relative" }}

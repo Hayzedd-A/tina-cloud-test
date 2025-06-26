@@ -1,8 +1,9 @@
 import { Component } from "react";
 import Geosuggest from "react-geosuggest";
 import * as classNames from "classnames";
+import { Tabs } from "antd";
 
-import { TextField } from "../FormElements";
+import { TextField, Pin } from "../FormElements";
 import Toaster from "../Toaster";
 
 import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
@@ -26,11 +27,20 @@ const initialFormData = {
     value: "",
     valid: false,
   },
+  pin: {
+    value: "",
+    valid: false,
+  },
+  confirmPin: {
+    value: "",
+    valid: false,
+  },
 };
 
 class MyInfo extends Component {
   state = {
     formData: { ...initialFormData },
+    activeTab: "1",
   };
 
   handleChange = ({ target }, valid) => {
@@ -46,11 +56,21 @@ class MyInfo extends Component {
   };
 
   checkFormValidity = () => {
-    return Object.values(this.state.formData)
-      .filter(
-        (item) => typeof item === "object" && "value" in item && "valid" in item
-      )
-      .every((value) => value.valid);
+    const { formData, activeTab } = this.state;
+    if (activeTab === "1") {
+      // Validate basic info fields
+      return ["name", "email", "phoneNumber"].every(
+        (key) => formData[key] && formData[key].valid
+      );
+    } else {
+      // For Security tab, ensure both PINs are exactly 4 characters and match
+      const { pin, confirmPin } = formData;
+      return (
+        pin.value.length === 4 &&
+        confirmPin.value.length === 4 &&
+        pin.value === confirmPin.value
+      );
+    }
   };
 
   onSuggestSelect = (suggest) => {
@@ -86,9 +106,23 @@ class MyInfo extends Component {
     });
   };
 
-  submit = () => {
-    const formData = getFormValues(this.state.formData);
+  onTabChange = (activeTab) => {
+    this.setState({ activeTab });
+  };
 
+  submit = () => {
+    const { activeTab } = this.state;
+    let formData = getFormValues(this.state.formData);
+    if (activeTab === "1") {
+      // Only send basic info
+      const { pin, confirmPin, ...basicInfo } = formData;
+      formData = basicInfo;
+    } else {
+      // Only send the new PIN
+      const { pin } = formData;
+      formData = { pin };
+    }
+    debugger;
     this.props.updateProfile(formData, (outcome, message) => {
       this.openToaster(outcome, message);
     });
@@ -127,51 +161,88 @@ class MyInfo extends Component {
   render() {
     const { toaster, formData } = this.state;
     const { isUpdatingProfile } = this.props;
-    const { name, phoneNumber, referralCode, email } = formData;
+    const { name, phoneNumber, referralCode, email, pin, confirmPin } =
+      formData;
 
     return (
       <>
         <div className="container">
-          <TextField
-            label="Name"
-            placeholder="Enter your name"
-            name="name"
-            value={name.value}
-            onChange={this.handleChange}
-            className="mb-40"
-            required
-          />
-          <TextField
-            label="Email Address"
-            placeholder="Enter your email address"
-            type="email"
-            name="email"
-            value={email.value}
-            onChange={this.handleChange}
-            className="mb-40"
-            required
-          />
-          <TextField
-            label="Phone Number"
-            placeholder="Enter your phone number"
-            name="phoneNumber"
-            type="phone"
-            readOnly
-            value={phoneNumber.value}
-            onChange={this.handleChange}
-            className="mb-40"
-            required
-          />
-          <TextField
-            label="My Referral Code"
-            type="text"
-            style={{ background: "#e5e5e1" }}
-            referralCode={referralCode}
-            value={referralCode}
-            className="mb-40"
-            readOnly
-            onChange={this.handleChange}
-          />
+          <Tabs
+            activeKey={this.state.activeTab}
+            onChange={this.onTabChange}
+            type="card"
+            size="large"
+            tabBarStyle={{ fontSize: "16px", textTransform: "uppercase" }}
+          >
+            <Tabs.TabPane tab="Basic Information" key="1">
+              <div className="container">
+                <TextField
+                  label="Name"
+                  placeholder="Enter your name"
+                  name="name"
+                  value={name.value}
+                  onChange={this.handleChange}
+                  className="mb-40"
+                  required
+                />
+                <TextField
+                  label="Email Address"
+                  placeholder="Enter your email address"
+                  type="email"
+                  name="email"
+                  value={email.value}
+                  onChange={this.handleChange}
+                  className="mb-40"
+                  required
+                />
+                <TextField
+                  label="Phone Number"
+                  placeholder="Enter your phone number"
+                  name="phoneNumber"
+                  type="phone"
+                  readOnly
+                  value={phoneNumber.value}
+                  onChange={this.handleChange}
+                  className="mb-40"
+                  required
+                />
+                <TextField
+                  label="My Referral Code"
+                  type="text"
+                  style={{ background: "#e5e5e1" }}
+                  referralCode={referralCode}
+                  value={referralCode}
+                  className="mb-40"
+                  readOnly
+                  onChange={this.handleChange}
+                />
+              </div>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Security" key="2">
+              <div className="container">
+                <Pin
+                  label="Enter New PIN"
+                  name="pin"
+                  onChange={this.handleChange}
+                  className="mb-40"
+                  required
+                />
+                <Pin
+                  label="Confirm New PIN"
+                  name="confirmPin"
+                  className="mb-40"
+                  onChange={this.handleChange}
+                  required
+                  hint={
+                    confirmPin.value &&
+                    pin.value !== confirmPin.value && (
+                      <span className="hint red">The pins don't match</span>
+                    )
+                  }
+                />
+              </div>
+            </Tabs.TabPane>
+          </Tabs>
         </div>
         <div className="cart-actions">
           <div
