@@ -9,11 +9,14 @@ import { TextField, Pin } from "../components/FormElements";
 import Toaster from "../components/Toaster";
 import Tabs from "../components/Tabs";
 
+import axios from "axios";
+
 import { AuthenticationConsumer } from "../providers/AuthenticationProvider";
 
 import { RightArrow } from "../public/static/vectors";
 import { getFormValues } from "../utils/functions";
-import { STORE_ID } from "../constants";
+import { API_BASE_URL, STORE_ID } from "../constants";
+import { Button, message } from "antd";
 
 class CreateLogin extends Component {
   constructor(props) {
@@ -41,11 +44,50 @@ class CreateLogin extends Component {
           valid: true,
         },
       },
+      pinResetLayout: false,
+      sendingPinResetCode: false,
       currentTab: newUser ? 1 : 0,
       isTabActive: false,
       isSignUp: !!newUser,
     };
   }
+
+  resetPin = () => {
+    this.setState({
+      ...this.state.formData,
+      pinResetLayout: true,
+    });
+  };
+
+  sendResetPinCode = async () => {
+    this.setState({
+      ...this.state.formData,
+      sendingPinResetCode: true,
+    });
+    const { phoneNumber } = getFormValues(this.state.formData);
+    if (phoneNumber.length < 10)
+      return message.warning("Please provide valid phone number");
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}customers/reset-pin`, {
+        storeId: STORE_ID,
+        phoneNumber, // use the form value
+      });
+      message.success("Reset code sent successfully");
+    } catch (error) {
+      const status = error.response ? error.response.status : "Unknown";
+      if (status === 300)
+        message.warning(
+          "Message is already sent. Please wait till you receive the message"
+        );
+      else if (status === 404) message.warning("Phone number does not exist");
+    }
+    this.setState({
+      ...this.state.formData,
+      pinResetLayout: false,
+      sendingPinResetCode: false,
+    });
+  };
 
   handleChange = ({ target }, valid) => {
     this.setState({
@@ -159,7 +201,15 @@ class CreateLogin extends Component {
   }
 
   render() {
-    const { currentTab, toaster, isTabActive, isSignUp, formData } = this.state;
+    const {
+      currentTab,
+      toaster,
+      isTabActive,
+      isSignUp,
+      pinResetLayout,
+      sendingPinResetCode,
+      formData,
+    } = this.state;
     const { isLoggingIn, router } = this.props;
 
     const { referredBy, phoneNumber, pin, confirmPin } = formData;
@@ -207,13 +257,40 @@ class CreateLogin extends Component {
                   required
                   mobile
                 />
-                <Pin
-                  label="Enter PIN"
-                  name="pin"
-                  onChange={this.handleChange}
-                  className="mb-40"
-                  required
-                />
+                {!pinResetLayout && (
+                  <Pin
+                    label="Enter PIN"
+                    name="pin"
+                    onChange={this.handleChange}
+                    className="mb-40"
+                    required
+                  />
+                )}
+                {!isSignUp && (
+                  <Button
+                    onClick={
+                      pinResetLayout ? this.sendResetPinCode : this.resetPin
+                    }
+                    loading={sendingPinResetCode}
+                    disabled={!this.state.formData.phoneNumber}
+                  >
+                    {pinResetLayout ? "Send Code" : "Forgot Pin"}
+                  </Button>
+                )}
+                {pinResetLayout && (
+                  <Button
+                    onClick={() => {
+                      this.setState({
+                        ...this.state.formData,
+                        pinResetLayout: false,
+                      });
+                    }}
+                    style={{ marginLeft: 10 }}
+                    disabled={sendingPinResetCode}
+                  >
+                    Cancel
+                  </Button>
+                )}
                 {isSignUp && (
                   <Pin
                     label="Confirm PIN"
