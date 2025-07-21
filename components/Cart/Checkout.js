@@ -10,7 +10,7 @@ import { StoreConsumer } from "../../providers/StoreProvider";
 import { TextField } from "../FormElements";
 import Toaster from "../Toaster";
 
-import { postRequest, getRequest } from "../../api";
+import { postRequest, getRequest, getUserDetails } from "../../api";
 import { RightArrow } from "../../public/static/vectors";
 import {
   reduceArray,
@@ -374,6 +374,8 @@ class Checkout extends Component {
       isCheckingOut: true,
     });
 
+    const loggedInCustomer = getUserDetails()?.customer;
+
     const payload = {
       state: "lagos",
       city: chosenCity?.label,
@@ -382,10 +384,10 @@ class Checkout extends Component {
       specialNote: note,
       orderItems,
       customer: {
-        name,
-        phoneNumber,
-        address,
-        email,
+        name: loggedInCustomer?.name || name,
+        phoneNumber: loggedInCustomer?.phoneNumber || phoneNumber,
+        address: loggedInCustomer?.address || address,
+        email: loggedInCustomer?.email || email,
       },
       recipient: {
         name,
@@ -492,6 +494,29 @@ class Checkout extends Component {
         if (this.state.chosenCity?.price > 3000)
           finalAmountWithoutDeliveryFee += this.state.chosenCity?.price - 3000;
         finalAmount = finalAmountWithoutDeliveryFee;
+      }
+
+      // let costToCompare = subTotal;
+      // if (subTotal >= 25000) {
+      //   if (deliveryCost >= 3000) costToCompare += deliveryCost - 3000;
+      //   if (deliveryCost < 3000) costToCompare += 0;
+      // } else {
+      //   costToCompare += deliveryCost;
+      // }
+
+      const costToCompare =
+        subTotal +
+        (subTotal >= 25000 ? Math.max(deliveryCost - 3000, 0) : deliveryCost);
+
+      if (costToCompare !== amount) {
+        this.setState({
+          isCheckingOut: false,
+        });
+        this.openToaster(
+          "error",
+          "Cart items are not valid. May be the products are updated. Please remove current cart and add the items again. Thanks"
+        );
+        return;
       }
 
       paystack(

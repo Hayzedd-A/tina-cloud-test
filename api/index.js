@@ -54,7 +54,7 @@ export const postRequest = async ({ url, params, data, token }) => {
     data,
   };
 
-  if (token && currentUser && currentUser.jwt) {
+  if (currentUser && currentUser.jwt) {
     request["headers"] = { authorization: `Bearer ${currentUser.jwt}` };
   }
 

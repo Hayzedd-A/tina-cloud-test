@@ -155,7 +155,6 @@ const AvailableBreads = () => {
         });
     else cartTmp = cartTmp.filter((c) => c.size !== size.size);
 
-    debugger;
     setCart(cartTmp);
 
     setFilteredData(filteredDataTmp);
@@ -214,7 +213,6 @@ const AvailableBreads = () => {
 
   const placeOrder = (source) => {
     if (!validateSelectedItems()) return;
-    debugger;
     var message = encodeURIComponent(
       `Hello, I want to order these items: \n\n${getTxtToCopy()} `
     );

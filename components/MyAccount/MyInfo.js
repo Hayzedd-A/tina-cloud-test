@@ -122,7 +122,6 @@ class MyInfo extends Component {
       const { pin } = formData;
       formData = { pin };
     }
-    debugger;
     this.props.updateProfile(formData, (outcome, message) => {
       this.openToaster(outcome, message);
     });
