@@ -23,7 +23,7 @@ class NumberSelector extends Component {
   componentDidUpdate(prevProps) {
     const { value } = this.props;
 
-    console.log((prevProps.value !== value && (value || value === 0)), value)
+    // console.log((prevProps.value !== value && (value || value === 0)), value)
     if ((prevProps.value !== value && (value || value === 0))) {
       this.setState({
         value
@@ -38,7 +38,7 @@ class NumberSelector extends Component {
   render() {
     const { value } = this.state;
     const { className } = this.props;
-    console.log(this.props.index, value)
+    // console.log(this.props.index, value)
 
     return (
       <div className={`number-selector-container ${className || ""}`}>

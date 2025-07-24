@@ -1,20 +1,20 @@
-import { Component } from "react";
-import { withRouter } from "next/router";
-import classNames from "classnames";
-import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
-import { getRequest } from "../../api";
+import { Component } from 'react';
+import { withRouter } from 'next/router';
+import classNames from 'classnames';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { getRequest } from '../../api';
 
-import Link from "next/link";
+import Link from 'next/link';
 
-import { CartConsumer } from "../../providers/CartProvider";
-import { StoreConsumer } from "../../providers/StoreProvider";
-import { TextField, Radio } from "../FormElements";
+import { CartConsumer } from '../../providers/CartProvider';
+import { StoreConsumer } from '../../providers/StoreProvider';
+import { TextField, Radio } from '../FormElements';
 
-import { NumberSelector } from "../FormElements";
+import { NumberSelector } from '../FormElements';
 
-import { RightArrow, EmptyCart } from "../../public/static/vectors";
-import { HeaderMenu } from "../Header";
-import { STORE_ID } from "../../constants";
+import { RightArrow, EmptyCart } from '../../public/static/vectors';
+import { HeaderMenu } from '../Header';
+import { STORE_ID } from '../../constants';
 
 import {
   reduceArray,
@@ -23,19 +23,20 @@ import {
   getRequestError,
   paystack,
   patchFormValues,
-} from "../../utils/functions";
+} from '../../utils/functions';
+import analyticsService from '../../services/analyticsService';
 
 class Cart extends Component {
   state = {
     formData: {
       couponCode: {
-        value: "",
+        value: '',
         valid: false,
       },
     },
     formData: {
       loyaltyPointApplied: {
-        value: "",
+        value: '',
         valid: false,
       },
     },
@@ -56,16 +57,12 @@ class Cart extends Component {
       quantity,
     }));
 
-    const toppingsPrices = toppings.map(
-      (topping) => parseFloat(topping.unitPrice) * quantity
-    );
+    const toppingsPrices = toppings.map((topping) => parseFloat(topping.unitPrice) * quantity);
 
     const toppingsTotalCost = reduceLinearArray(toppingsPrices);
     const totalCost = toppingsTotalCost + parseFloat(unitPrice) * quantity;
 
-    quantity === 0
-      ? removeFromCart(item)
-      : updateCart({ ...item, quantity, toppings, totalCost });
+    quantity === 0 ? removeFromCart(item) : updateCart({ ...item, quantity, toppings, totalCost });
   };
 
   showMenu = (isMenuActive) => {
@@ -139,15 +136,14 @@ class Cart extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { cart, couponObject, loyaltyPointApplied, giftCardObject } =
-      this.props;
+    const { cart, couponObject, loyaltyPointApplied, giftCardObject } = this.props;
 
-    const subTotal = reduceArray(cart, "totalCost");
+    const subTotal = reduceArray(cart, 'totalCost');
     const discountAmountGc = giftCardObject ? giftCardObject.remainingValue : 0;
     const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
 
     let discountAmount = couponObject
-      ? couponObject.discountType === "percent"
+      ? couponObject.discountType === 'percent'
         ? (couponObject.value * subTotal) / 100
         : couponObject.value
       : 0;
@@ -171,8 +167,7 @@ class Cart extends Component {
 
   render() {
     const { isLoadingCart, cart, checkout, router } = this.props;
-    const { isMenuActive, showCouponSection, isApplyingCouponCode } =
-      this.state;
+    const { isMenuActive, showCouponSection, isApplyingCouponCode } = this.state;
     const {
       couponCode,
       couponObject,
@@ -188,7 +183,7 @@ class Cart extends Component {
 
     const { showDCSection, isApplyingDC } = this.state;
 
-    const subTotal = reduceArray(cart, "totalCost");
+    const subTotal = reduceArray(cart, 'totalCost');
     const minimumAmount = 4500;
 
     const discountAmountGc = giftCardObject ? giftCardObject.remainingValue : 0;
@@ -196,34 +191,32 @@ class Cart extends Component {
     const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
 
     let discountAmount = couponObject
-      ? couponObject.discountType === "percent"
+      ? couponObject.discountType === 'percent'
         ? (couponObject.value * subTotal) / 100
         : couponObject.value
       : null;
 
-    if (loyaltyDiscountApplied)
-      discountAmount = (discountAmount || 0) + loyaltyDiscountApplied;
+    if (loyaltyDiscountApplied) discountAmount = (discountAmount || 0) + loyaltyDiscountApplied;
 
-    if (discountAmountGc)
-      discountAmount = (discountAmount || 0) + discountAmountGc;
+    if (discountAmountGc) discountAmount = (discountAmount || 0) + discountAmountGc;
 
     let finalAmount = subTotal - discountAmount;
     if (finalAmount <= 0) finalAmount = 0;
 
     return (
-      <div className="cart-container full-height">
-        <div className="cart-header">
+      <div className='cart-container full-height'>
+        <div className='cart-header'>
           <div
-            className="container login-header-inner"
+            className='container login-header-inner'
             style={{
-              position: "relative",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
             <div
-              className="back"
+              className='back'
               onClick={() =>
                 router.push(`/`, undefined, {
                   shallow: true,
@@ -232,16 +225,16 @@ class Cart extends Component {
             >
               <RightArrow />
             </div>
-            <div className="title">My Cart</div>
+            <div className='title'>My Cart</div>
             <div
-              className="header-icon-container hamburger-menu right-menu"
-              style={{ top: "-12px" }}
+              className='header-icon-container hamburger-menu right-menu'
+              style={{ top: '-12px' }}
               onClick={() => this.showMenu(true)}
             >
               <span></span>
             </div>
             <CSSTransitionGroup
-              transitionName="header-menu-animation"
+              transitionName='header-menu-animation'
               transitionEnterTimeout={500}
               transitionLeaveTimeout={300}
             >
@@ -249,73 +242,52 @@ class Cart extends Component {
             </CSSTransitionGroup>
           </div>
           {!!cart?.length && (
-            <div className="info delivery-notice">
-              <span className="icon">
-                <img src="/static/images/delivery.png" alt="" />
+            <div className='info delivery-notice'>
+              <span className='icon'>
+                <img src='/static/images/delivery.png' alt='' />
               </span>
-              <span className="text">
-                Delivery Fees will be calculated in the next step
-              </span>
+              <span className='text'>Delivery Fees will be calculated in the next step</span>
             </div>
           )}
         </div>
         {!isLoadingCart &&
           (cart?.length ? (
             <>
-              <div className="cart-content">
-                <div className="cart-items">
-                  <div className="title">
-                    <div className="container">ITEM</div>
+              <div className='cart-content'>
+                <div className='cart-items'>
+                  <div className='title'>
+                    <div className='container'>ITEM</div>
                   </div>
                   {cart.map((cartItem, index) => {
-                    const {
-                      id,
-                      imageUrl,
-                      name,
-                      size,
-                      quantity,
-                      unitPrice,
-                      totalCost,
-                      toppings,
-                    } = cartItem;
+                    const { id, imageUrl, name, size, quantity, unitPrice, totalCost, toppings } =
+                      cartItem;
 
                     return (
-                      <div key={`cart-item-${index}`} className="cart-item">
-                        <div className="container">
-                          <div className="image">
-                            <img
-                              src={
-                                imageUrl || "/static/svgs/image-placeholder.svg"
-                              }
-                              alt=""
-                            />
+                      <div key={`cart-item-${index}`} className='cart-item'>
+                        <div className='container'>
+                          <div className='image'>
+                            <img src={imageUrl || '/static/svgs/image-placeholder.svg'} alt='' />
                           </div>
-                          <div className="info">
-                            <div className="main-description">
-                              <span className="name ellipsis">{name}</span>
-                              <span className="price">
-                                ₦ {(totalCost || 0).toLocaleString()}
-                              </span>
+                          <div className='info'>
+                            <div className='main-description'>
+                              <span className='name ellipsis'>{name}</span>
+                              <span className='price'>₦ {(totalCost || 0).toLocaleString()}</span>
                             </div>
-                            <div className="mini-description">
-                              <span className="name ellipsis">
+                            <div className='mini-description'>
+                              <span className='name ellipsis'>
                                 {size} (x{quantity})
                               </span>
-                              <span className="price">
+                              <span className='price'>
                                 ₦{unitPrice?.toLocaleString()} x {quantity}
                               </span>
                             </div>
                             {toppings.map((topping, index) => (
-                              <div
-                                key={`topping-${index}`}
-                                className="mini-description"
-                              >
-                                <span className="name ellipsis">
+                              <div key={`topping-${index}`} className='mini-description'>
+                                <span className='name ellipsis'>
                                   {topping.name} (x{topping.quantity})
                                 </span>
-                                <span className="price">
-                                  ₦{topping.unitPrice?.toLocaleString()} x{" "}
-                                  {topping.quantity}
+                                <span className='price'>
+                                  ₦{topping.unitPrice?.toLocaleString()} x {topping.quantity}
                                 </span>
                               </div>
                             ))}
@@ -323,10 +295,8 @@ class Cart extends Component {
                               key={index}
                               index={index}
                               value={quantity}
-                              onChange={(e) =>
-                                this.cartAction(cartItem, e.target.value)
-                              }
-                              className="small"
+                              onChange={(e) => this.cartAction(cartItem, e.target.value)}
+                              className='small'
                             />
                           </div>
                         </div>
@@ -335,14 +305,14 @@ class Cart extends Component {
                   })}
                 </div>
                 {!giftCardObject && (
-                  <div className="container">
-                    <div className="row" style={{ alignItems: "flex-end" }}>
-                      <div className="col-12">
+                  <div className='container'>
+                    <div className='row' style={{ alignItems: 'flex-end' }}>
+                      <div className='col-12'>
                         <div
                           style={{
-                            marginBottom: "20px",
-                            textDecoration: "underline",
-                            width: "fit-content",
+                            marginBottom: '20px',
+                            textDecoration: 'underline',
+                            width: 'fit-content',
                           }}
                           onClick={() =>
                             this.setState({
@@ -353,31 +323,25 @@ class Cart extends Component {
                           I have a coupon code
                         </div>
                         {showCouponSection && (
-                          <div
-                            className="row"
-                            style={{ alignItems: "flex-end" }}
-                          >
-                            <div className="col-8">
+                          <div className='row' style={{ alignItems: 'flex-end' }}>
+                            <div className='col-8'>
                               <TextField
-                                label="Coupon Code"
-                                placeholder="Enter a coupon code for discount"
-                                name="couponCode"
+                                label='Coupon Code'
+                                placeholder='Enter a coupon code for discount'
+                                name='couponCode'
                                 value={couponCode.value}
                                 onChange={this.props.handleChangeCouponCode}
-                                className="mb-40"
+                                className='mb-40'
                               />
                             </div>
-                            <div className="col-4">
+                            <div className='col-4'>
                               <button
                                 onClick={this.handleApplyCouponCode}
-                                className={classNames("button-coupon mb-40", {
-                                  disabled:
-                                    !couponCode.value || isApplyingCouponCode,
+                                className={classNames('button-coupon mb-40', {
+                                  disabled: !couponCode.value || isApplyingCouponCode,
                                 })}
                               >
-                                {isApplyingCouponCode
-                                  ? "Applying..."
-                                  : "Apply Code"}
+                                {isApplyingCouponCode ? 'Applying...' : 'Apply Code'}
                               </button>
                             </div>
                           </div>
@@ -386,35 +350,33 @@ class Cart extends Component {
                     </div>
                   </div>
                 )}
-                {!JSON.parse(localStorage.getItem("gourmet-twist-user")) && (
-                  <div className="container" style={{ marginTop: 5 }}>
-                    <div className="row">
-                      <div className="col-12">
+                {!JSON.parse(localStorage.getItem('gourmet-twist-user')) && (
+                  <div className='container' style={{ marginTop: 5 }}>
+                    <div className='row'>
+                      <div className='col-12'>
                         <div
                           style={{
-                            marginBottom: "20px",
+                            marginBottom: '20px',
                             // textDecoration: "underline",
-                            width: "fit-content",
+                            width: 'fit-content',
                           }}
                         >
-                          <Link href="/login">
-                            Have reward points? Login to avail discount
-                          </Link>
+                          <Link href='/login'>Have reward points? Login to avail discount</Link>
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
                 {!couponObject && (
-                  <div className="container">
-                    <div className="row" style={{ alignItems: "flex-end" }}>
-                      <div className="col-12">
+                  <div className='container'>
+                    <div className='row' style={{ alignItems: 'flex-end' }}>
+                      <div className='col-12'>
                         <div
                           style={{
-                            marginBottom: "20px",
-                            textDecoration: "underline",
-                            cursor: "pointer",
-                            width: "fit-content",
+                            marginBottom: '20px',
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                            width: 'fit-content',
                           }}
                           onClick={() =>
                             this.setState({
@@ -425,30 +387,25 @@ class Cart extends Component {
                           I have a gift card
                         </div>
                         {showGCSection && (
-                          <div
-                            className="row"
-                            style={{ alignItems: "flex-end" }}
-                          >
-                            <div className="col-8">
+                          <div className='row' style={{ alignItems: 'flex-end' }}>
+                            <div className='col-8'>
                               <TextField
-                                label="Gift Card Code"
-                                placeholder="Enter a gift card code for discount"
-                                name="giftCard"
+                                label='Gift Card Code'
+                                placeholder='Enter a gift card code for discount'
+                                name='giftCard'
                                 value={giftCardCode.value}
                                 onChange={this.props.handleChangeGiftCardCode}
-                                className="mb-40"
+                                className='mb-40'
                               />
                             </div>
-                            <div className="col-4">
+                            <div className='col-4'>
                               <button
                                 onClick={this.handleApplyGCCode}
-                                className={classNames("button-coupon mb-40", {
+                                className={classNames('button-coupon mb-40', {
                                   disabled: !giftCardCode.value || isApplyingGC,
                                 })}
                               >
-                                {isApplyingGC
-                                  ? "Applying..."
-                                  : "Apply Gift Card"}
+                                {isApplyingGC ? 'Applying...' : 'Apply Gift Card'}
                               </button>
                             </div>
                           </div>
@@ -460,22 +417,19 @@ class Cart extends Component {
 
                 {loyaltyPointsAvailable?.available &&
                   parseInt(loyaltyPointsAvailable?.available) > 0 && (
-                    <div className="container">
-                      <div className="row" style={{ alignItems: "flex-end" }}>
-                        <div className="col-12">
-                          <div
-                            className="row"
-                            style={{ alignItems: "flex-end" }}
-                          >
-                            <div className="col-12">
+                    <div className='container'>
+                      <div className='row' style={{ alignItems: 'flex-end' }}>
+                        <div className='col-12'>
+                          <div className='row' style={{ alignItems: 'flex-end' }}>
+                            <div className='col-12'>
                               <TextField
-                                label="Loyalty Discount"
-                                placeholder="Provide discount amount"
-                                name="loyaltyPointApplied"
+                                label='Loyalty Discount'
+                                placeholder='Provide discount amount'
+                                name='loyaltyPointApplied'
                                 loyaltyPointsAvailable={loyaltyPointsAvailable}
                                 value={loyaltyPointApplied.value}
                                 onChange={this.props.handleChangeLoyaltyPoints}
-                                className="mb-40"
+                                className='mb-40'
                               />
                             </div>
                           </div>
@@ -483,20 +437,14 @@ class Cart extends Component {
                       </div>
                     </div>
                   )}
-                <div className="sub-total">
-                  <div className="container">
-                    <span className="title">Sub Total</span>
-                    <span
-                      className="value"
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
+                <div className='sub-total'>
+                  <div className='container'>
+                    <span className='title'>Sub Total</span>
+                    <span className='value' style={{ display: 'flex', alignItems: 'center' }}>
                       ₦ {finalAmount.toLocaleString()}
                       {discountAmount ? (
-                        <span style={{ fontSize: "16px", marginLeft: "10px" }}>
-                          <strike className="small">
-                            {" "}
-                            {subTotal.toLocaleString()}
-                          </strike>{" "}
+                        <span style={{ fontSize: '16px', marginLeft: '10px' }}>
+                          <strike className='small'> {subTotal.toLocaleString()}</strike>{' '}
                         </span>
                       ) : null}
                     </span>
@@ -504,18 +452,14 @@ class Cart extends Component {
                 </div>
               </div>
 
-              <div className="cart-actions no-margin fixed">
+              <div className='cart-actions no-margin fixed'>
                 {!!couponObject && (
-                  <div className="delivery-fees-notice">
-                    <div className="container">
-                      <span className="text">
-                        {couponObject.discountType === "percent" &&
+                  <div className='delivery-fees-notice'>
+                    <div className='container'>
+                      <span className='text'>
+                        {couponObject.discountType === 'percent' &&
                           `${couponObject.value}% discount - `}
-                        ₦
-                        {(discountAmount > subTotal
-                          ? subTotal
-                          : discountAmount
-                        )?.toLocaleString()}{" "}
+                        ₦{(discountAmount > subTotal ? subTotal : discountAmount)?.toLocaleString()}{' '}
                         will be deducted - ({couponObject.name})
                       </span>
                       <span
@@ -526,10 +470,10 @@ class Cart extends Component {
                           })
                         }
                         style={{
-                          background: "black",
-                          color: "white",
-                          padding: "5px 10px",
-                          cursor: "pointer",
+                          background: 'black',
+                          color: 'white',
+                          padding: '5px 10px',
+                          cursor: 'pointer',
                           fontSize: 12,
                           marginLeft: 10,
                         }}
@@ -540,14 +484,14 @@ class Cart extends Component {
                   </div>
                 )}
                 {!!giftCardObject && (
-                  <div className="delivery-fees-notice">
-                    <div className="container">
+                  <div className='delivery-fees-notice'>
+                    <div className='container'>
                       <span
-                        className="text"
+                        className='text'
                         style={{
-                          width: "100%",
-                          display: "flex",
-                          alignItems: "center",
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
                         }}
                       >
                         <span>
@@ -555,7 +499,7 @@ class Cart extends Component {
                           {(discountAmount > subTotal
                             ? subTotal
                             : discountAmount
-                          )?.toLocaleString()}{" "}
+                          )?.toLocaleString()}{' '}
                           will be deducted - ({giftCardObject.name})
                         </span>
                       </span>
@@ -567,10 +511,10 @@ class Cart extends Component {
                           })
                         }
                         style={{
-                          background: "black",
-                          color: "white",
-                          padding: "5px 10px",
-                          cursor: "pointer",
+                          background: 'black',
+                          color: 'white',
+                          padding: '5px 10px',
+                          cursor: 'pointer',
                           fontSize: 12,
                         }}
                       >
@@ -580,17 +524,23 @@ class Cart extends Component {
                   </div>
                 )}
                 <div
-                  className={classNames("checkout-button", {
+                  className={classNames('checkout-button', {
                     disabled: !cart?.length || subTotal < minimumAmount,
                   })}
-                  onClick={subTotal >= minimumAmount && checkout}
+                  onClick={() => {
+                    analyticsService.trackCheckoutInitiated({
+                      cart,
+                      subTotal
+                    })
+                    subTotal >= minimumAmount && checkout();
+                  }}
                 >
                   <div
-                    className="container"
+                    className='container'
                     style={{
-                      textAlign: "center",
-                      padding: "0px 20px",
-                      lineHeight: "20px",
+                      textAlign: 'center',
+                      padding: '0px 20px',
+                      lineHeight: '20px',
                       zIndex: 999999999999,
                     }}
                   >
@@ -598,9 +548,8 @@ class Cart extends Component {
                       <span>Checkout</span>
                     ) : (
                       <>
-                        <span style={{ fontSize: ".7em" }}>
-                          Oops! Minimum order value is N4,500. Please add more
-                          items.
+                        <span style={{ fontSize: '.7em' }}>
+                          Oops! Minimum order value is N4,500. Please add more items.
                         </span>
                       </>
                     )}
@@ -610,12 +559,12 @@ class Cart extends Component {
               </div>
             </>
           ) : (
-            <div className="cart-empty-state">
-              <div className="icon">
+            <div className='cart-empty-state'>
+              <div className='icon'>
                 <EmptyCart />
               </div>
-              <div className="message">Your cart is currently empty</div>
-              <div className="action" onClick={() => router.push("/")}>
+              <div className='message'>Your cart is currently empty</div>
+              <div className='action' onClick={() => router.push('/')}>
                 Shop now
               </div>
             </div>

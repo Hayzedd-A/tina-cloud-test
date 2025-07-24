@@ -30,6 +30,7 @@ import "react-day-picker/lib/style.css";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
 import Axios from "axios";
+import analyticsService from "../../services/analyticsService";
 
 const deliveryArr = ["delivery", "s-delivery"];
 
@@ -457,7 +458,9 @@ class Checkout extends Component {
 
     shippingMethod === "pickup" && delete payload.deliveryLocation;
     shippingMethod === "s-pickup" && delete payload.deliveryLocation;
-
+    analyticsService.trackPurchase({
+      ...payload
+    });
     try {
       const res = await postRequest({
         url: `/customer-requests/stores/${STORE_ID}/placed-orders`,
@@ -465,6 +468,9 @@ class Checkout extends Component {
       });
 
       const { paymentReference, amount } = res.data;
+      analyticsService.trackEvent("purchase_response", {
+        ...res.data
+      })
 
       let discountAmount = couponObject
         ? couponObject.discountType === "percent"
@@ -538,10 +544,12 @@ class Checkout extends Component {
     const { clearCart, showCheckoutSuccess } = this.props;
     clearCart();
     showCheckoutSuccess(true);
+    analyticsService.trackEvent("Paystack_successful", {...response})
   };
 
   handlePaystackClose = () => {
     console.log("paystack closed");
+    analyticsService.trackEvent("Paystack_interface_closed")
   };
 
   openToaster = (status, message) => {
@@ -1149,7 +1157,9 @@ class Checkout extends Component {
                   isCheckingOut ||
                   isLoadingDeliveryPrice,
               })}
-              onClick={this.checkout}
+              onClick={() => {
+                console.log("initiating payment")
+                this.checkout()}}
             >
               <div className="container">
                 <span>

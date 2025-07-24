@@ -1,5 +1,6 @@
 import * as moment from "moment";
 import { paystack_env } from "../constants";
+import analyticsService from "../services/analyticsService";
 
 export const isClient = () => {
   return typeof window !== "undefined";
@@ -127,6 +128,9 @@ export const paystack = (
   handlePaystackClose,
   metadata
 ) => {
+  analyticsService.trackEvent("paystack_intiated", {
+    email, ref, amount, metadata
+  })
   // pk_live_42c6b07dfc9fd32654d4cc9fd39b08a031ac8826
   // pk_test_54ed04488bcc1a192bd2406fd36cfd8596e3ccae
   const handler = window.PaystackPop.setup({

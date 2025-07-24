@@ -1,31 +1,28 @@
-import { Component, createRef, useEffect, useRef, useState } from "react";
-import classNames from "classnames";
-import Link from "next/link";
-import { withRouter } from "next/router";
-import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
-import * as shallowequal from "shallowequal";
-import { v4 as uuidv4 } from "uuid";
+import { Component, createRef, useEffect, useRef, useState } from 'react';
+import classNames from 'classnames';
+import Link from 'next/link';
+import { withRouter } from 'next/router';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import * as shallowequal from 'shallowequal';
+import { v4 as uuidv4 } from 'uuid';
 
-import { ProductsConsumer } from "../../providers/ProductsProvider";
-import { CartConsumer } from "../../providers/CartProvider";
+import { ProductsConsumer } from '../../providers/ProductsProvider';
+import { CartConsumer } from '../../providers/CartProvider';
 
-import NumberSelector from "../FormElements/NumberSelector";
-import { ToppingsForm } from "./";
+import NumberSelector from '../FormElements/NumberSelector';
+import { ToppingsForm } from './';
 
-import {
-  RightArrow,
-  ModalBread,
-  ArrowRight,
-} from "../../public/static/vectors";
+import { RightArrow, ModalBread, ArrowRight } from '../../public/static/vectors';
 // import ArrowRight from "../public/static/svg/arrow-right";
 
-import { reduceLinearArray, reduceArray } from "../../utils/functions";
-import Toaster from "../Toaster";
-import Modal from "../Modal";
-import { HeaderMenu } from "../Header";
+import { reduceLinearArray, reduceArray } from '../../utils/functions';
+import Toaster from '../Toaster';
+import Modal from '../Modal';
+import { HeaderMenu } from '../Header';
 
-import axios from "axios";
-import { API_BASE_URL } from "../../constants";
+import axios from 'axios';
+import { API_BASE_URL } from '../../constants';
+import analyticsService from '../../services/analyticsService';
 
 class ShopItemDetails extends Component {
   constructor(props) {
@@ -33,7 +30,7 @@ class ShopItemDetails extends Component {
 
     this.state = {
       selectedItem: {},
-      selectedSize: "",
+      selectedSize: '',
       isToppingsFormActive: false,
       tempCart: [],
       toaster: {},
@@ -56,18 +53,19 @@ class ShopItemDetails extends Component {
   };
 
   selectSize = (selectedSize) => {
+    analyticsService.trackEvent('Size clicked', {
+      selectedSize,
+    });
     this.setState({
       selectedSize,
     });
   };
 
   handleQuantity = (_quantity) => {
-    let quantity = _quantity === "" || isNaN(_quantity) ? 0 : _quantity;
+    let quantity = _quantity === '' || isNaN(_quantity) ? 0 : _quantity;
     let tempCart = JSON.parse(JSON.stringify(this.state.tempCart));
 
-    const tempCartItem = tempCart.find(
-      ({ size }) => size === this.state.selectedSize
-    );
+    const tempCartItem = tempCart.find(({ size }) => size === this.state.selectedSize);
 
     tempCartItem.quantity = quantity;
     tempCartItem.toppings = tempCartItem.toppings.map((topping) => ({
@@ -79,11 +77,15 @@ class ShopItemDetails extends Component {
       ({ unitPrice }) => parseFloat(unitPrice) * quantity
     );
 
-    tempCartItem.totalCost =
-      parseFloat(tempCartItem.unitPrice) * quantity +
-      reduceLinearArray(toppingsPrices);
+    analyticsService.trackEvent('Quantity changed', {
+      size: this.state.selectedSize,
+      quantity,
+    });
 
-    console.log("tempCart: ", tempCart);
+    tempCartItem.totalCost =
+      parseFloat(tempCartItem.unitPrice) * quantity + reduceLinearArray(toppingsPrices);
+
+    console.log('tempCart: ', tempCart);
     this.setState({
       tempCart,
     });
@@ -98,9 +100,7 @@ class ShopItemDetails extends Component {
   handleToppingsSelection = (topping, { target }) => {
     let tempCart = JSON.parse(JSON.stringify(this.state.tempCart));
 
-    const tempCartItem = tempCart.find(
-      ({ size }) => size === this.state.selectedSize
-    );
+    const tempCartItem = tempCart.find(({ size }) => size === this.state.selectedSize);
 
     const { quantity } = tempCartItem || {};
 
@@ -119,8 +119,7 @@ class ShopItemDetails extends Component {
     );
 
     tempCartItem.totalCost =
-      parseFloat(tempCartItem.unitPrice) * quantity +
-      reduceLinearArray(toppingsPrices);
+      parseFloat(tempCartItem.unitPrice) * quantity + reduceLinearArray(toppingsPrices);
 
     this.setState({
       tempCart,
@@ -134,12 +133,14 @@ class ShopItemDetails extends Component {
 
     const cartItems = tempCart.filter(({ quantity }) => quantity);
 
+    analyticsService.trackAddToCart(cartItems);
+
     addToCart(cartItems, () => {
       name && id && this.selectItem(id);
       this.openToaster(
-        "success",
+        'success',
         `Added x${this.getTotalQuantity()} ${
-          this.getTotalQuantity() === 1 ? "item" : "items"
+          this.getTotalQuantity() === 1 ? 'item' : 'items'
         } successfully to the cart`
       );
     });
@@ -168,9 +169,7 @@ class ShopItemDetails extends Component {
     let totalCost = 0;
     const { tempCart } = this.state;
 
-    const itemsPrices = tempCart.map(
-      ({ unitPrice, quantity }) => parseFloat(unitPrice) * quantity
-    );
+    const itemsPrices = tempCart.map(({ unitPrice, quantity }) => parseFloat(unitPrice) * quantity);
     let toppingsPrices = 0;
 
     tempCart.forEach(({ toppings }) => {
@@ -189,9 +188,9 @@ class ShopItemDetails extends Component {
   };
 
   getTotalQuantity = () => {
-    const totalQuantity = reduceArray(this.state.tempCart, "quantity");
+    const totalQuantity = reduceArray(this.state.tempCart, 'quantity');
 
-    console.log("totalQuantity: ", totalQuantity);
+    console.log('totalQuantity: ', totalQuantity);
     return isNaN(totalQuantity) ? 0 : totalQuantity;
   };
 
@@ -218,9 +217,7 @@ class ShopItemDetails extends Component {
 
   checkQuantity = (currentSize) => {
     const { selectedSize, tempCart } = this.state;
-    const currentQuantity = tempCart.find(
-      ({ size }) => size === (currentSize || selectedSize)
-    );
+    const currentQuantity = tempCart.find(({ size }) => size === (currentSize || selectedSize));
 
     return currentQuantity ? currentQuantity.quantity : 0;
   };
@@ -264,14 +261,13 @@ class ShopItemDetails extends Component {
     if (selectedItem) {
       const activeSizes = selectedItem.sizes
         ? Object.keys(selectedItem.sizes).filter(
-            (item) =>
-              selectedItem.sizes[item] && selectedItem.sizes[item].length > 0
+            (item) => selectedItem.sizes[item] && selectedItem.sizes[item].length > 0
           )
         : [];
       this.setState(
         {
           selectedItem,
-          selectedSize: activeSizes ? activeSizes[0] : "",
+          selectedSize: activeSizes ? activeSizes[0] : '',
         },
         () => {
           console.log(selectedItem.sizes);
@@ -281,8 +277,7 @@ class ShopItemDetails extends Component {
                 return selectedItem.sizes[item].length > 0;
               })
               .map((size) => {
-                const { id, name, unitPrice, imageUrl } =
-                  this.getSelectedItemDetails(size) || {};
+                const { id, name, unitPrice, imageUrl } = this.getSelectedItemDetails(size) || {};
 
                 return {
                   uuid: uuidv4(),
@@ -299,23 +294,21 @@ class ShopItemDetails extends Component {
         }
       );
 
-      const ttlQty = reduceArray(this.state.tempCart, "quantity");
+      const ttlQty = reduceArray(this.state.tempCart, 'quantity');
 
       if (ttlQty)
         await axios.post(`${API_BASE_URL}auth/customer/facebook-pixel-api`, {
           data: [
             {
-              event_name: "AddToCart",
+              event_name: 'AddToCart',
               event_time: new Date().getTime(),
-              action_source: "website",
+              action_source: 'website',
               user_data: {
-                em: [
-                  "7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068",
-                ],
+                em: ['7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068'],
                 ph: [null],
               },
               custom_data: {
-                currency: "N",
+                currency: 'N',
                 value: this.getTotalCost().toString(),
               },
             },
@@ -368,58 +361,49 @@ class ShopItemDetails extends Component {
 
   render() {
     const { router } = this.props;
-    const {
-      selectedSize,
-      isToppingsFormActive,
-      toaster,
-      selectedItem,
-      isMenuActive,
-    } = this.state;
+    const { selectedSize, isToppingsFormActive, toaster, selectedItem, isMenuActive } = this.state;
     const { sizes } = selectedItem;
     const activeSizes = sizes
-      ? Object.keys(sizes).filter(
-          (item) => sizes[item] && sizes[item].length > 0
-        )
+      ? Object.keys(sizes).filter((item) => sizes[item] && sizes[item].length > 0)
       : [];
 
-    const { imageUrl, name, unitPrice, description } =
-      this.getSelectedItemDetails() || {};
+    const { imageUrl, name, unitPrice, description } = this.getSelectedItemDetails() || {};
 
     return (
-      <div className="shop-item-details">
-        <div className="item-image">
+      <div className='shop-item-details'>
+        <div className='item-image'>
           <div
-            className="container"
+            className='container'
             style={{
-              position: "relative",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "100%",
-              height: "100%",
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '100%',
             }}
           >
             <img
-              src={imageUrl ? imageUrl : "/static/svgs/image-placeholder.svg"}
-              alt=""
-              rel="preload"
+              src={imageUrl ? imageUrl : '/static/svgs/image-placeholder.svg'}
+              alt=''
+              rel='preload'
               onLoad={this.imageLoaded}
             />
-            <Link href="/">
+            <Link href='/'>
               <a>
-                <span className="back">
+                <span className='back'>
                   <RightArrow />
                 </span>
               </a>
             </Link>
             <div
-              className="header-icon-container hamburger-menu right-menu"
+              className='header-icon-container hamburger-menu right-menu'
               onClick={() => this.showMenu(true)}
             >
               <span></span>
             </div>
             <CSSTransitionGroup
-              transitionName="header-menu-animation"
+              transitionName='header-menu-animation'
               transitionEnterTimeout={500}
               transitionLeaveTimeout={300}
             >
@@ -427,34 +411,31 @@ class ShopItemDetails extends Component {
             </CSSTransitionGroup>
           </div>
         </div>
-        <div className="item-info">
-          <div className="container">
-            <div className="name-price">
-              <span className="name">{name}</span>
-              <span className="price">₦ {unitPrice?.toLocaleString()}</span>
+        <div className='item-info'>
+          <div className='container'>
+            <div className='name-price'>
+              <span className='name'>{name}</span>
+              <span className='price'>₦ {unitPrice?.toLocaleString()}</span>
             </div>
             {/* <div className="description">{description}</div> */}
-            <div className="description">
+            <div className='description'>
               {selectedItem?.description !== undefined
                 ? selectedItem?.description.charAt(0).toUpperCase() +
                   selectedItem?.description.slice(1)
-                : ""}
+                : ''}
             </div>
           </div>
         </div>
         <div
-          className="select-section sizes-section"
+          className='select-section sizes-section'
           style={{
-            maxHeight: "31vh",
-            overflow: "auto",
+            maxHeight: '31vh',
+            overflow: 'auto',
           }}
         >
-          <div
-            className="container"
-            style={{ position: "relative", padding: "0px 20px" }}
-          >
+          <div className='container' style={{ position: 'relative', padding: '0px 20px' }}>
             <span
-              className="title"
+              className='title'
               style={{
                 paddingLeft: 0,
               }}
@@ -463,20 +444,20 @@ class ShopItemDetails extends Component {
             </span>
             <div
               style={{
-                position: "relative",
+                position: 'relative',
               }}
             >
               <div
-                className="left-arrow"
+                className='left-arrow'
                 style={{
                   top: 15,
                 }}
                 onClick={this.leftClick}
               >
-                <ArrowRight style={{ transform: "rotate(180deg" }} />
+                <ArrowRight style={{ transform: 'rotate(180deg' }} />
               </div>
               <div
-                className="right-arrow"
+                className='right-arrow'
                 style={{
                   top: 15,
                 }}
@@ -485,31 +466,29 @@ class ShopItemDetails extends Component {
                 <ArrowRight />
               </div>
             </div>
-            <div className="sizes" ref={this.scrollContainerRef}>
+            <div className='sizes' ref={this.scrollContainerRef}>
               {activeSizes &&
                 activeSizes.map((size, index) => (
                   <span
                     key={`size-${index}`}
-                    className={classNames("size-selector", {
+                    className={classNames('size-selector', {
                       active: selectedSize === size,
                     })}
                     onClick={() => this.selectSize(size)}
                   >
                     {size}
                     {!!this.checkQuantity(size) && (
-                      <span className="cart-count">
-                        {this.checkQuantity(size)}
-                      </span>
+                      <span className='cart-count'>{this.checkQuantity(size)}</span>
                     )}
                   </span>
                 ))}
             </div>
           </div>
         </div>
-        <div className="select-section qty-section">
-          <div className="container">
-            <span className="title">QUANTITY</span>
-            <div className="quantity">
+        <div className='select-section qty-section'>
+          <div className='container'>
+            <span className='title'>QUANTITY</span>
+            <div className='quantity'>
               <NumberSelector
                 value={this.checkQuantity()}
                 onChange={(e) => this.handleQuantity(e.target.value)}
@@ -519,11 +498,11 @@ class ShopItemDetails extends Component {
         </div>
 
         {selectedItem.toppings && !!selectedItem.toppings.length && (
-          <div className="select-section">
-            <div className="container">
-              <span className="title">EXTRAS</span>
+          <div className='select-section'>
+            <div className='container'>
+              <span className='title'>EXTRAS</span>
               <div
-                className={classNames("add-toppings", {
+                className={classNames('add-toppings', {
                   active: this.getSelectedToppings().length,
                 })}
                 onClick={this.toggleToppingsForm}
@@ -534,41 +513,39 @@ class ShopItemDetails extends Component {
                         ? `${this.getSelectedToppings().length} TOPPING`
                         : `${this.getSelectedToppings().length} TOPPINGS`
                     }`
-                  : "ADD TOPPINGS"}
+                  : 'ADD TOPPINGS'}
               </div>
             </div>
           </div>
         )}
         <div
-          className="menu-container"
+          className='menu-container'
           style={{
             padding: 0,
           }}
         >
           <div
-            className="item-footer"
+            className='item-footer'
             style={{
               left: 0,
-              display: "contents",
+              display: 'contents',
             }}
           >
             {/* custom-item-footer */}
             <div
               style={{
-                width: "100%",
-                height: "65px",
+                width: '100%',
+                height: '65px',
               }}
-              className={classNames("add-to-cart", {
+              className={classNames('add-to-cart', {
                 disabled: !this.getTotalQuantity(),
               })}
               onClick={this.cartAction}
             >
-              <div className="container">
+              <div className='container'>
                 <span>Add {this.getTotalQuantity()} to Order</span>
                 <div>
-                  <span className="total-price">
-                    ₦ {this.getTotalCost().toLocaleString()}
-                  </span>
+                  <span className='total-price'>₦ {this.getTotalCost().toLocaleString()}</span>
                   <RightArrow />
                 </div>
               </div>
@@ -576,16 +553,14 @@ class ShopItemDetails extends Component {
           </div>
         </div>
         <CSSTransitionGroup
-          transitionName="toppings-overlay-animation"
+          transitionName='toppings-overlay-animation'
           transitionEnterTimeout={500}
           transitionLeaveTimeout={300}
         >
-          {isToppingsFormActive && (
-            <div className="toppings-form-overlay"></div>
-          )}
+          {isToppingsFormActive && <div className='toppings-form-overlay'></div>}
         </CSSTransitionGroup>
         <CSSTransitionGroup
-          transitionName="toppings-form-animation"
+          transitionName='toppings-form-animation'
           transitionEnterTimeout={500}
           transitionLeaveTimeout={300}
         >
@@ -601,23 +576,34 @@ class ShopItemDetails extends Component {
           )}
         </CSSTransitionGroup>
 
-        {toaster.status === "success" && (
+        {toaster.status === 'success' && (
           <Modal closeModal={this.closeToaster}>
-            <div className="add-cart-success">
-              <div className="icon">
+            <div className='add-cart-success'>
+              <div className='icon'>
                 <ModalBread />
               </div>
-              <div className="message">{toaster.message}</div>
-              <div className="actions">
+              <div className='message'>{toaster.message}</div>
+              <div className='actions'>
                 <button
-                  className="continue"
-                  onClick={() => router.push("/cart")}
+                  className='continue'
+                  onClick={() => {
+                    const { tempCart } = this.state;
+                    const cartItems = tempCart.filter(({ quantity }) => quantity);
+                    console.log({ cartItems, tempCart });
+                    analyticsService.trackEvent('go_to_cart');
+                    router.push('/cart');
+                  }}
                 >
                   Checkout
                 </button>
                 <button
-                  className="go-checkout"
-                  onClick={() => router.push("/")}
+                  className='go-checkout'
+                  onClick={() => {
+                    analyticsService.trackPageView('homepage', {
+                      action: "clicked 'continue shopping'",
+                    });
+                    router.push('/');
+                  }}
                 >
                   Continue Shopping
                 </button>
@@ -626,9 +612,7 @@ class ShopItemDetails extends Component {
           </Modal>
         )}
 
-        {toaster.status === "error" && (
-          <Toaster {...toaster} closeToaster={this.closeToaster} />
-        )}
+        {toaster.status === 'error' && <Toaster {...toaster} closeToaster={this.closeToaster} />}
       </div>
     );
   }

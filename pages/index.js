@@ -1,15 +1,16 @@
-import { Component } from "react";
-import { withRouter } from "next/router";
+import { Component } from 'react';
+import { withRouter } from 'next/router';
 
-import Main from "../layouts/Main";
-import Shop from "../components/Shop";
-import SplashScreen from "../components/SplashScreen";
+import Main from '../layouts/Main';
+import Shop from '../components/Shop';
+import SplashScreen from '../components/SplashScreen';
 
-import { ProductsConsumer } from "../providers/ProductsProvider";
-import { slugify } from "../utils/functions";
+import { ProductsConsumer } from '../providers/ProductsProvider';
+import { slugify } from '../utils/functions';
 
-import Modal from "../components/Modal";
-import { Logo } from "../public/static/vectors";
+import Modal from '../components/Modal';
+import { Logo } from '../public/static/vectors';
+import withAnalytics from '../hocs/withAnalytics';
 
 class Home extends Component {
   state = {
@@ -20,6 +21,11 @@ class Home extends Component {
   };
 
   selectItem = ({ name, id }) => {
+    // Use analytics from props provided by HOC
+    this.props.analytics.trackProductView({
+      id,
+      name,
+    });
     this.props.router.push(`/shop?name=${slugify(name)}&id=${id}`, undefined, {
       shallow: true,
     });
@@ -54,20 +60,20 @@ class Home extends Component {
           <>
             {this.state.showModal && (
               <Modal closeModal={this.closeModal}>
-                <div className="add-cart-success">
-                  <div className="icon">
+                <div className='add-cart-success'>
+                  <div className='icon'>
                     <Logo />
                   </div>
 
-                  <div className="message">
+                  <div className='message'>
                     Enjoy FREE delivery when you order above 25k.
-                    <span style={{ display: "block", fontSize: 15 }}>
+                    <span style={{ display: 'block', fontSize: 15 }}>
                       If delivery exceeds N3,000 you only pay the difference!
                     </span>
                   </div>
 
-                  <div className="actions">
-                    <button className="continue" onClick={this.closeModal}>
+                  <div className='actions'>
+                    <button className='continue' onClick={this.closeModal}>
                       Ok
                     </button>
                   </div>
@@ -82,4 +88,4 @@ class Home extends Component {
   }
 }
 
-export default ProductsConsumer(withRouter(Home));
+export default ProductsConsumer(withRouter(withAnalytics(Home)));
