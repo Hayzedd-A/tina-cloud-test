@@ -11,6 +11,7 @@ import AuthenticationProvider from "../providers/AuthenticationProvider";
 import ProductsProvider from "../providers/ProductsProvider";
 import CartProvider from "../providers/CartProvider";
 import StoreProvider from "../providers/StoreProvider";
+import withAnalytics from "../hocs/withAnalytics";
 
 function GourmetTwist({ Component, pageProps }) {
   const router = useRouter();
@@ -32,4 +33,4 @@ function GourmetTwist({ Component, pageProps }) {
   );
 }
 
-export default GourmetTwist;
+export default withAnalytics(GourmetTwist);

@@ -10,7 +10,8 @@ import { slugify } from '../utils/functions';
 
 import Modal from '../components/Modal';
 import { Logo } from '../public/static/vectors';
-import withAnalytics from '../hocs/withAnalytics';
+import analyticsService from '../services/analyticsService';
+// import withAnalytics from '../hocs/withAnalytics';
 
 class Home extends Component {
   state = {
@@ -22,7 +23,7 @@ class Home extends Component {
 
   selectItem = ({ name, id }) => {
     // Use analytics from props provided by HOC
-    this.props.analytics.trackProductView({
+    analyticsService.trackProductView({
       id,
       name,
     });
@@ -88,4 +89,4 @@ class Home extends Component {
   }
 }
 
-export default ProductsConsumer(withRouter(withAnalytics(Home)));
+export default ProductsConsumer(withRouter(Home));

@@ -1,18 +1,22 @@
 import axios from 'axios';
-import { API_BASE_URL } from '../constants';
+import { ANALYTICS_API_BASE_URL } from '../constants';
 
 class AnalyticsService {
   constructor() {
     this.isInitialized = false;
     this.userId = null;
-    this.sessionId = this.generateSessionId();
+    this.sessionId = null;
   }
 
   // Initialize analytics services
-  init(userId = null) {
-    console.log("initialization started")
+  init(
+    userId = localStorage.getItem('userAnalyticsId') || null,
+    sessionId = sessionStorage.getItem('sessionAnalyticsId')
+  ) {
+    console.log('initialization started');
     this.userId = userId;
     this.isInitialized = true;
+    this.sessionId = sessionId;
 
     // Initialize Google Analytics if gtag is available
     if (typeof gtag !== 'undefined') {
@@ -21,6 +25,8 @@ class AnalyticsService {
         custom_map: { custom_parameter: 'session_id' },
       });
     }
+
+    console.log('Analysis initiated successfull:', { userId, sessionId });
   }
 
   generateSessionId() {
@@ -30,8 +36,8 @@ class AnalyticsService {
   // Generic event tracking method
   async trackEvent(eventName, eventData = {}) {
     console.log('checking tracking event:', eventName, eventData);
-    if (!this.isInitialized) return;
-    console.log("tracking event:", eventName, eventData)
+    // if (!this.isInitialized) return;
+    console.log('tracking event:', eventName, eventData);
 
     const enrichedData = {
       ...eventData,
@@ -115,13 +121,21 @@ class AnalyticsService {
       console.log('✅✅Event tracked', {
         eventName,
         data,
-        userId: this.userId
+        userId: this.userId,
       });
-      await axios.post(`${API_BASE_URL}analytics/events`, {
-        eventName,
-        eventData: data,
-        timestamp: new Date().toISOString(),
-      });
+      await axios.post(
+        `${ANALYTICS_API_BASE_URL}/api/track`,
+        {
+          eventName,
+          eventData: data,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          headers: {
+            authorization: `Bearer ${process.env.NEXT_PUBLIC_API_ANALYTICS}`,
+          },
+        }
+      );
     } catch (error) {
       console.error('Backend tracking error:', error);
     }
@@ -149,7 +163,7 @@ class AnalyticsService {
   }
 
   async trackProductView(product) {
-    console.log("product viewed:", product)
+    console.log('product viewed:', product);
     await this.trackEvent('product_view', {
       productId: product.id,
       productName: product.name,
@@ -188,13 +202,13 @@ class AnalyticsService {
 
   async trackCheckoutInitiated(cartItems, totalValue) {
     await this.trackEvent('initiate_checkout', {
-      ...cartItems
+      ...cartItems,
     });
   }
 
   async trackPurchase(orderData) {
     await this.trackEvent('purchase', {
-      ...orderData
+      ...orderData,
     });
   }
 

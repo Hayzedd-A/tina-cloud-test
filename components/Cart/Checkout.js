@@ -507,6 +507,12 @@ class Checkout extends Component {
         (subTotal >= 25000 ? Math.max(deliveryCost - 3000, 0) : deliveryCost);
 
       if (costToCompare !== amount) {
+        analytics.track("Payment failed", {
+          category: "Checkout",
+          label: "Payment not match",
+          costToCompare,
+          amount,
+        });
         this.setState({
           isCheckingOut: false,
         });
@@ -548,8 +554,10 @@ class Checkout extends Component {
   };
 
   handlePaystackClose = () => {
-    console.log("paystack closed");
-    analyticsService.trackEvent("Paystack_interface_closed")
+    analyticsService.trackEvent("Paystack_interface_closed", {
+      category: "Paystack Checkout",
+      label: "Paystack interface closed",
+    })
   };
 
   openToaster = (status, message) => {

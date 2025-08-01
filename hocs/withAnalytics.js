@@ -13,8 +13,6 @@ const withAnalytics = (WrappedComponent) => {
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
-      // This runs only on the client side
-
       // Get or generate userId for persistent user tracking
       let storedUserId = localStorage.getItem('userAnalyticsId');
       if (!storedUserId) {
