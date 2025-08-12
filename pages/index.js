@@ -60,7 +60,7 @@ class Home extends Component {
                   </div>
 
                   <div className="message">
-                    Enjoy FREE delivery when you order above 25k.
+                    Enjoy FREE delivery when you order above 10k.
                     <span style={{ display: "block", fontSize: 15 }}>
                       If delivery exceeds N3,000 you only pay the difference!
                     </span>
