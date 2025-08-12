@@ -496,17 +496,9 @@ class Checkout extends Component {
         finalAmount = finalAmountWithoutDeliveryFee;
       }
 
-      // let costToCompare = subTotal;
-      // if (subTotal >= 25000) {
-      //   if (deliveryCost >= 3000) costToCompare += deliveryCost - 3000;
-      //   if (deliveryCost < 3000) costToCompare += 0;
-      // } else {
-      //   costToCompare += deliveryCost;
-      // }
-
       const costToCompare =
         subTotal +
-        (subTotal >= 25000 ? Math.max(deliveryCost - 3000, 0) : deliveryCost);
+        (subTotal >= 10000 ? Math.max(deliveryCost - 3000, 0) : deliveryCost);
 
       if (costToCompare !== amount) {
         this.setState({
@@ -688,7 +680,7 @@ class Checkout extends Component {
   componentDidUpdate(_, prevState) {
     const { deliveryCost, isDeliveryDiscountEligible, chosenCity } = this.state;
     const subTotal = reduceArray(this.props.cart, "totalCost");
-    const discountEligible = subTotal >= 25000 && deliveryCost <= 3000;
+    const discountEligible = subTotal >= 10000 && deliveryCost <= 3000;
 
     if (
       discountEligible !== isDeliveryDiscountEligible &&
