@@ -158,10 +158,10 @@ class Cart extends Component {
     let finalAmount = subTotal - discountAmount;
     if (finalAmount < 0) finalAmount = 0;
 
-    if (finalAmount < 10000 && this.props.deliveryDiscountObject?.id) {
+    if (finalAmount < 25000 && this.props.deliveryDiscountObject?.id) {
       this.props.resetDeliveryDiscount();
     } else if (
-      finalAmount >= 10000 &&
+      finalAmount >= 25000 &&
       !this.props.deliveryDiscountObject?.id &&
       !this.state.isApplyingDC
     ) {
