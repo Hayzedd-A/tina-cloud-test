@@ -460,7 +460,7 @@ class Checkout extends Component {
 
     try {
       const res = await postRequest({
-        url: `/customer-requests/stores/8a7a28dc-b54d-4841-b949-efe60dbae709/placed-orders`,
+        url: `/customer-requests/stores/${STORE_ID}/placed-orders`,
         data: payload,
       });
 
