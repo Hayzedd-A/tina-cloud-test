@@ -1,5 +1,5 @@
-import axios from "axios";
-import { API_BASE_URL } from "../constants";
+import axios from 'axios';
+import { API_BASE_URL, CHOWDECK_API_URL, CHOWDECK_KEY } from '../constants';
 
 export const API = axios.create({
   baseURL: API_BASE_URL,
@@ -9,12 +9,12 @@ export const API = axios.create({
 export const zupaGetRequest = async ({ url, params, token }) => {
   var request = {
     url,
-    method: "get",
+    method: 'get',
     params,
   };
 
   if (token) {
-    request["headers"] = { authorization: `Bearer ${token}` };
+    request['headers'] = { authorization: `Bearer ${token}` };
   }
 
   const requestResponse = await API(request);
@@ -23,7 +23,7 @@ export const zupaGetRequest = async ({ url, params, token }) => {
 };
 
 export const getUserDetails = () => {
-  return JSON.parse(localStorage.getItem("gourmet-twist-user"));
+  return JSON.parse(localStorage.getItem('gourmet-twist-user'));
 };
 
 export const getRequest = async ({ url, params, token }) => {
@@ -31,12 +31,12 @@ export const getRequest = async ({ url, params, token }) => {
 
   var request = {
     url,
-    method: "get",
+    method: 'get',
     params,
   };
 
   if (token && currentUser && currentUser.jwt) {
-    request["headers"] = { authorization: `Bearer ${currentUser.jwt}` };
+    request['headers'] = { authorization: `Bearer ${currentUser.jwt}` };
   }
 
   const requestResponse = await API(request);
@@ -49,13 +49,13 @@ export const postRequest = async ({ url, params, data, token }) => {
 
   var request = {
     url,
-    method: "post",
+    method: 'post',
     params,
     data,
   };
 
   if (currentUser && currentUser.jwt) {
-    request["headers"] = { authorization: `Bearer ${currentUser.jwt}` };
+    request['headers'] = { authorization: `Bearer ${currentUser.jwt}` };
   }
 
   const requestResponse = await API(request);
@@ -68,13 +68,13 @@ export const patchRequest = async ({ url, params, data, token }) => {
 
   var request = {
     url,
-    method: "patch",
+    method: 'patch',
     params,
     data,
   };
 
   if (token && currentUser && currentUser.jwt) {
-    request["headers"] = { authorization: `Bearer ${currentUser.jwt}` };
+    request['headers'] = { authorization: `Bearer ${currentUser.jwt}` };
   }
 
   const requestResponse = await API(request);
@@ -82,18 +82,26 @@ export const patchRequest = async ({ url, params, data, token }) => {
   return requestResponse;
 };
 
+export const chowdeckConnect = axios.create({
+  baseURL: CHOWDECK_API_URL,
+  headers: {
+    Authorization: `Bearer ${CHOWDECK_KEY}`,
+  },
+});
+
+
 export const deleteRequest = async ({ url, params, data, token }) => {
   const currentUser = getUserDetails();
 
   var request = {
     url,
-    method: "delete",
+    method: 'delete',
     params,
     data,
   };
 
   if (token && currentUser && currentUser.jwt) {
-    request["headers"] = { authorization: `Bearer ${currentUser.jwt}` };
+    request['headers'] = { authorization: `Bearer ${currentUser.jwt}` };
   }
 
   const requestResponse = await API(request);

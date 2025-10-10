@@ -50,6 +50,7 @@ export const getRequestError = (error) => {
   } else if (response && response.data.message) {
     return response.data.message;
   }
+  console.log(error)
   return "There might be a problem with your internet connection. Please check and try again.";
 };
 

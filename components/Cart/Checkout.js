@@ -10,7 +10,12 @@ import { StoreConsumer } from "../../providers/StoreProvider";
 import { TextField } from "../FormElements";
 import Toaster from "../Toaster";
 
-import { postRequest, getRequest, getUserDetails } from "../../api";
+import {
+  postRequest,
+  getRequest,
+  getUserDetails,
+  chowdeckConnect,
+} from "../../api";
 import { RightArrow } from "../../public/static/vectors";
 import {
   reduceArray,
@@ -23,7 +28,12 @@ import {
 
 import { deliveryPoints } from "../../utils/data";
 import { HeaderMenu } from "../Header";
-import { API_BASE_URL, STORE_ID } from "../../constants";
+import {
+  API_BASE_URL,
+  CHOWDECK_API_URL,
+  KITCHEN_LOCATION,
+  STORE_ID,
+} from "../../constants";
 import SelectField from "../FormElements/SelectField";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
@@ -31,8 +41,9 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
 import Axios from "axios";
 import analyticsService from "../../services/analyticsService";
+import { getCoordinates } from "../../services/geoLocation";
 
-const deliveryArr = ["delivery", "s-delivery"];
+const deliveryArr = ["delivery", "s-delivery", "c-delivery", "sc-delivery"];
 
 const initialFormData = {
   name: {
@@ -83,11 +94,13 @@ class Checkout extends Component {
     pickupErrFlag: false,
     storeCities: [],
     initialValue: "",
+    deliveryId: "",
     deliveryLocation: {
       address: "",
       latitude: "",
       longitude: "",
     },
+    isCheckingOut: false,
   };
 
   checkPrice = (subTotal) => {
@@ -122,19 +135,18 @@ class Checkout extends Component {
       deliveryCost:
         target.name === "shippingMethod" ? 0 : this.state.deliveryCost,
     });
-    1;
   };
 
   handleDeliveryChange = ({ target }, valid) => {
     const { value } = target;
     this.resetDelivery(value);
-
+    console.log(value, deliveryArr);
     if (deliveryArr.includes(value)) {
       const { store } = this.props;
-      if (store?.states.length < 1) {
+      if (store?.states?.length < 1 && store?.delivery_types?.length < 1) {
         this.openToaster(
           "error",
-          "The delivery system for this store is not availabale yet"
+          "The delivery system for this store is not available yet"
         );
       } else {
         this.effectDeliveryChange(value);
@@ -145,31 +157,44 @@ class Checkout extends Component {
   };
 
   effectDeliveryChange = (value) => {
-    this.setState({
-      formData: {
-        ...this.state.formData,
-        shippingMethod: {
-          value,
-          valid: true,
+    console.log(value);
+    this.setState(
+      {
+        formData: {
+          ...this.state.formData,
+          shippingMethod: {
+            value,
+            valid: true,
+          },
+          address: {
+            value:
+              value === "s-pickup" || value === "pickup"
+                ? ""
+                : this.state.formData.address.value,
+            valid: value === "s-pickup" || value === "pickup",
+          },
+          deliveryDate: {
+            value: value === "pickup" || value === "delivery" ? new Date() : "",
+            valid: value === "pickup" || value === "delivery" ? true : false,
+          },
         },
-        address: {
-          value:
-            value === "s-pickup" || value === "pickup"
-              ? ""
-              : this.state.formData.address.value,
-          valid: value === "s-pickup" || value === "pickup",
-        },
-        deliveryDate: {
-          value: value === "pickup" || value === "delivery" ? new Date() : "",
-          valid: value === "pickup" || value === "delivery" ? true : false,
-        },
+        isLoadingDeliveryPrice: false,
+        deliveryCost:
+          value === "pickup" || value === "s-pickup"
+            ? 0
+            : this.state.deliveryCost,
       },
-      isLoadingDeliveryPrice: false,
-      // deliveryCost:
-      //   value === "pickup" || value === "s-pickup"
-      //     ? 0
-      //     : this.state.deliveryCost,
-    });
+      () => {
+        // Recalculate delivery fee if address and city are already selected
+        if (
+          deliveryArr.includes(value) &&
+          this.state.deliveryLocation.address &&
+          Object.keys(this.state.chosenCity).length > 0
+        ) {
+          this.handleGetDeliveryFee();
+        }
+      }
+    );
   };
 
   resetDelivery = (value) => {
@@ -200,6 +225,7 @@ class Checkout extends Component {
         longitude: "3.3792",
       },
       initialValue: "",
+      deliveryId: "",
     });
   };
 
@@ -217,14 +243,12 @@ class Checkout extends Component {
 
   checkFormValidity = () => {
     const { address, ...rest } = this.state.formData;
+    const { shippingMethod } = this.state.formData;
 
     return Object.values(rest).every(
       (value) =>
         value.valid &&
-        (rest.shippingMethod.value === "delivery" ||
-        rest.shippingMethod.value === "s-delivery"
-          ? address.valid
-          : true)
+        (deliveryArr.includes(shippingMethod.value) ? address.valid : true)
     );
   };
 
@@ -243,32 +267,34 @@ class Checkout extends Component {
       },
       async () => {
         if (suggest) {
-          const address = suggest.gmaps.formatted_address;
+          const address = suggest.gmaps?.formatted_address || suggest.label;
           const fullAddress = suggest.label;
           const latitude = suggest.location.lat;
           const longitude = suggest.location.lng;
 
-          const { store } = this.props;
-          const { id: STORE_ID } = store || {};
-          this.setState({
-            formData: {
-              ...this.state.formData,
-              address: {
-                value: fullAddress,
-                valid: true,
+          this.setState(
+            {
+              formData: {
+                ...this.state.formData,
+                address: {
+                  value: fullAddress,
+                  valid: true,
+                },
               },
+              deliveryLocation: {
+                address: fullAddress,
+                latitude,
+                longitude,
+              },
+              isLoadingDeliveryPrice: false,
             },
-            deliveryLocation: {
-              address: fullAddress,
-              latitude,
-              longitude,
-            },
-            deliveryCost:
-              Object.keys(this.state.chosenCity).length > 0
-                ? parseInt(this.state.chosenCity?.price)
-                : 0,
-            isLoadingDeliveryPrice: false,
-          });
+            () => {
+              // Calculate delivery fee after address is set
+              if (Object.keys(this.state.chosenCity).length > 0) {
+                this.handleGetDeliveryFee();
+              }
+            }
+          );
         }
       }
     );
@@ -289,10 +315,6 @@ class Checkout extends Component {
           latitude: 6.52,
           longitude: 3.37,
         },
-        deliveryCost:
-          Object.keys(this.state.chosenCity).length > 0
-            ? parseInt(this.state.chosenCity?.price)
-            : 0,
         isLoadingDeliveryPrice: false,
       });
     } else {
@@ -305,12 +327,83 @@ class Checkout extends Component {
           },
         },
         deliveryCost: 0,
-        isLoadingDeliveryPrice: true,
+        deliveryLocation: {
+          address: "",
+          latitude: "",
+          longitude: "",
+        },
+        isLoadingDeliveryPrice: false,
       });
     }
   };
 
   onSuggestNoResults = (userInput) => {};
+
+  handleGetDeliveryFee = async () => {
+    const { deliveryLocation, chosenCity, formData } = this.state;
+    const { store } = this.props;
+
+    console.log(deliveryLocation, chosenCity);
+
+    if (!deliveryLocation.address || deliveryLocation.address.trim() === "") {
+      return;
+    }
+
+    if (Object.keys(chosenCity).length < 1) {
+      return;
+    }
+
+    // Only calculate for delivery methods that require it
+    if (!deliveryArr.includes(formData.shippingMethod.value)) {
+      return;
+    }
+
+    this.setState({
+      isLoadingDeliveryPrice: true,
+    });
+
+    try {
+      // Check if it's Chowdeck delivery
+      if (
+        formData.shippingMethod.value === "c-delivery" ||
+        formData.shippingMethod.value === "sc-delivery"
+      ) {
+        const res = await postRequest({
+          url: `${API_BASE_URL}customer-requests/stores/${STORE_ID}/chowdeck-delivery-fee`,
+          data: {
+            address: deliveryLocation.address,
+            city: chosenCity.label,
+          },
+        });
+
+        console.log(res.data);
+        const { total_amount, id } = res.data;
+        this.setState({
+          chosenCity: {
+            ...chosenCity,
+            price: parseInt(total_amount / 100),
+          },
+          deliveryCost: parseInt(total_amount / 100),
+          deliveryId: id,
+          isLoadingDeliveryPrice: false,
+        });
+      } else {
+        // For Glovo delivery, use the city price
+        this.setState({
+          deliveryCost: parseInt(chosenCity.price || 0),
+          isLoadingDeliveryPrice: false,
+        });
+      }
+    } catch (error) {
+      const message = getRequestError(error);
+      this.setState({
+        isLoadingDeliveryPrice: false,
+        deliveryCost: parseInt(chosenCity.price || 0), // Fallback to city price
+      });
+      console.log("Error getting delivery fee:", message);
+      this.openToaster("error", message);
+    }
+  };
 
   computeDistance(pointA, pointB) {
     const lat1 = pointA.location.lat;
@@ -421,28 +514,8 @@ class Checkout extends Component {
       loyaltyPointApplied?.value &&
       discountAmountGc < subTotal + deliveryCost
     ) {
-      //If loyaltyPoints are applied and a gift card is also applied then this if condition
-
       let loyaltyPointsToRedeem = parseFloat(loyaltyPointApplied.value);
 
-      /*
-      Below condition checks:
-      
-      if giftCardDiscount is applied AND giftCardDiscount is not covering the total order amount
-      AND ALSO
-      if loyaltyDiscount is being redeemed, then check does (giftCardDiscount + loyaltyDiscount) covers the total amount or not
-      if it covers the total amount then check that on top of giftCardDiscount, how many loyalty points can be redeemed before the order is covered completely
-      FOR EXAMPLE:
-      totalOrderAmount = 10k
-      giftCardDiscount = 9.5k
-      loyaltyDiscount = 1k
-
-      So if we redeem the discount and also apply the gift card, it will exceed the order amount, instead we will deduct only enough discount that can cover the order amount so in above scenario:
-
-      totalOrderAmount = 10k
-      giftCardDiscount = 9.5k
-      loyaltyDiscount = 0.5k (out of 1k total, we are only redeeming .5k so that rest of the .5k can be redeemed later if customer wants to)
-      */
       if (
         parseFloat(ttlGcDiscount) + loyaltyPointsToRedeem >
         subTotal + deliveryCost
@@ -456,11 +529,14 @@ class Checkout extends Component {
       );
     }
 
-    shippingMethod === "pickup" && delete payload.deliveryLocation;
-    shippingMethod === "s-pickup" && delete payload.deliveryLocation;
+    if (shippingMethod === "pickup" || shippingMethod === "s-pickup") {
+      delete payload.deliveryLocation;
+    }
+
     analyticsService.trackPurchase({
-      ...payload
+      ...payload,
     });
+
     try {
       const res = await postRequest({
         url: `/customer-requests/stores/${STORE_ID}/placed-orders`,
@@ -469,8 +545,8 @@ class Checkout extends Component {
 
       const { paymentReference, amount } = res.data;
       analyticsService.trackEvent("purchase_response", {
-        ...res.data
-      })
+        ...res.data,
+      });
 
       let discountAmount = couponObject
         ? couponObject.discountType === "percent"
@@ -478,7 +554,14 @@ class Checkout extends Component {
           : couponObject.value
         : null;
 
-      const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
+      const loyaltyDiscountApplied = parseFloat(
+        loyaltyPointApplied?.value || 0
+      );
+
+      if (deliveryDiscountObject?.id) {
+        discountAmount =
+          (discountAmount || 0) + deliveryCost - deliveryDiscountObject.price;
+      }
 
       if (loyaltyDiscountApplied)
         discountAmount = (discountAmount || 0) + loyaltyDiscountApplied;
@@ -486,20 +569,20 @@ class Checkout extends Component {
       if (ttlGcDiscount) discountAmount = (discountAmount || 0) + ttlGcDiscount;
 
       let metadata = {
-        storeID: "8a7a28dc-b54d-4841-b949-efe60dbae709",
+        storeID: STORE_ID,
       };
 
-      let finalAmount = subTotal + deliveryCost - discountAmount;
-      let finalAmountWithoutDeliveryFee = subTotal - discountAmount;
+      let finalAmount = subTotal + deliveryCost - (discountAmount || 0);
 
       if (finalAmount <= 0) finalAmount = 0;
 
-      if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
-
       if (deliveryDiscountObject?.id) {
         if (this.state.chosenCity?.price > 3000)
-          finalAmountWithoutDeliveryFee += this.state.chosenCity?.price - 3000;
-        finalAmount = finalAmountWithoutDeliveryFee;
+          finalAmount =
+            subTotal -
+            (discountAmount || 0) +
+            (this.state.chosenCity?.price - 3000);
+        else finalAmount = subTotal - (discountAmount || 0);
       }
 
       const costToCompare =
@@ -507,7 +590,7 @@ class Checkout extends Component {
         (subTotal >= 25000 ? Math.max(deliveryCost - 3000, 0) : deliveryCost);
 
       if (costToCompare !== amount) {
-        analytics.track("Payment failed", {
+        analyticsService.trackEvent("Payment failed", {
           category: "Checkout",
           label: "Payment not match",
           costToCompare,
@@ -550,14 +633,14 @@ class Checkout extends Component {
     const { clearCart, showCheckoutSuccess } = this.props;
     clearCart();
     showCheckoutSuccess(true);
-    analyticsService.trackEvent("Paystack_successful", {...response})
+    analyticsService.trackEvent("Paystack_successful", { ...response });
   };
 
   handlePaystackClose = () => {
     analyticsService.trackEvent("Paystack_interface_closed", {
       category: "Paystack Checkout",
       label: "Paystack interface closed",
-    })
+    });
   };
 
   openToaster = (status, message) => {
@@ -592,26 +675,7 @@ class Checkout extends Component {
     const subTotal = reduceArray(this.props.cart, "totalCost");
     this.checkPrice(subTotal);
 
-    // if (currentStore && currentStore?.address === null) {
-    //   this.openToaster(
-    //     "error",
-    //     "Store Address is not available,please try out other stores"
-    //   );
-    //   setTimeout(() => {
-    //     const { store: storeUrl } = this.props?.router?.query || {};
-    //     this.props?.router.push(`/${storeUrl}`, undefined, {
-    //       shallow: true,
-    //     });
-    //   }, 2000);
-    // }
-
-    // this.setState({
-    //   pickUpAddress: {
-    //     ...currentStore?.gokadaAddress,
-    //   },
-    // });
-
-    // // Check if pickup is enabled and address set for pickup option
+    // Check if pickup is enabled and address set for pickup option
     if (currentStore) {
       if (currentStore?.newAddress === null || !currentStore?.pickup) {
         this.setState({
@@ -649,7 +713,7 @@ class Checkout extends Component {
     }
 
     //build up cities object
-    if (currentStore?.delivery_types.length > 0) {
+    if (currentStore?.delivery_types?.length > 0) {
       let newStateArr = [];
 
       currentStore &&
@@ -688,7 +752,7 @@ class Checkout extends Component {
       });
       this.openToaster(
         "error",
-        "Delivery not availabale in this state yet, you can choose PICKUP or SCHEDULED delivery"
+        "Delivery not available in this state yet, you can choose PICKUP or SCHEDULED delivery"
       );
     }
   };
@@ -711,38 +775,38 @@ class Checkout extends Component {
 
   handleCityChange = (e) => {
     let cityIndex = e.target.value;
-    if (isNaN(e)) {
-      let index = e.target.value;
-      if (!isNaN(index)) {
-        this.openToaster("error", "Please choose a valid delivery option");
-        this.setState({
-          formData: {
-            ...this.state.formData,
-          },
-          chosenCity: {},
-          deliveryCost: 0,
-        });
-      } else {
-        let found = this.state.cities.find((elem) => {
-          return elem.key === index;
-        });
-        if (found) {
-          if (Object.entries(found).length > 0) {
-            this.setState({
-              formData: {
-                ...this.state.formData,
-              },
-              chosenCity: { ...found },
-              deliveryCost: parseInt(found.price),
-            });
+
+    if (cityIndex === "" || cityIndex === "0") {
+      this.setState({
+        chosenCity: {},
+        deliveryCost: 0,
+      });
+      return;
+    }
+
+    let found = this.state.cities.find((elem) => {
+      return elem.key == cityIndex;
+    });
+
+    if (found && Object.entries(found).length > 0) {
+      this.setState(
+        {
+          chosenCity: { ...found },
+          deliveryCost: parseInt(found.price || 0),
+        },
+        () => {
+          // Recalculate delivery fee if address is already set
+          if (
+            this.state.deliveryLocation.address &&
+            deliveryArr.includes(this.state.formData.shippingMethod.value)
+          ) {
+            this.handleGetDeliveryFee();
           }
         }
-      }
+      );
     } else {
+      this.openToaster("error", "Please choose a valid delivery option");
       this.setState({
-        formData: {
-          ...this.state.formData,
-        },
         chosenCity: {},
         deliveryCost: 0,
       });
@@ -784,7 +848,7 @@ class Checkout extends Component {
       },
     };
 
-    const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied.value || 0);
+    const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied?.value || 0);
 
     const ttlGcDiscount = giftCardObject?.remainingValue || 0;
 
@@ -795,8 +859,8 @@ class Checkout extends Component {
       : null;
 
     if (deliveryDiscountObject?.id) {
-      discountAmount += deliveryCost;
-      discountAmount -= deliveryDiscountObject?.price;
+      discountAmount =
+        (discountAmount || 0) + deliveryCost - deliveryDiscountObject.price;
     }
 
     if (loyaltyDiscountApplied)
@@ -804,12 +868,15 @@ class Checkout extends Component {
 
     if (ttlGcDiscount) discountAmount = (discountAmount || 0) + ttlGcDiscount;
 
-    let finalAmount = subTotal + deliveryCost - discountAmount;
+    let finalAmount = subTotal + deliveryCost - (discountAmount || 0);
 
     if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
 
     if (this.state.chosenCity?.price > 3000 && deliveryDiscountObject?.id)
-      finalAmount += this.state.chosenCity?.price - 3000;
+      finalAmount =
+        subTotal -
+        (discountAmount || 0) +
+        (this.state.chosenCity?.price - 3000);
 
     return (
       <div className="cart-container">
@@ -848,7 +915,7 @@ class Checkout extends Component {
               <span className="icon checkout-icon">
                 <img src="/static/images/star.png" alt="" />
               </span>
-              <span className="text">Well done! You’re almost there</span>
+              <span className="text">Well done! You're almost there</span>
             </div>
           ) : (
             <div className="info">
@@ -861,7 +928,7 @@ class Checkout extends Component {
                   textAlign: "center",
                 }}
               >
-                Minimum item price for checkout is #2500
+                Minimum item price for checkout is ₦2500
               </span>
             </div>
           )}
@@ -912,6 +979,10 @@ class Checkout extends Component {
                     key: "delivery",
                     label: "Delivery",
                   },
+                  // {
+                  //   key: "c-delivery",
+                  //   label: "Chowdeck Delivery",
+                  // },
                   {
                     key: "pickup",
                     label: "Pickup",
@@ -920,13 +991,17 @@ class Checkout extends Component {
                     key: "s-delivery",
                     label: "Scheduled Delivery",
                   },
+                  // {
+                  //   key: "sc-delivery",
+                  //   label: "Scheduled Chowdeck Delivery",
+                  // },
                   {
                     key: "s-pickup",
                     label: "Scheduled Pickup",
                   },
                 ]}
               />
-              {shippingMethod.value === "delivery" ? (
+              {deliveryArr.includes(shippingMethod.value) ? (
                 <Fragment>
                   <div className="input-container mb-40">
                     <Fragment>
@@ -968,100 +1043,44 @@ class Checkout extends Component {
                       onChange={this.onSuggestChange}
                       onSuggestNoResults={this.onSuggestNoResults}
                       queryDelay={600}
+                      onBlur={this.handleGetDeliveryFee}
                       initialValue={initialValue}
                     />
-                    {Object.entries(this.state.deliveryLocation).length < 1 && (
+                    {!this.state.deliveryLocation.address && (
                       <span className="hint flashing-red blink_me">
                         Please enter a more specific address for delivery
                       </span>
                     )}
-                    {/* <span className="hint flashing-red blink_me">
-                      {" "}
-                      If your delivery address is not auto-detected, enter your
-                      city e.g Lekki Phase 1 or Surulere
-                    </span> */}
                   </div>
+                  {(shippingMethod.value === "s-delivery" ||
+                    shippingMethod.value === "sc-delivery") && (
+                    <div className="input-container mb-40">
+                      <label>
+                        Delivery Date <sup className="marked">*</sup>
+                      </label>
+                      <DayPickerInput
+                        dayPickerProps={disabledModifiers}
+                        value={deliveryDate.value}
+                        onDayChange={this.handleDeliveryDateChange}
+                        placeholder="DD/MM/YYYY"
+                        format="DD/MM/YYYY"
+                      />
+                    </div>
+                  )}
                 </Fragment>
               ) : shippingMethod.value === "pickup" ? (
                 <div className="input-container mb-40">
                   <label>Pickup Address</label>
                   <div className="pickup-address mb-40">
-                    19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria
+                    19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria
                   </div>
                 </div>
-              ) : shippingMethod.value === "s-delivery" ? (
-                <>
-                  <div className="input-container mb-40">
-                    <Fragment>
-                      <SelectField
-                        label="City"
-                        required
-                        hint="City"
-                        onChange={this.handleCityChange}
-                        options={this.state.cities}
-                      />
-
-                      {Object.entries(this.state.chosenCity).length < 1 && (
-                        <span className="hint flashing-red blink_me">
-                          Choose a city/area
-                        </span>
-                      )}
-                    </Fragment>
-                  </div>
-                  <div className="input-container mb-40">
-                    <label>
-                      Delivery Address <sup className="marked">*</sup>
-                      {isLoadingDeliveryPrice && (
-                        <i
-                          style={{
-                            textTransform: "capitalize",
-                            color: "#333",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {" "}
-                          Calculating Price...{" "}
-                        </i>
-                      )}
-                    </label>
-                    <Geosuggest
-                      placeholder="Enter your address"
-                      country="ng"
-                      onSuggestSelect={this.onSuggestSelect}
-                      onChange={this.onSuggestChange}
-                      onSuggestNoResults={this.onSuggestNoResults}
-                      queryDelay={600}
-                    />
-                    {Object.entries(this.state.deliveryLocation).length < 1 && (
-                      <span className="hint flashing-red blink_me">
-                        Please enter a more specific address for delivery
-                      </span>
-                    )}
-                    {/* <span className="hint flashing-red blink_me">
-                      {" "}
-                      If your delivery address is not auto-detected, enter your
-                      city e.g Lekki Phase 1 or Surulere
-                    </span> */}
-                  </div>
-                  <div className="input-container mb-40">
-                    <label>
-                      Delivery Date <sup className="marked">*</sup>
-                    </label>
-                    <DayPickerInput
-                      dayPickerProps={disabledModifiers}
-                      value={deliveryDate.value}
-                      onDayChange={this.handleDeliveryDateChange}
-                      placeholder="DD/MM/YYYY"
-                      format="DD/MM/YYYY"
-                    />
-                  </div>
-                </>
               ) : shippingMethod.value === "s-pickup" ? (
                 <>
                   <div className="input-container mb-40">
                     <label>Pickup Address</label>
                     <div className="pickup-address mb-40">
-                      19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria
+                      19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria
                     </div>
                   </div>
                   <div className="input-container mb-40">
@@ -1088,139 +1107,73 @@ class Checkout extends Component {
               />
             </div>
           </div>
+          <span>
+          
+          </span>
         </div>
         <div className="cart-actions no-margin fixed">
-          {deliveryCost >= 0 &&
-            (shippingMethod.value === "delivery" ||
-              shippingMethod.value === "s-delivery") && (
-              <div className="delivery-fees-notice">
-                <div className="container">
-                  <span className="icon">
-                    <img src="/static/images/delivery.png" alt="" />
-                  </span>
-                  <span className="text">
-                    {this.props.deliveryDiscountObject?.id &&
-                    this.state.chosenCity?.price ? (
-                      <>
-                        <strike>
-                          ₦{this.state.chosenCity?.price.toLocaleString()}
-                        </strike>
-                        &nbsp;
-                        {this.state.chosenCity?.price <= 3000 &&
-                          `₦${this.props.deliveryDiscountObject?.price.toLocaleString()}`}
-                        {this.state.chosenCity?.price > 3000 &&
-                          `Shipping discount applied. Fee reduced to N${(
-                            this.state.chosenCity?.price - 3000
-                          ).toLocaleString()}`}
-                      </>
-                    ) : (
-                      `₦${deliveryCost.toLocaleString()} will be charged for delivery`
-                    )}
-                    {(!this.props.deliveryDiscountObject?.id ||
-                      (this.props.deliveryDiscountObject?.id &&
-                        this.state.chosenCity?.price <= 3000)) && (
-                      <>&nbsp;will be charged for delivery</>
-                    )}
-                  </span>
-                </div>
-              </div>
-            )}
-
-          {/* Checkout Buton */}
-          {deliveryArr.includes(shippingMethod?.value) ? (
-            <div
-              className={classNames("checkout-button", {
-                disabled:
-                  !this.state.priceCheck ||
-                  !this.checkFormValidity() ||
-                  isCheckingOut ||
-                  isLoadingDeliveryPrice ||
-                  Object.entries(this.state.chosenCity).length === 0
-                    ? true
-                    : false,
-              })}
-              onClick={this.checkout}
-            >
+          {deliveryCost >= 0 && deliveryArr.includes(shippingMethod.value) && (
+            <div className="delivery-fees-notice">
               <div className="container">
-                <span>
-                  {isCheckingOut ? "Paying..." : "Pay"} ₦
-                  {finalAmount.toLocaleString()}
-                  {discountAmount ? (
-                    <small style={{ marginLeft: "10px" }}>
-                      <strike>
-                        {(subTotal + deliveryCost).toLocaleString()}
-                      </strike>
-                    </small>
-                  ) : null}
+                <span className="icon">
+                  <img src="/static/images/delivery.png" alt="" />
                 </span>
-                <RightArrow />
-              </div>
-            </div>
-          ) : (
-            <div
-              className={classNames("checkout-button", {
-                disabled:
-                  !this.state.priceCheck ||
-                  !this.checkFormValidity() ||
-                  isCheckingOut ||
-                  isLoadingDeliveryPrice,
-              })}
-              onClick={() => {
-                console.log("initiating payment")
-                this.checkout()}}
-            >
-              <div className="container">
-                <span>
-                  {isCheckingOut ? "Paying..." : "Pay"} ₦
-                  {finalAmount.toLocaleString()}
-                  {discountAmount ? (
-                    <small style={{ marginLeft: "10px" }}>
+                <span className="text">
+                  {this.props.deliveryDiscountObject?.id &&
+                  this.state.chosenCity?.price ? (
+                    <>
                       <strike>
-                        {(subTotal + deliveryCost).toLocaleString()}
+                        ₦{this.state.chosenCity?.price.toLocaleString()}
                       </strike>
-                    </small>
-                  ) : null}
+                      &nbsp;
+                      {this.state.chosenCity?.price <= 3000 &&
+                        `₦${this.props.deliveryDiscountObject?.price.toLocaleString()}`}
+                      {this.state.chosenCity?.price > 3000 &&
+                        `Shipping discount applied. Fee reduced to ₦${(
+                          this.state.chosenCity?.price - 3000
+                        ).toLocaleString()}`}
+                    </>
+                  ) : (
+                    `₦${deliveryCost.toLocaleString()}`
+                  )}
+                  {(!this.props.deliveryDiscountObject?.id ||
+                    (this.props.deliveryDiscountObject?.id &&
+                      this.state.chosenCity?.price <= 3000)) && (
+                    <>&nbsp;will be charged for delivery</>
+                  )}
                 </span>
-                <RightArrow />
               </div>
             </div>
           )}
 
-          {/* Checkout Buton */}
-
-          {/* Checkout Buton */}
-          {/* <div
+          <div
             className={classNames("checkout-button", {
               disabled:
                 !this.state.priceCheck ||
                 !this.checkFormValidity() ||
                 isCheckingOut ||
-                isLoadingDeliveryPrice,
+                isLoadingDeliveryPrice ||
+                (deliveryArr.includes(shippingMethod?.value) &&
+                  Object.entries(this.state.chosenCity).length === 0),
             })}
             onClick={this.checkout}
           >
             <div className="container">
               <span>
                 {isCheckingOut ? "Paying..." : "Pay"} ₦
-                {(
-                  subTotal +
-                  deliveryCost -
-                  (discountAmount || 0)
-                ).toLocaleString()}
-                {discountAmount && (
+                {finalAmount.toLocaleString()}
+                {discountAmount ? (
                   <small style={{ marginLeft: "10px" }}>
                     <strike>
-                      {(subTotal + deliveryCost).toLocaleString()}
+                      ₦{(subTotal + deliveryCost).toLocaleString()}
                     </strike>
                   </small>
-                )}
+                ) : null}
               </span>
               <RightArrow />
             </div>
-          </div> */}
-          {/* Checkout Buton */}
+          </div>
         </div>
-
         {toaster && <Toaster {...toaster} closeToaster={this.closeToaster} />}
       </div>
     );
