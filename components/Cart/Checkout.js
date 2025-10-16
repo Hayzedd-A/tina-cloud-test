@@ -140,7 +140,7 @@ class Checkout extends Component {
   handleDeliveryChange = ({ target }, valid) => {
     const { value } = target;
     this.resetDelivery(value);
-    console.log(value, deliveryArr);
+    console.log("delviery changed: ", value, deliveryArr);
     if (deliveryArr.includes(value)) {
       const { store } = this.props;
       if (store?.states?.length < 1 && store?.delivery_types?.length < 1) {
@@ -355,6 +355,7 @@ class Checkout extends Component {
 
     // Only calculate for delivery methods that require it
     if (!deliveryArr.includes(formData.shippingMethod.value)) {
+      console.log("method not found");
       return;
     }
 
@@ -986,7 +987,7 @@ class Checkout extends Component {
                   },
                 ]}
               />
-              {deliveryArr.includes(shippingMethod.value) ? (
+              {shippingMethod.value === "delivery" ? (
                 <Fragment>
                   <div className="input-container mb-40">
                     <Fragment>
