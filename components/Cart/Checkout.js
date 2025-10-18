@@ -100,6 +100,12 @@ class Checkout extends Component {
       latitude: "",
       longitude: "",
     },
+    pickupLocation: {
+      address: "",
+      latitude: "",
+      longitude: "",
+    },
+    selectedPickup: "",
     isCheckingOut: false,
   };
 
@@ -224,6 +230,12 @@ class Checkout extends Component {
         latitude: "6.5244",
         longitude: "3.3792",
       },
+      pickupLocation: {
+        address: "",
+        latitude: "",
+        longitude: "",
+      },
+      selectedPickup: "",
       initialValue: "",
       deliveryId: "",
     });
@@ -245,10 +257,15 @@ class Checkout extends Component {
     const { address, ...rest } = this.state.formData;
     const { shippingMethod } = this.state.formData;
 
+    const isPickupValid = (shippingMethod.value === "pickup" || shippingMethod.value === "s-pickup")
+      ? this.state.selectedPickup !== ""
+      : true;
+
     return Object.values(rest).every(
       (value) =>
         value.valid &&
-        (deliveryArr.includes(shippingMethod.value) ? address.valid : true)
+        (deliveryArr.includes(shippingMethod.value) ? address.valid : true) &&
+        isPickupValid
     );
   };
 
@@ -435,6 +452,8 @@ class Checkout extends Component {
       deliveryCost,
       chosenCity,
       deliveryLocation,
+      pickupLocation,
+      selectedPickup,
       isDeliveryDiscountEligible,
     } = this.state;
     const {
@@ -492,6 +511,11 @@ class Checkout extends Component {
       deliveryLocation,
     };
 
+    if (shippingMethod === "pickup" || shippingMethod === "s-pickup") {
+      payload.pickupLocation = pickupLocation;
+      payload.city = "Pickup"
+    }
+
     if (couponObject) {
       payload.discountType = couponObject.discountType;
       payload.discountValue = couponObject.value;
@@ -531,7 +555,7 @@ class Checkout extends Component {
     }
 
     if (shippingMethod === "pickup" || shippingMethod === "s-pickup") {
-      delete payload.deliveryLocation;
+      payload.deliveryLocation = payload.pickupLocation;
     }
 
     analyticsService.trackPurchase({
@@ -1041,10 +1065,46 @@ class Checkout extends Component {
                 </Fragment>
               ) : shippingMethod.value === "pickup" ? (
                 <div className="input-container mb-40">
-                  <label>Pickup Address</label>
-                  <div className="pickup-address mb-40">
-                    19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria
-                  </div>
+                  <SelectField
+                    label="Pickup Address"
+                    required
+                    hint="Choose pickup location"
+                    onChange={(e) => {
+                      const selected = e.target.value;
+                      let pickupLoc = {};
+                      if (selected === "1") {
+                        pickupLoc = {
+                          address: "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
+                          latitude: 6.430118879280349,
+                          longitude: 3.4881381695005618,
+                        };
+                      } else if (selected === "2") {
+                        pickupLoc = {
+                          address: "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
+                          latitude: 6.5244,
+                          longitude: 3.3792,
+                        };
+                      }
+                      this.setState({
+                        selectedPickup: selected,
+                        pickupLocation: pickupLoc,
+                      });
+                    }}
+                    options={[
+                      {
+                        key: "",
+                        label: "Choose pickup location",
+                      },
+                      {
+                        key: "1",
+                        label: "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
+                      },
+                      {
+                        key: "2",
+                        label: "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
+                      },
+                    ]}
+                  />
                 </div>
               ) : shippingMethod.value === "s-delivery" ? (
                 <>
@@ -1116,10 +1176,46 @@ class Checkout extends Component {
               ) : shippingMethod.value === "s-pickup" ? (
                 <>
                   <div className="input-container mb-40">
-                    <label>Pickup Address</label>
-                    <div className="pickup-address mb-40">
-                      19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria
-                    </div>
+                    <SelectField
+                      label="Pickup Address"
+                      required
+                      hint="Choose pickup location"
+                      onChange={(e) => {
+                        const selected = e.target.value;
+                        let pickupLoc = {};
+                        if (selected === "1") {
+                          pickupLoc = {
+                            address: "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
+                            latitude: 6.430118879280349,
+                            longitude: 3.4881381695005618,
+                          };
+                        } else if (selected === "2") {
+                          pickupLoc = {
+                            address: "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
+                            latitude: 6.5244,
+                            longitude: 3.3792,
+                          };
+                        }
+                        this.setState({
+                          selectedPickup: selected,
+                          pickupLocation: pickupLoc,
+                        });
+                      }}
+                      options={[
+                        {
+                          key: "",
+                          label: "Choose pickup location",
+                        },
+                        {
+                          key: "1",
+                          label: "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
+                        },
+                        {
+                          key: "2",
+                          label: "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
+                        },
+                      ]}
+                    />
                   </div>
                   <div className="input-container mb-40">
                     <label>
@@ -1220,7 +1316,9 @@ class Checkout extends Component {
                   !this.state.priceCheck ||
                   !this.checkFormValidity() ||
                   isCheckingOut ||
-                  isLoadingDeliveryPrice,
+                  isLoadingDeliveryPrice ||
+                  (shippingMethod.value === "pickup" || shippingMethod.value === "s-pickup") &&
+                  this.state.selectedPickup === "",
               })}
               onClick={this.checkout}
             >

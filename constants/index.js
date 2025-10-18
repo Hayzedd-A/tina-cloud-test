@@ -6,13 +6,13 @@ export const STORE_ID = '8a7a28dc-b54d-4841-b949-efe60dbae709';
 export const merchentRef = 'ref_8d6cd1583f4ee33c29786a208d';
 
 export const CHOWDECK_KEY = 'sk_test_7869ea89f1b52e7b48b0606afeaa1f9e74755f1fb83c5b8106';
-export const API_BASE_URL = "https://api.zupa.ng/";
-// export const API_BASE_URL = "https://dev.api.zupa.ng/";
+// export const API_BASE_URL = "https://api.zupa.ng/";
+export const API_BASE_URL = "https://dev.api.zupa.ng/";
 // export const API_BASE_URL = 'http://localhost:3000/';
 export const CHOWDECK_API_URL = `https://api.chowdeck.com/merchant/${merchentRef}`;
 // export const ANALYTICS_API_BASE_URL = 'http://localhost:3000/'
 export const ANALYTICS_API_BASE_URL = API_BASE_URL
-export const paystack_env = 'prod';
+export const paystack_env = 'dev';
 
 export const KITCHEN_LOCATION = {
   latitude: '6.601838',
