@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ANALYTICS_API_BASE_URL } from "../constants";
+import { API_BASE_URL } from "../constants";
 
 class AnalyticsService {
   constructor() {
@@ -14,14 +15,14 @@ class AnalyticsService {
   init(
     userId = null,
     analyticsId = localStorage.getItem("userAnalyticsId") || null,
-    sessionId = sessionStorage.getItem("sessionAnalyticsId"),
+    sessionId = sessionStorage.getItem("sessionAnalyticsId")
   ) {
-    console.log("analytics started")
+    console.log("analytics started");
     let parsedProfile = {};
     try {
       const rawProfile = localStorage.getItem("gourmet-twist-user");
       parsedProfile = rawProfile ? JSON.parse(rawProfile) : {};
-      console.log("user datas", {rawProfile, parsedProfile})
+      console.log("user datas", { rawProfile, parsedProfile });
     } catch (e) {
       console.warn("Failed to parse userProfile from localStorage", e);
       parsedProfile = {};
@@ -29,7 +30,7 @@ class AnalyticsService {
 
     this.userId = parsedProfile?.customer ? parsedProfile?.customer?.id : null;
     this.isInitialized = true;
-    this.analyticsId = analyticsId
+    this.analyticsId = analyticsId;
     this.sessionId = sessionId;
     this.userProfile = parsedProfile?.customer || null;
 

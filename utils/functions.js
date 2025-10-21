@@ -50,7 +50,7 @@ export const getRequestError = (error) => {
   } else if (response && response.data.message) {
     return response.data.message;
   }
-  console.log(error)
+  console.log(error);
   return "There might be a problem with your internet connection. Please check and try again.";
 };
 
@@ -130,25 +130,33 @@ export const paystack = (
   metadata
 ) => {
   analyticsService.trackEvent("paystack_intiated", {
-    email, ref, amount, metadata
-  })
-  // pk_live_42c6b07dfc9fd32654d4cc9fd39b08a031ac8826
-  // pk_test_54ed04488bcc1a192bd2406fd36cfd8596e3ccae
-  const handler = window.PaystackPop.setup({
-    key:
-      paystack_env !== "dev"
-        ? "pk_live_42c6b07dfc9fd32654d4cc9fd39b08a031ac8826"
-        : "pk_test_54ed04488bcc1a192bd2406fd36cfd8596e3ccae",
     email,
-    amount,
-    currency: "NGN",
-    metadata,
     ref,
-    callback: (response) => handlePaystackSuccess(response),
-    onClose: () => handlePaystackClose(),
+    amount,
+    metadata,
   });
+  try {
+    // pk_live_42c6b07dfc9fd32654d4cc9fd39b08a031ac8826
+    // pk_test_54ed04488bcc1a192bd2406fd36cfd8596e3ccae
+    const handler = window.PaystackPop.setup({
+      key:
+        paystack_env !== "dev"
+          ? "pk_live_42c6b07dfc9fd32654d4cc9fd39b08a031ac8826"
+          : "pk_test_54ed04488bcc1a192bd2406fd36cfd8596e3ccae",
+      email,
+      amount,
+      currency: "NGN",
+      metadata,
+      ref,
+      callback: (response) => handlePaystackSuccess(response),
+      onClose: () => handlePaystackClose(),
+      onerror: (error) => console.error("error in paystack: ", error),
+    });
 
-  handler.openIframe();
+    handler.openIframe();
+  } catch (error) {
+    console.error("Paystack error: ", error);
+  }
 };
 
 export const patchFormValues = (formFields, data) => {
