@@ -24,6 +24,7 @@ import {
   paystack,
   patchFormValues,
   dynamicSort,
+  sendOrderToWhatsApp,
 } from "../../utils/functions";
 
 import { deliveryPoints } from "../../utils/data";
@@ -257,9 +258,10 @@ class Checkout extends Component {
     const { address, ...rest } = this.state.formData;
     const { shippingMethod } = this.state.formData;
 
-    const isPickupValid = (shippingMethod.value === "pickup" || shippingMethod.value === "s-pickup")
-      ? this.state.selectedPickup !== ""
-      : true;
+    const isPickupValid =
+      shippingMethod.value === "pickup" || shippingMethod.value === "s-pickup"
+        ? this.state.selectedPickup !== ""
+        : true;
 
     return Object.values(rest).every(
       (value) =>
@@ -475,8 +477,12 @@ class Checkout extends Component {
       loyaltyPointsAvailable,
     } = this.props;
 
-    const orderItems = cart.map(({ id, quantity, toppings }) => ({
+    console.log("cart item: ", cart);
+
+    const orderItems = cart.map(({ id, quantity, name, size, toppings }) => ({
       productId: id,
+      name,
+      size,
       quantity,
       toppings: toppings.map((topping) => ({
         productId: topping.id,
@@ -513,7 +519,7 @@ class Checkout extends Component {
 
     if (shippingMethod === "pickup" || shippingMethod === "s-pickup") {
       payload.pickupLocation = pickupLocation;
-      payload.city = "Pickup"
+      payload.city = "Pickup";
     }
 
     if (couponObject) {
@@ -572,6 +578,9 @@ class Checkout extends Component {
       analyticsService.trackEvent("purchase_response", {
         ...res.data,
       });
+
+      this.setState({ isCheckingOut: false });
+      return sendOrderToWhatsApp(payload, amount);
 
       let discountAmount = couponObject
         ? couponObject.discountType === "percent"
@@ -644,6 +653,8 @@ class Checkout extends Component {
       });
 
       this.openToaster("error", message);
+    } finally {
+      this.setState({ isCheckingOut: false });
     }
   };
 
@@ -1074,13 +1085,15 @@ class Checkout extends Component {
                       let pickupLoc = {};
                       if (selected === "1") {
                         pickupLoc = {
-                          address: "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
+                          address:
+                            "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
                           latitude: 6.430118879280349,
                           longitude: 3.4881381695005618,
                         };
                       } else if (selected === "2") {
                         pickupLoc = {
-                          address: "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
+                          address:
+                            "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
                           latitude: 6.5244,
                           longitude: 3.3792,
                         };
@@ -1101,7 +1114,8 @@ class Checkout extends Component {
                       },
                       {
                         key: "2",
-                        label: "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
+                        label:
+                          "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
                       },
                     ]}
                   />
@@ -1185,13 +1199,15 @@ class Checkout extends Component {
                         let pickupLoc = {};
                         if (selected === "1") {
                           pickupLoc = {
-                            address: "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
+                            address:
+                              "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
                             latitude: 6.430118879280349,
                             longitude: 3.4881381695005618,
                           };
                         } else if (selected === "2") {
                           pickupLoc = {
-                            address: "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
+                            address:
+                              "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
                             latitude: 6.5244,
                             longitude: 3.3792,
                           };
@@ -1208,11 +1224,13 @@ class Checkout extends Component {
                         },
                         {
                           key: "1",
-                          label: "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
+                          label:
+                            "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
                         },
                         {
                           key: "2",
-                          label: "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
+                          label:
+                            "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
                         },
                       ]}
                     />
@@ -1296,7 +1314,8 @@ class Checkout extends Component {
             >
               <div className="container">
                 <span>
-                  {isCheckingOut ? "Paying..." : "Pay"} ₦
+                  {isCheckingOut ? "Sending..." : "Send Order to Whatsapp"} ₦
+                  {/* {isCheckingOut ? "Paying..." : "Pay"} ₦ */}
                   {finalAmount.toLocaleString()}
                   {discountAmount ? (
                     <small style={{ marginLeft: "10px" }}>
@@ -1317,14 +1336,16 @@ class Checkout extends Component {
                   !this.checkFormValidity() ||
                   isCheckingOut ||
                   isLoadingDeliveryPrice ||
-                  (shippingMethod.value === "pickup" || shippingMethod.value === "s-pickup") &&
-                  this.state.selectedPickup === "",
+                  ((shippingMethod.value === "pickup" ||
+                    shippingMethod.value === "s-pickup") &&
+                    this.state.selectedPickup === ""),
               })}
               onClick={this.checkout}
             >
               <div className="container">
                 <span>
-                  {isCheckingOut ? "Paying..." : "Pay"} ₦
+                  {/* {isCheckingOut ? "Paying..." : "Pay"} ₦ */}
+                  {isCheckingOut ? "Sending..." : "Send order to Whatsapp"} ₦
                   {finalAmount.toLocaleString()}
                   {discountAmount ? (
                     <small style={{ marginLeft: "10px" }}>

@@ -81,9 +81,10 @@ class Home extends Component {
                     <button className="continue" onClick={this.closeModal}>
                       <a href={`https://wa.me/${this.state.phoneNumber}?text=${this.state.message}`} target="_blank" rel="noopener noreferrer">
 
-                      Open WhatsApp
+                      Open WhatsApp Now
                       </a>
                     </button>
+                    <button className="continue" onClick={this.closeModal}>Continue Shopping</button>
                   </div>
                 </div>
               </Modal>
