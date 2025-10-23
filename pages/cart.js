@@ -309,6 +309,7 @@ const CartPage = ({ cart }) => {
           handleApplyDCCode={handleApplyDCCode}
           handleChangeDeliveryDiscountCode={handleChangeDeliveryDiscountCode}
           resetDeliveryDiscount={resetDeliveryDiscount}
+          showCheckoutSuccess={showCheckoutSuccess}
         />
       )}
       {toaster && <Toaster {...toaster} closeToaster={closeToaster} />}

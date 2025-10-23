@@ -136,7 +136,10 @@ class CartProvider extends Component {
     }, () => success && success());
   };
 
+  // how can i get the location prop here?
+
   componentDidMount() {
+    // console.log("location object", this.props.location);
     this.getCart();
   }
 

@@ -43,6 +43,7 @@ import { Button, message } from "antd";
 import Axios from "axios";
 import analyticsService from "../../services/analyticsService";
 import { getCoordinates } from "../../services/geoLocation";
+// import { useSearchParams } from "next/navigation";
 
 const deliveryArr = ["delivery", "s-delivery", "c-delivery", "sc-delivery"];
 
@@ -108,6 +109,7 @@ class Checkout extends Component {
     },
     selectedPickup: "",
     isCheckingOut: false,
+    paymentStatus: "idle", // idle | loading | success | failed
   };
 
   checkPrice = (subTotal) => {
@@ -574,13 +576,13 @@ class Checkout extends Component {
         data: payload,
       });
 
-      const { paymentReference, amount } = res.data;
+      const { paymentReference, amount, checkoutLink } = res.data;
       analyticsService.trackEvent("purchase_response", {
         ...res.data,
       });
 
       this.setState({ isCheckingOut: false });
-      return sendOrderToWhatsApp(payload, amount);
+      // return sendOrderToWhatsApp(payload, amount);
 
       let discountAmount = couponObject
         ? couponObject.discountType === "percent"
@@ -633,14 +635,18 @@ class Checkout extends Component {
         return;
       }
 
-      paystack(
-        email,
-        paymentReference,
-        parseFloat(finalAmount == 0 ? 0.01 : finalAmount) * 100,
-        this.handlePaystackSuccess,
-        this.handlePaystackClose,
-        metadata
-      );
+      if (checkoutLink) {
+        window.location.href = checkoutLink;
+      }
+
+      // paystack(
+      //   email,
+      //   paymentReference,
+      //   parseFloat(finalAmount == 0 ? 0.01 : finalAmount) * 100,
+      //   this.handlePaystackSuccess,
+      //   this.handlePaystackClose,
+      //   metadata
+      // );
 
       this.setState({
         isCheckingOut: false,
@@ -1314,8 +1320,8 @@ class Checkout extends Component {
             >
               <div className="container">
                 <span>
-                  {isCheckingOut ? "Sending..." : "Send Order to Whatsapp"} ₦
-                  {/* {isCheckingOut ? "Paying..." : "Pay"} ₦ */}
+                  {/* {isCheckingOut ? "Sending..." : "Send Order to Whatsapp"} ₦ */}
+                  {isCheckingOut ? "Paying..." : "Pay"} ₦
                   {finalAmount.toLocaleString()}
                   {discountAmount ? (
                     <small style={{ marginLeft: "10px" }}>
@@ -1344,8 +1350,8 @@ class Checkout extends Component {
             >
               <div className="container">
                 <span>
-                  {/* {isCheckingOut ? "Paying..." : "Pay"} ₦ */}
-                  {isCheckingOut ? "Sending..." : "Send order to Whatsapp"} ₦
+                  {isCheckingOut ? "Paying..." : "Pay"} ₦
+                  {/* {isCheckingOut ? "Sending..." : "Send order to Whatsapp"} ₦ */}
                   {finalAmount.toLocaleString()}
                   {discountAmount ? (
                     <small style={{ marginLeft: "10px" }}>

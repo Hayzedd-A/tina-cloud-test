@@ -69,22 +69,16 @@ class Home extends Component {
                   </div>
 
                   <div className="message">
-                    Website Temporarily Unavailable.
+                    Enjoy FREE delivery when you order above 25k.
                     <span style={{ display: "block", fontSize: 15 }}>
-                      We’re currently experiencing some issues with our website.
-                      Please continue your order through WhatsApp. We’ll
-                      process it right away!
+                      If delivery exceeds N3,000 you only pay the difference!
                     </span>
                   </div>
 
                   <div className="actions">
                     <button className="continue" onClick={this.closeModal}>
-                      <a href={`https://wa.me/${this.state.phoneNumber}?text=${this.state.message}`} target="_blank" rel="noopener noreferrer">
-
-                      Open WhatsApp Now
-                      </a>
+                      Ok
                     </button>
-                    <button className="continue" onClick={this.closeModal}>Continue Shopping</button>
                   </div>
                 </div>
               </Modal>
