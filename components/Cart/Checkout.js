@@ -32,6 +32,7 @@ import { HeaderMenu } from "../Header";
 import {
   API_BASE_URL,
   CHOWDECK_API_URL,
+  FREE_DELIVERY_TRESHOLD,
   KITCHEN_LOCATION,
   STORE_ID,
 } from "../../constants";
@@ -616,7 +617,7 @@ class Checkout extends Component {
 
       const costToCompare =
         subTotal +
-        (subTotal >= 25000 ? Math.max(deliveryCost - 3000, 0) : deliveryCost);
+        (subTotal >= FREE_DELIVERY_TRESHOLD ? Math.max(deliveryCost - 3000, 0) : deliveryCost);
 
       if (costToCompare !== amount) {
         analyticsService.trackEvent("Payment failed", {
@@ -795,7 +796,7 @@ class Checkout extends Component {
   componentDidUpdate(_, prevState) {
     const { deliveryCost, isDeliveryDiscountEligible, chosenCity } = this.state;
     const subTotal = reduceArray(this.props.cart, "totalCost");
-    const discountEligible = subTotal >= 25000 && deliveryCost <= 3000;
+    const discountEligible = subTotal >= FREE_DELIVERY_TRESHOLD && deliveryCost <= 3000;
 
     if (
       discountEligible !== isDeliveryDiscountEligible &&
@@ -1291,11 +1292,13 @@ class Checkout extends Component {
                           ).toLocaleString()}`}
                       </>
                     ) : (
-                      `₦${deliveryCost.toLocaleString()} will be charged for delivery`
+                      `₦${deliveryCost.toLocaleString()}`
+                      // `₦${deliveryCost.toLocaleString()} will be charged for delivery`
                     )}
                     {(!this.props.deliveryDiscountObject?.id ||
                       (this.props.deliveryDiscountObject?.id &&
                         this.state.chosenCity?.price <= 3000)) && (
+                          // <></>
                       <>&nbsp;will be charged for delivery</>
                     )}
                   </span>

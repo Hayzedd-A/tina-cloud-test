@@ -14,7 +14,7 @@ import { NumberSelector } from "../FormElements";
 
 import { RightArrow, EmptyCart, ModalBread } from "../../public/static/vectors";
 import { HeaderMenu } from "../Header";
-import { STORE_ID } from "../../constants";
+import { FREE_DELIVERY_TRESHOLD, STORE_ID } from "../../constants";
 import Loader from "../Loader";
 
 import {
@@ -196,10 +196,10 @@ class Cart extends Component {
     let finalAmount = subTotal - discountAmount;
     if (finalAmount < 0) finalAmount = 0;
 
-    if (finalAmount < 25000 && this.props.deliveryDiscountObject?.id) {
+    if (finalAmount < FREE_DELIVERY_TRESHOLD && this.props.deliveryDiscountObject?.id) {
       this.props.resetDeliveryDiscount();
     } else if (
-      finalAmount >= 25000 &&
+      finalAmount >= FREE_DELIVERY_TRESHOLD &&
       !this.props.deliveryDiscountObject?.id &&
       !this.state.isApplyingDC
     ) {
