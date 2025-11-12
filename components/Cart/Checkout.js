@@ -1036,7 +1036,7 @@ class Checkout extends Component {
                       <SelectField
                         label="City"
                         required
-                        hint="City"
+                        hint="Incorrect city selection may lead to delays and price revalidation"
                         onChange={this.handleCityChange}
                         options={this.state.cities}
                       />

@@ -9,7 +9,7 @@ export const CHOWDECK_KEY =
   "sk_test_7869ea89f1b52e7b48b0606afeaa1f9e74755f1fb83c5b8106";
 export const API_BASE_URL = "https://api.zupa.ng/";
 // export const API_BASE_URL = "https://dev.api.zupa.ng/";
-// export const API_BASE_URL = 'http://localhost:3000/';
+// export const API_BASE_URL = 'http://localhost:4001/';
 export const CHOWDECK_API_URL = `https://api.chowdeck.com/merchant/${merchentRef}`;
 // export const ANALYTICS_API_BASE_URL = 'http://localhost:3000/'
 export const ANALYTICS_API_BASE_URL = API_BASE_URL;
