@@ -502,7 +502,8 @@ class Checkout extends Component {
     const payload = {
       state: "lagos",
       city: chosenCity?.label,
-      deliveryTypeId: deliveryDiscountObject?.id || chosenCity?.key,
+      // deliveryTypeId: deliveryDiscountObject?.id || chosenCity?.key,
+      deliveryTypeId: chosenCity?.key,
       originalDeliveryTypeId: chosenCity?.key,
       specialNote: note,
       orderItems,
@@ -617,7 +618,9 @@ class Checkout extends Component {
 
       const costToCompare =
         subTotal +
-        (subTotal >= FREE_DELIVERY_TRESHOLD ? Math.max(deliveryCost - 3000, 0) : deliveryCost);
+        (subTotal >= FREE_DELIVERY_TRESHOLD
+          ? Math.max(deliveryCost - 3000, 0)
+          : deliveryCost);
 
       if (costToCompare !== amount) {
         analyticsService.trackEvent("Payment failed", {
@@ -796,7 +799,8 @@ class Checkout extends Component {
   componentDidUpdate(_, prevState) {
     const { deliveryCost, isDeliveryDiscountEligible, chosenCity } = this.state;
     const subTotal = reduceArray(this.props.cart, "totalCost");
-    const discountEligible = subTotal >= FREE_DELIVERY_TRESHOLD && deliveryCost <= 3000;
+    const discountEligible =
+      subTotal >= FREE_DELIVERY_TRESHOLD && deliveryCost <= 3000;
 
     if (
       discountEligible !== isDeliveryDiscountEligible &&
@@ -809,8 +813,8 @@ class Checkout extends Component {
     }
   }
 
-  handleCityChange = (e) => {
-    let cityIndex = e.target.value;
+  handleCityChange = (e, id) => {
+    let cityIndex = e ? e.target.value : id;
 
     if (cityIndex === "" || cityIndex === "0") {
       this.setState({
@@ -821,8 +825,11 @@ class Checkout extends Component {
     }
 
     let found = this.state.cities.find((elem) => {
-      return elem.key == cityIndex;
+      return elem.key == cityIndex || elem.id === cityIndex;
     });
+
+    console.log("found: ",found)
+
     if (found) {
       if (Object.entries(found).length > 0) {
         this.setState({
@@ -1096,14 +1103,18 @@ class Checkout extends Component {
                             "19B Fola Osibo, Lekki Phase 1, Lekki, Nigeria",
                           latitude: 6.430118879280349,
                           longitude: 3.4881381695005618,
+                          id: "7ea1da57-376a-4b39-a0ff-b93f8f5884bf",
                         };
+                        this.handleCityChange(null, pickupLoc.id);
                       } else if (selected === "2") {
                         pickupLoc = {
                           address:
-                            "13b Methodist Church St, Opebi, Lagos 101233, Lagos, Nigeria",
+                            "13b Methodist Church St, Opebi, LagosFola 101233, Lagos, Nigeria",
                           latitude: 6.5244,
                           longitude: 3.3792,
+                          id: "2d4a8917-3408-4e25-9f6f-aad87a4087bd",
                         };
+                        this.handleCityChange(null, pickupLoc.id);
                       }
                       this.setState({
                         selectedPickup: selected,
@@ -1298,7 +1309,7 @@ class Checkout extends Component {
                     {(!this.props.deliveryDiscountObject?.id ||
                       (this.props.deliveryDiscountObject?.id &&
                         this.state.chosenCity?.price <= 3000)) && (
-                          // <></>
+                      // <></>
                       <>&nbsp;will be charged for delivery</>
                     )}
                   </span>
