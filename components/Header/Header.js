@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import classNames from "classnames";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 import { useRouter } from "next/router";
@@ -14,11 +14,20 @@ const Header = () => {
 
   const [isMenuActive, showMenu] = useState(false);
   const [isSearchInputActive, showSearchInput] = useState(!!q);
+  const searchTimeoutRef = useRef(null);
 
   const handleSearch = (value) => {
-    router.push(`/search?q=${value}`, undefined, {
-      shallow: true,
-    });
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Set a new timeout for 2 seconds
+    searchTimeoutRef.current = setTimeout(() => {
+      router.push(`/search?q=${value}`, undefined, {
+        shallow: true,
+      });
+    }, 1500);
   };
 
   return (
@@ -70,7 +79,13 @@ const Header = () => {
           <SearchInput
             q={q}
             handleSearch={handleSearch}
-            showSearchInput={showSearchInput}
+            showSearchInput={(val) => {
+              showSearchInput(val);
+              if (router.pathname === "/search") {
+                console.log("router.pathname", router.pathname);
+                router.push("/");
+              }
+            }}
             isSearchInputActive={isSearchInputActive}
           />
         )}
