@@ -622,6 +622,7 @@ class Checkout extends Component {
           ? Math.max(deliveryCost - 3000, 0)
           : deliveryCost);
 
+
       if (costToCompare !== amount) {
         analyticsService.trackEvent("Payment failed", {
           category: "Checkout",
@@ -639,18 +640,18 @@ class Checkout extends Component {
         return;
       }
 
-      if (checkoutLink) {
-        window.location.href = checkoutLink;
-      }
+      // if (checkoutLink) {
+      //   window.location.href = checkoutLink;
+      // }
 
-      // paystack(
-      //   email,
-      //   paymentReference,
-      //   parseFloat(finalAmount == 0 ? 0.01 : finalAmount) * 100,
-      //   this.handlePaystackSuccess,
-      //   this.handlePaystackClose,
-      //   metadata
-      // );
+      paystack(
+        email,
+        paymentReference,
+        parseFloat(amount == 0 ? 0.01 : amount) * 100,
+        this.handlePaystackSuccess,
+        this.handlePaystackClose,
+        metadata
+      );
 
       this.setState({
         isCheckingOut: false,

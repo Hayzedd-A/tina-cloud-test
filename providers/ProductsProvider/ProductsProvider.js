@@ -27,7 +27,6 @@ class ProductsProvider extends Component {
       const res = await getRequest({
         url: `/customer-requests/stores/${STORE_ID}/products`
       })
-      console.log("all products fetched successfully ==== ✅✅✅", res.data.data.length);
       this.setState({
         products: res.data.data,
         isLoadingProducts: false
