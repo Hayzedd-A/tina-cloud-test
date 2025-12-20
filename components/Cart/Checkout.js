@@ -1044,7 +1044,7 @@ class Checkout extends Component {
                       <SelectField
                         label="City"
                         required
-                        hint="Incorrect city selection may lead to delays and price revalidation"
+                        hint="Fragile or bulk orders may need a special delivery, we’ll contact you to review the delivery price."
                         onChange={this.handleCityChange}
                         options={this.state.cities}
                       />
