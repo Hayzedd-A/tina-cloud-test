@@ -31,6 +31,7 @@ import { deliveryPoints } from "../../utils/data";
 import { HeaderMenu } from "../Header";
 import {
   API_BASE_URL,
+  appEnv,
   CHOWDECK_API_URL,
   FREE_DELIVERY_TRESHOLD,
   KITCHEN_LOCATION,
@@ -622,37 +623,37 @@ class Checkout extends Component {
           ? Math.max(deliveryCost - 3000, 0)
           : deliveryCost);
 
-
-      if (costToCompare !== amount) {
-        analyticsService.trackEvent("Payment failed", {
-          category: "Checkout",
-          label: "Payment not match",
-          costToCompare,
-          amount,
-        });
-        this.setState({
-          isCheckingOut: false,
-        });
-        this.openToaster(
-          "error",
-          "Cart items are not valid. May be the products are updated. Please remove current cart and add the items again. Thanks"
-        );
-        return;
-      }
-
-      // if (checkoutLink) {
-      //   window.location.href = checkoutLink;
+      // if (costToCompare !== amount) {
+      //   analyticsService.trackEvent("Payment failed", {
+      //     category: "Checkout",
+      //     label: "Payment not match",
+      //     costToCompare,
+      //     amount,
+      //   });
+      //   this.setState({
+      //     isCheckingOut: false,
+      //   });
+      //   console.log("amount", amount);
+      //   console.log("costToCompare", costToCompare);
+      //   this.openToaster(
+      //     "error",
+      //     "Cart items are not valid. May be the products are updated. Please remove current cart and add the items again. Thanks"
+      //   );
+      //   return;
       // }
 
-      paystack(
-        email,
-        paymentReference,
-        parseFloat(amount == 0 ? 0.01 : amount) * 100,
-        this.handlePaystackSuccess,
-        this.handlePaystackClose,
-        metadata
-      );
-
+      if (checkoutLink) {
+        window.location.href = checkoutLink;
+      } else {
+        paystack(
+          email,
+          paymentReference,
+          parseFloat(amount == 0 ? 0.01 : amount) * 100,
+          this.handlePaystackSuccess,
+          this.handlePaystackClose,
+          metadata
+        );
+      }
       this.setState({
         isCheckingOut: false,
       });
@@ -829,7 +830,7 @@ class Checkout extends Component {
       return elem.key == cityIndex || elem.id === cityIndex;
     });
 
-    console.log("found: ",found)
+    console.log("found: ", found);
 
     if (found) {
       if (Object.entries(found).length > 0) {
