@@ -74,7 +74,7 @@ class Home extends Component {
                       If delivery exceeds N3,000 you only pay the difference!
                     </span>
                     <span style={{ display: "block", fontSize: 15, color: "red" }}>
-                      Please note: There will be no deliveries on Christmas Day (Dec 25th, 2025); orders will be available for pickup only.
+                      Please note: There will be no deliveries on new year Day (Jan 1st, 2026); orders will be available for pickup only.
                     </span>
                   </div>
 
