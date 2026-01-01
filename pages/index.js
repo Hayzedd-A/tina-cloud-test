@@ -73,9 +73,9 @@ class Home extends Component {
                     <span style={{ display: "block", fontSize: 15 }}>
                       If delivery exceeds N3,000 you only pay the difference!
                     </span>
-                    <span style={{ display: "block", fontSize: 15, color: "red" }}>
+                    {/* <span style={{ display: "block", fontSize: 15, color: "red" }}>
                       Please note: There will be no deliveries on new year Day (Jan 1st, 2026); orders will be available for pickup only.
-                    </span>
+                    </span> */}
                   </div>
 
                   <div className="actions">
