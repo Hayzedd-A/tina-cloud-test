@@ -196,7 +196,6 @@ class Checkout extends Component {
           value === "pickup" || value === "s-pickup"
             ? 0
             : this.state.deliveryCost,
-        deliveryDiscoutPrice: value.includes("s-") ? 3000 : DELIVERY_DISCOUNT
       },
       () => {
         // Recalculate delivery fee if address and city are already selected
