@@ -33,6 +33,7 @@ import {
   API_BASE_URL,
   appEnv,
   CHOWDECK_API_URL,
+  DELIVERY_DISCOUNT,
   FREE_DELIVERY_TRESHOLD,
   KITCHEN_LOCATION,
   STORE_ID,
@@ -99,6 +100,7 @@ class Checkout extends Component {
     storeCities: [],
     initialValue: "",
     deliveryId: "",
+    deliveryDiscoutPrice: DELIVERY_DISCOUNT,
     deliveryLocation: {
       address: "",
       latitude: "",
@@ -194,6 +196,7 @@ class Checkout extends Component {
           value === "pickup" || value === "s-pickup"
             ? 0
             : this.state.deliveryCost,
+        deliveryDiscoutPrice: value.includes("s-") ? 3000 : DELIVERY_DISCOUNT
       },
       () => {
         // Recalculate delivery fee if address and city are already selected
@@ -611,16 +614,16 @@ class Checkout extends Component {
 
       if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
 
-      if (deliveryDiscountObject?.id) {
-        if (this.state.chosenCity?.price > 3000)
-          finalAmountWithoutDeliveryFee += this.state.chosenCity?.price - 3000;
+      if (deliveryDiscountObject?.id) { 
+        if (this.state.chosenCity?.price > this.state.deliveryDiscoutPrice)
+          finalAmountWithoutDeliveryFee += this.state.chosenCity?.price - this.state.deliveryDiscoutPrice;
         finalAmount = finalAmountWithoutDeliveryFee;
       }
 
       const costToCompare =
         subTotal +
         (subTotal >= FREE_DELIVERY_TRESHOLD
-          ? Math.max(deliveryCost - 3000, 0)
+          ? Math.max(deliveryCost - this.state.deliveryDiscoutPrice, 0)
           : deliveryCost);
 
       // if (costToCompare !== amount) {
@@ -802,7 +805,7 @@ class Checkout extends Component {
     const { deliveryCost, isDeliveryDiscountEligible, chosenCity } = this.state;
     const subTotal = reduceArray(this.props.cart, "totalCost");
     const discountEligible =
-      subTotal >= FREE_DELIVERY_TRESHOLD && deliveryCost <= 3000;
+      subTotal >= FREE_DELIVERY_TRESHOLD && deliveryCost <= this.state.deliveryDiscoutPrice;
 
     if (
       discountEligible !== isDeliveryDiscountEligible &&
@@ -912,8 +915,8 @@ class Checkout extends Component {
 
     if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
 
-    if (this.state.chosenCity?.price > 3000 && deliveryDiscountObject?.id)
-      finalAmount += this.state.chosenCity?.price - 3000;
+    if (this.state.chosenCity?.price > this.state.deliveryDiscoutPrice && deliveryDiscountObject?.id)
+      finalAmount += this.state.chosenCity?.price - this.state.deliveryDiscoutPrice;
 
     return (
       <div className="cart-container">
@@ -1297,11 +1300,11 @@ class Checkout extends Component {
                           ₦{this.state.chosenCity?.price.toLocaleString()}
                         </strike>
                         &nbsp;
-                        {this.state.chosenCity?.price <= 3000 &&
+                        {this.state.chosenCity?.price <= this.state.deliveryDiscoutPrice &&
                           `₦${this.props.deliveryDiscountObject?.price.toLocaleString()}`}
-                        {this.state.chosenCity?.price > 3000 &&
+                        {this.state.chosenCity?.price > this.state.deliveryDiscoutPrice &&
                           `Shipping discount applied. Fee reduced to ₦${(
-                            this.state.chosenCity?.price - 3000
+                            this.state.chosenCity?.price - this.state.deliveryDiscoutPrice
                           ).toLocaleString()}`}
                       </>
                     ) : (
@@ -1310,9 +1313,9 @@ class Checkout extends Component {
                     )}
                     {(!this.props.deliveryDiscountObject?.id ||
                       (this.props.deliveryDiscountObject?.id &&
-                        this.state.chosenCity?.price <= 3000)) && (
+                        this.state.chosenCity?.price <= this.state.deliveryDiscoutPrice)) && (
                       // <></>
-                      <>&nbsp;will be charged for delivery</>
+                      <>&nbsp;will be charged for delivery {this.state.deliveryDiscoutPrice === DELIVERY_DISCOUNT && <span>( Its free delivery today )</span>}</>
                     )}
                   </span>
                 </div>
