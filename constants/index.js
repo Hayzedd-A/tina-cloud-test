@@ -14,8 +14,8 @@ export const CHOWDECK_API_URL = `https://api.chowdeck.com/merchant/${merchentRef
 // export const ANALYTICS_API_BASE_URL = 'http://localhost:3000/'
 export const ANALYTICS_API_BASE_URL = API_BASE_URL;
 export const paystack_env = "prod";
-export const FREE_DELIVERY_TRESHOLD = 10000
-export const DELIVERY_DISCOUNT = 15000
+export const FREE_DELIVERY_TRESHOLD = 25000
+export const DELIVERY_DISCOUNT = 3000
 
 
 export const KITCHEN_LOCATION = {
