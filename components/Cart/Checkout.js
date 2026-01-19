@@ -46,6 +46,7 @@ import { Button, message } from "antd";
 import Axios from "axios";
 import analyticsService from "../../services/analyticsService";
 import { getCoordinates } from "../../services/geoLocation";
+import Marque from "../Marque";
 // import { useSearchParams } from "next/navigation";
 
 const deliveryArr = ["delivery", "s-delivery", "c-delivery", "sc-delivery"];
@@ -158,7 +159,7 @@ class Checkout extends Component {
       if (store?.states?.length < 1 && store?.delivery_types?.length < 1) {
         this.openToaster(
           "error",
-          "The delivery system for this store is not available yet"
+          "The delivery system for this store is not available yet",
         );
       } else {
         this.effectDeliveryChange(value);
@@ -205,7 +206,7 @@ class Checkout extends Component {
         ) {
           this.handleGetDeliveryFee();
         }
-      }
+      },
     );
   };
 
@@ -272,7 +273,7 @@ class Checkout extends Component {
       (value) =>
         value.valid &&
         (deliveryArr.includes(shippingMethod.value) ? address.valid : true) &&
-        isPickupValid
+        isPickupValid,
     );
   };
 
@@ -317,10 +318,10 @@ class Checkout extends Component {
               if (Object.keys(this.state.chosenCity).length > 0) {
                 this.handleGetDeliveryFee();
               }
-            }
+            },
           );
         }
-      }
+      },
     );
   };
 
@@ -562,7 +563,7 @@ class Checkout extends Component {
 
       payload.loyaltyPointsDiscountRedeemed = loyaltyPointsToRedeem;
       payload.loyaltyPointsRedeemed = Math.ceil(
-        loyaltyPointsToRedeem / loyaltyPointsAvailable.discountPerPoint
+        loyaltyPointsToRedeem / loyaltyPointsAvailable.discountPerPoint,
       );
     }
 
@@ -612,9 +613,10 @@ class Checkout extends Component {
 
       if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
 
-      if (deliveryDiscountObject?.id) { 
+      if (deliveryDiscountObject?.id) {
         if (this.state.chosenCity?.price > DELIVERY_DISCOUNT)
-          finalAmountWithoutDeliveryFee += this.state.chosenCity?.price - DELIVERY_DISCOUNT;
+          finalAmountWithoutDeliveryFee +=
+            this.state.chosenCity?.price - DELIVERY_DISCOUNT;
         finalAmount = finalAmountWithoutDeliveryFee;
       }
 
@@ -652,7 +654,7 @@ class Checkout extends Component {
           parseFloat(amount == 0 ? 0.01 : amount) * 100,
           this.handlePaystackSuccess,
           this.handlePaystackClose,
-          metadata
+          metadata,
         );
       }
       this.setState({
@@ -736,7 +738,7 @@ class Checkout extends Component {
     if (currentUser) {
       const formData = patchFormValues(
         initialFormData,
-        JSON.parse(currentUser).customer
+        JSON.parse(currentUser).customer,
       );
 
       this.setState({
@@ -794,7 +796,7 @@ class Checkout extends Component {
       });
       this.openToaster(
         "error",
-        "Delivery not available in this state yet, you can choose PICKUP or SCHEDULED delivery"
+        "Delivery not available in this state yet, you can choose PICKUP or SCHEDULED delivery",
       );
     }
   };
@@ -913,7 +915,10 @@ class Checkout extends Component {
 
     if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
 
-    if (this.state.chosenCity?.price > DELIVERY_DISCOUNT && deliveryDiscountObject?.id)
+    if (
+      this.state.chosenCity?.price > DELIVERY_DISCOUNT &&
+      deliveryDiscountObject?.id
+    )
       finalAmount += this.state.chosenCity?.price - DELIVERY_DISCOUNT;
 
     return (
@@ -970,6 +975,7 @@ class Checkout extends Component {
               </span>
             </div>
           )}
+          {/* <Marque text="Kindly note that orders placed from 6:00 PM may not be processed the same day. The orders will be moved to the next business day for processing, as our bakery closes at 6:00 PM." /> */}
         </div>
         <div className="checkout-form">
           <div className="container">
@@ -1280,6 +1286,11 @@ class Checkout extends Component {
               />
             </div>
           </div>
+          <span>
+            Kindly note that orders placed from 6:00 PM may not be processed the
+            same day. The orders will be moved to the next business day for
+            processing, as our bakery closes at 6:00 PM.
+          </span>
         </div>
         <div className="cart-actions no-margin fixed">
           {deliveryCost >= 0 &&

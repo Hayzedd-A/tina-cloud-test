@@ -5112,6 +5112,11 @@ react-elfsight-widget@^1.0.3:
   resolved "https://registry.npmjs.org/react-elfsight-widget/-/react-elfsight-widget-1.0.3.tgz"
   integrity sha512-1rEnGJ9cIx1XG41lAhEWMjRZccY4Za/tMkCa2E4ren7waCn7Ft6c4Xrpb9lt7uhlIQQcChBDD64pxp5h/0wW5g==
 
+react-fast-marquee@^1.6.5:
+  version "1.6.5"
+  resolved "https://registry.npmjs.org/react-fast-marquee/-/react-fast-marquee-1.6.5.tgz"
+  integrity sha512-swDnPqrT2XISAih0o74zQVE2wQJFMvkx+9VZXYYNSLb/CUcAzU9pNj637Ar2+hyRw6b4tP6xh4GQZip2ZCpQpg==
+
 react-geosuggest@2.12.1:
   version "2.12.1"
   resolved "https://registry.npmjs.org/react-geosuggest/-/react-geosuggest-2.12.1.tgz"
