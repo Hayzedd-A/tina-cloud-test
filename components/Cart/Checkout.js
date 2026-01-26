@@ -47,6 +47,7 @@ import Axios from "axios";
 import analyticsService from "../../services/analyticsService";
 import { getCoordinates } from "../../services/geoLocation";
 import Marque from "../Marque";
+import PopupModal from "../PopupModal";
 // import { useSearchParams } from "next/navigation";
 
 const deliveryArr = ["delivery", "s-delivery", "c-delivery", "sc-delivery"];
@@ -1286,11 +1287,13 @@ class Checkout extends Component {
               />
             </div>
           </div>
-          <span>
-            Kindly note that orders placed from 6:00 PM may not be processed the
-            same day. The orders will be moved to the next business day for
-            processing, as our bakery closes at 6:00 PM.
-          </span>
+          <PopupModal
+            OkText="I understand"
+            text={{
+              main: "Orders placed after 6:00 PM will be processed the next business day.",
+              sub: "Also, items not readily available may require fresh processing, with an average prep time of 3 hours depending on the size.",
+            }}
+          />
         </div>
         <div className="cart-actions no-margin fixed">
           {deliveryCost >= 0 &&
