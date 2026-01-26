@@ -1291,7 +1291,7 @@ class Checkout extends Component {
             OkText="I understand"
             text={{
               main: "Orders placed after 6:00 PM will be processed the next business day.",
-              sub: "Also, items not readily available may require fresh processing, with an average prep time of 3 hours depending on the size.",
+              sub: "Also, items not readily available will require fresh processing, with an average prep time of 3 hours depending on the size.",
             }}
           />
         </div>
