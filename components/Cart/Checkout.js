@@ -35,6 +35,7 @@ import {
   CHOWDECK_API_URL,
   DELIVERY_DISCOUNT,
   FREE_DELIVERY_TRESHOLD,
+  isNoDiscountDate,
   KITCHEN_LOCATION,
   STORE_ID,
 } from "../../constants";
@@ -114,6 +115,7 @@ class Checkout extends Component {
     },
     selectedPickup: "",
     isCheckingOut: false,
+    deliveryDiscount: DELIVERY_DISCOUNT,
     paymentStatus: "idle", // idle | loading | success | failed
   };
 
@@ -258,6 +260,7 @@ class Checkout extends Component {
           valid: true,
         },
       },
+      deliveryDiscount: isNoDiscountDate(day) ? 0 : DELIVERY_DISCOUNT,
     });
   };
 
@@ -615,16 +618,16 @@ class Checkout extends Component {
       if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
 
       if (deliveryDiscountObject?.id) {
-        if (this.state.chosenCity?.price > DELIVERY_DISCOUNT)
+        if (this.state.chosenCity?.price > this.state.deliveryDiscount)
           finalAmountWithoutDeliveryFee +=
-            this.state.chosenCity?.price - DELIVERY_DISCOUNT;
+            this.state.chosenCity?.price - this.state.deliveryDiscount;
         finalAmount = finalAmountWithoutDeliveryFee;
       }
 
       const costToCompare =
         subTotal +
         (subTotal >= FREE_DELIVERY_TRESHOLD
-          ? Math.max(deliveryCost - DELIVERY_DISCOUNT, 0)
+          ? Math.max(deliveryCost - this.state.deliveryDiscount, 0)
           : deliveryCost);
 
       // if (costToCompare !== amount) {
@@ -806,7 +809,8 @@ class Checkout extends Component {
     const { deliveryCost, isDeliveryDiscountEligible, chosenCity } = this.state;
     const subTotal = reduceArray(this.props.cart, "totalCost");
     const discountEligible =
-      subTotal >= FREE_DELIVERY_TRESHOLD && deliveryCost <= DELIVERY_DISCOUNT;
+      subTotal >= FREE_DELIVERY_TRESHOLD &&
+      deliveryCost <= this.state.deliveryDiscount;
 
     if (
       discountEligible !== isDeliveryDiscountEligible &&
@@ -917,10 +921,10 @@ class Checkout extends Component {
     if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
 
     if (
-      this.state.chosenCity?.price > DELIVERY_DISCOUNT &&
+      this.state.chosenCity?.price > this.state.deliveryDiscount &&
       deliveryDiscountObject?.id
     )
-      finalAmount += this.state.chosenCity?.price - DELIVERY_DISCOUNT;
+      finalAmount += this.state.chosenCity?.price - this.state.deliveryDiscount;
 
     return (
       <div className="cart-container">
@@ -1312,11 +1316,14 @@ class Checkout extends Component {
                           ₦{this.state.chosenCity?.price.toLocaleString()}
                         </strike>
                         &nbsp;
-                        {this.state.chosenCity?.price <= DELIVERY_DISCOUNT &&
+                        {this.state.chosenCity?.price <=
+                          this.state.deliveryDiscount &&
                           `₦${this.props.deliveryDiscountObject?.price.toLocaleString()}`}
-                        {this.state.chosenCity?.price > DELIVERY_DISCOUNT &&
+                        {this.state.chosenCity?.price >
+                          this.state.deliveryDiscount &&
                           `Shipping discount applied. Fee reduced to ₦${(
-                            this.state.chosenCity?.price - DELIVERY_DISCOUNT
+                            this.state.chosenCity?.price -
+                            this.state.deliveryDiscount
                           ).toLocaleString()}`}
                       </>
                     ) : (
@@ -1325,7 +1332,8 @@ class Checkout extends Component {
                     )}
                     {(!this.props.deliveryDiscountObject?.id ||
                       (this.props.deliveryDiscountObject?.id &&
-                        this.state.chosenCity?.price <= DELIVERY_DISCOUNT)) && (
+                        this.state.chosenCity?.price <=
+                          this.state.deliveryDiscount)) && (
                       // <></>
                       <>&nbsp;will be charged for delivery</>
                     )}

@@ -8,7 +8,8 @@ module.exports = {
   images: {
     domains: ["s3.eu-west-2.amazonaws.com"],
   },
-	reactStrictMode: true
+	reactStrictMode: true,
+	turbopack: {},
 };
 
 const withPWA = require("next-pwa");

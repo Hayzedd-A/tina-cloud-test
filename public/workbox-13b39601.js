@@ -1,5 +1,6 @@
-define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
+define("./workbox-13b39601.js",['exports'], function (exports) { 'use strict';
 
+    // @ts-ignore
     try {
       self['workbox:core:5.1.4'] && _();
     } catch (e) {}
@@ -16,7 +17,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
       if (!('__WB_DISABLE_DEV_LOGS' in self)) {
         self.__WB_DISABLE_DEV_LOGS = false;
       }
-
       let inGroup = false;
       const methodToColorMap = {
         debug: `#7f8c8d`,
@@ -26,12 +26,10 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         groupCollapsed: `#3498db`,
         groupEnd: null
       };
-
       const print = function (method, args) {
         if (self.__WB_DISABLE_DEV_LOGS) {
           return;
         }
-
         if (method === 'groupCollapsed') {
           // Safari doesn't print all console.groupCollapsed() arguments:
           // https://bugs.webkit.org/show_bug.cgi?id=182754
@@ -40,32 +38,25 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             return;
           }
         }
-
-        const styles = [`background: ${methodToColorMap[method]}`, `border-radius: 0.5em`, `color: white`, `font-weight: bold`, `padding: 2px 0.5em`]; // When in a group, the workbox prefix is not displayed.
-
+        const styles = [`background: ${methodToColorMap[method]}`, `border-radius: 0.5em`, `color: white`, `font-weight: bold`, `padding: 2px 0.5em`];
+        // When in a group, the workbox prefix is not displayed.
         const logPrefix = inGroup ? [] : ['%cworkbox', styles.join(';')];
         console[method](...logPrefix, ...args);
-
         if (method === 'groupCollapsed') {
           inGroup = true;
         }
-
         if (method === 'groupEnd') {
           inGroup = false;
         }
       };
-
       const api = {};
       const loggerMethods = Object.keys(methodToColorMap);
-
       for (const key of loggerMethods) {
         const method = key;
-
         api[method] = (...args) => {
           print(method, args);
         };
       }
-
       return api;
     })();
 
@@ -85,7 +76,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!paramName || !validValueDescription) {
           throw new Error(`Unexpected input to 'invalid-value' error.`);
         }
-
         return `The '${paramName}' parameter was given a value with an ` + `unexpected value. ${validValueDescription} Received a value of ` + `${JSON.stringify(value)}.`;
       },
       'not-an-array': ({
@@ -97,7 +87,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!moduleName || !className || !funcName || !paramName) {
           throw new Error(`Unexpected input to 'not-an-array' error.`);
         }
-
         return `The parameter '${paramName}' passed into ` + `'${moduleName}.${className}.${funcName}()' must be an array.`;
       },
       'incorrect-type': ({
@@ -110,7 +99,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!expectedType || !paramName || !moduleName || !funcName) {
           throw new Error(`Unexpected input to 'incorrect-type' error.`);
         }
-
         return `The parameter '${paramName}' passed into ` + `'${moduleName}.${className ? className + '.' : ''}` + `${funcName}()' must be of type ${expectedType}.`;
       },
       'incorrect-class': ({
@@ -124,11 +112,9 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!expectedClass || !moduleName || !funcName) {
           throw new Error(`Unexpected input to 'incorrect-class' error.`);
         }
-
         if (isReturnValueProblem) {
           return `The return value from ` + `'${moduleName}.${className ? className + '.' : ''}${funcName}()' ` + `must be an instance of class ${expectedClass.name}.`;
         }
-
         return `The parameter '${paramName}' passed into ` + `'${moduleName}.${className ? className + '.' : ''}${funcName}()' ` + `must be an instance of class ${expectedClass.name}.`;
       },
       'missing-a-method': ({
@@ -141,7 +127,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!expectedMethod || !paramName || !moduleName || !className || !funcName) {
           throw new Error(`Unexpected input to 'missing-a-method' error.`);
         }
-
         return `${moduleName}.${className}.${funcName}() expected the ` + `'${paramName}' parameter to expose a '${expectedMethod}' method.`;
       },
       'add-to-cache-list-unexpected-type': ({
@@ -156,7 +141,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!firstEntry || !secondEntry) {
           throw new Error(`Unexpected input to ` + `'add-to-cache-list-duplicate-entries' error.`);
         }
-
         return `Two of the entries passed to ` + `'workbox-precaching.PrecacheController.addToCacheList()' had the URL ` + `${firstEntry._entryId} but different revision details. Workbox is ` + `unable to cache and version the asset correctly. Please remove one ` + `of the entries.`;
       },
       'plugin-error-request-will-fetch': ({
@@ -165,7 +149,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!thrownError) {
           throw new Error(`Unexpected input to ` + `'plugin-error-request-will-fetch', error.`);
         }
-
         return `An error was thrown by a plugins 'requestWillFetch()' method. ` + `The thrown error message was: '${thrownError.message}'.`;
       },
       'invalid-cache-name': ({
@@ -175,7 +158,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!cacheNameId) {
           throw new Error(`Expected a 'cacheNameId' for error 'invalid-cache-name'`);
         }
-
         return `You must provide a name containing at least one character for ` + `setCacheDetails({${cacheNameId}: '...'}). Received a value of ` + `'${JSON.stringify(value)}'`;
       },
       'unregister-route-but-not-found-with-method': ({
@@ -184,7 +166,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!method) {
           throw new Error(`Unexpected input to ` + `'unregister-route-but-not-found-with-method' error.`);
         }
-
         return `The route you're trying to unregister was not  previously ` + `registered for the method type '${method}'.`;
       },
       'unregister-route-route-not-registered': () => {
@@ -246,7 +227,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!paramName || !moduleName || !funcName) {
           throw new Error(`Unexpected input to 'invalid-string' error.`);
         }
-
         return `When using strings, the '${paramName}' parameter must start with ` + `'http' (for cross-origin matches) or '/' (for same-origin matches). ` + `Please see the docs for ${moduleName}.${funcName}() for ` + `more info.`;
       },
       'channel-name-required': () => {
@@ -264,7 +244,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!normalizedRangeHeader) {
           throw new Error(`Unexpected input to 'unit-must-be-bytes' error.`);
         }
-
         return `The 'unit' portion of the Range header must be set to 'bytes'. ` + `The Range header provided was "${normalizedRangeHeader}"`;
       },
       'single-range-only': ({
@@ -273,7 +252,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!normalizedRangeHeader) {
           throw new Error(`Unexpected input to 'single-range-only' error.`);
         }
-
         return `Multiple ranges are not supported. Please use a  single start ` + `value, and optional end value. The Range header provided was ` + `"${normalizedRangeHeader}"`;
       },
       'invalid-range-values': ({
@@ -282,7 +260,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (!normalizedRangeHeader) {
           throw new Error(`Unexpected input to 'invalid-range-values' error.`);
         }
-
         return `The Range header is missing both start and end values. At least ` + `one of those values is needed. The Range header provided was ` + `"${normalizedRangeHeader}"`;
       },
       'no-range-header': () => {
@@ -311,11 +288,9 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         error
       }) => {
         let message = `The strategy could not generate a response for '${url}'.`;
-
         if (error) {
           message += ` The underlying error is ${error}.`;
         }
-
         return message;
       },
       'bad-precaching-response': ({
@@ -349,17 +324,13 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
       license that can be found in the LICENSE file or at
       https://opensource.org/licenses/MIT.
     */
-
     const generatorFunction = (code, details = {}) => {
       const message = messages[code];
-
       if (!message) {
         throw new Error(`Unable to find message for code '${code}'.`);
       }
-
       return message(details);
     };
-
     const messageGenerator =  generatorFunction;
 
     /*
@@ -378,7 +349,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      *
      * @private
      */
-
     class WorkboxError extends Error {
       /**
        *
@@ -394,7 +364,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         this.name = errorCode;
         this.details = details;
       }
-
     }
 
     /*
@@ -410,57 +379,47 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      * The destructed and restructured object is so it's clear what is
      * needed.
      */
-
     const isArray = (value, details) => {
       if (!Array.isArray(value)) {
         throw new WorkboxError('not-an-array', details);
       }
     };
-
     const hasMethod = (object, expectedMethod, details) => {
       const type = typeof object[expectedMethod];
-
       if (type !== 'function') {
         details['expectedMethod'] = expectedMethod;
         throw new WorkboxError('missing-a-method', details);
       }
     };
-
     const isType = (object, expectedType, details) => {
       if (typeof object !== expectedType) {
         details['expectedType'] = expectedType;
         throw new WorkboxError('incorrect-type', details);
       }
     };
-
     const isInstance = (object, expectedClass, details) => {
       if (!(object instanceof expectedClass)) {
         details['expectedClass'] = expectedClass;
         throw new WorkboxError('incorrect-class', details);
       }
     };
-
     const isOneOf = (value, validValues, details) => {
       if (!validValues.includes(value)) {
         details['validValueDescription'] = `Valid values are ${JSON.stringify(validValues)}.`;
         throw new WorkboxError('invalid-value', details);
       }
     };
-
     const isArrayOfClass = (value, expectedClass, details) => {
       const error = new WorkboxError('not-array-of-class', details);
-
       if (!Array.isArray(value)) {
         throw error;
       }
-
       for (const item of value) {
         if (!(item instanceof expectedClass)) {
           throw error;
         }
       }
     };
-
     const finalAssertExports =  {
       hasMethod,
       isArray,
@@ -470,6 +429,7 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
       isArrayOfClass
     };
 
+    // @ts-ignore
     try {
       self['workbox:routing:5.1.4'] && _();
     } catch (e) {}
@@ -489,7 +449,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      *
      * @private
      */
-
     const defaultMethod = 'GET';
     /**
      * The list of valid HTTP methods associated with requests that could be routed.
@@ -498,7 +457,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      *
      * @private
      */
-
     const validMethods = ['DELETE', 'GET', 'HEAD', 'PATCH', 'POST', 'PUT'];
 
     /*
@@ -515,7 +473,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      *
      * @private
      */
-
     const normalizeHandler = handler => {
       if (handler && typeof handler === 'object') {
         {
@@ -526,7 +483,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             paramName: 'handler'
           });
         }
-
         return handler;
       } else {
         {
@@ -537,7 +493,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             paramName: 'handler'
           });
         }
-
         return {
           handle: handler
         };
@@ -560,7 +515,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      *
      * @memberof module:workbox-routing
      */
-
     class Route {
       /**
        * Constructor for Route class.
@@ -581,21 +535,18 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             funcName: 'constructor',
             paramName: 'match'
           });
-
           if (method) {
             finalAssertExports.isOneOf(method, validMethods, {
               paramName: 'method'
             });
           }
-        } // These values are referenced directly by Router so cannot be
+        }
+        // These values are referenced directly by Router so cannot be
         // altered by minificaton.
-
-
         this.handler = normalizeHandler(handler);
         this.match = match;
         this.method = method;
       }
-
     }
 
     /*
@@ -618,7 +569,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      * @memberof module:workbox-routing
      * @extends module:workbox-routing.Route
      */
-
     class RegExpRoute extends Route {
       /**
        * If the regular expression contains
@@ -642,38 +592,32 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             paramName: 'pattern'
           });
         }
-
         const match = ({
           url
         }) => {
-          const result = regExp.exec(url.href); // Return immediately if there's no match.
-
+          const result = regExp.exec(url.href);
+          // Return immediately if there's no match.
           if (!result) {
             return;
-          } // Require that the match start at the first character in the URL string
+          }
+          // Require that the match start at the first character in the URL string
           // if it's a cross-origin request.
           // See https://github.com/GoogleChrome/workbox/issues/281 for the context
           // behind this behavior.
-
-
           if (url.origin !== location.origin && result.index !== 0) {
             {
               logger.debug(`The regular expression '${regExp}' only partially matched ` + `against the cross-origin URL '${url}'. RegExpRoute's will only ` + `handle cross-origin requests if they match the entire URL.`);
             }
-
             return;
-          } // If the route matches, but there aren't any capture groups defined, then
+          }
+          // If the route matches, but there aren't any capture groups defined, then
           // this will return [], which is truthy and therefore sufficient to
           // indicate a match.
           // If there are capture groups, then it will return their values.
-
-
           return result.slice(1);
         };
-
         super(match, handler, method);
       }
-
     }
 
     /*
@@ -683,11 +627,10 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
       license that can be found in the LICENSE file or at
       https://opensource.org/licenses/MIT.
     */
-
     const getFriendlyURL = url => {
-      const urlObj = new URL(String(url), location.href); // See https://github.com/GoogleChrome/workbox/issues/2323
+      const urlObj = new URL(String(url), location.href);
+      // See https://github.com/GoogleChrome/workbox/issues/2323
       // We want to include everything, except for the origin if it's same-origin.
-
       return urlObj.href.replace(new RegExp(`^${location.origin}`), '');
     };
 
@@ -715,7 +658,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      *
      * @memberof module:workbox-routing
      */
-
     class Router {
       /**
        * Initializes a new Router.
@@ -728,8 +670,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
        * method name ('GET', etc.) to an array of all the corresponding `Route`
        * instances that are registered.
        */
-
-
       get routes() {
         return this._routes;
       }
@@ -737,8 +677,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
        * Adds a fetch event listener to respond to events when a route matches
        * the event's request.
        */
-
-
       addFetchListener() {
         // See https://github.com/Microsoft/TypeScript/issues/28357#issuecomment-436484705
         self.addEventListener('fetch', event => {
@@ -749,7 +687,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             request,
             event
           });
-
           if (responsePromise) {
             event.respondWith(responsePromise);
           }
@@ -777,8 +714,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
        * }
        * ```
        */
-
-
       addCacheListener() {
         // See https://github.com/Microsoft/TypeScript/issues/28357#issuecomment-436484705
         self.addEventListener('message', event => {
@@ -786,26 +721,23 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             const {
               payload
             } = event.data;
-
             {
               logger.debug(`Caching URLs from the window`, payload.urlsToCache);
             }
-
             const requestPromises = Promise.all(payload.urlsToCache.map(entry => {
               if (typeof entry === 'string') {
                 entry = [entry];
               }
-
               const request = new Request(...entry);
               return this.handleRequest({
                 request
-              }); // TODO(philipwalton): TypeScript errors without this typecast for
+              });
+              // TODO(philipwalton): TypeScript errors without this typecast for
               // some reason (probably a bug). The real type here should work but
               // doesn't: `Array<Promise<Response> | undefined>`.
             })); // TypeScript
-
-            event.waitUntil(requestPromises); // If a MessageChannel was used, reply to the message on success.
-
+            event.waitUntil(requestPromises);
+            // If a MessageChannel was used, reply to the message on success.
             if (event.ports && event.ports[0]) {
               requestPromises.then(() => event.ports[0].postMessage(true));
             }
@@ -825,8 +757,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
        *     registered route can handle the request. If there is no matching
        *     route and there's no `defaultHandler`, `undefined` is returned.
        */
-
-
       handleRequest({
         request,
         event
@@ -839,17 +769,13 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             paramName: 'options.request'
           });
         }
-
         const url = new URL(request.url, location.href);
-
         if (!url.protocol.startsWith('http')) {
           {
             logger.debug(`Workbox Router only supports URLs that start with 'http'.`);
           }
-
           return;
         }
-
         const {
           params,
           route
@@ -860,37 +786,30 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         });
         let handler = route && route.handler;
         const debugMessages = [];
-
         {
           if (handler) {
             debugMessages.push([`Found a route to handle this request:`, route]);
-
             if (params) {
               debugMessages.push([`Passing the following params to the route's handler:`, params]);
             }
           }
-        } // If we don't have a handler because there was no matching route, then
+        }
+        // If we don't have a handler because there was no matching route, then
         // fall back to defaultHandler if that's defined.
-
-
         if (!handler && this._defaultHandler) {
           {
             debugMessages.push(`Failed to find a matching route. Falling ` + `back to the default handler.`);
           }
-
           handler = this._defaultHandler;
         }
-
         if (!handler) {
           {
             // No handler so Workbox will do nothing. If logs is set of debug
             // i.e. verbose, we should print out this information.
             logger.debug(`No route found for: ${getFriendlyURL(url)}`);
           }
-
           return;
         }
-
         {
           // We have a handler, meaning Workbox is going to handle the route.
           // print the routing details to the console.
@@ -903,12 +822,10 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             }
           });
           logger.groupEnd();
-        } // Wrap in try and catch in case the handle method throws a synchronous
+        }
+        // Wrap in try and catch in case the handle method throws a synchronous
         // error. It should still callback to the catch handler.
-
-
         let responsePromise;
-
         try {
           responsePromise = handler.handle({
             url,
@@ -919,7 +836,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         } catch (err) {
           responsePromise = Promise.reject(err);
         }
-
         if (responsePromise instanceof Promise && this._catchHandler) {
           responsePromise = responsePromise.catch(err => {
             {
@@ -930,7 +846,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
               logger.error(err);
               logger.groupEnd();
             }
-
             return this._catchHandler.handle({
               url,
               request,
@@ -938,7 +853,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             });
           });
         }
-
         return responsePromise;
       }
       /**
@@ -954,8 +868,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
        *     They are populated if a matching route was found or `undefined`
        *     otherwise.
        */
-
-
       findMatchingRoute({
         url,
         request,
@@ -975,9 +887,7 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             paramName: 'options.request'
           });
         }
-
         const routes = this._routes.get(request.method) || [];
-
         for (const route of routes) {
           let params;
           const matchResult = route.match({
@@ -985,11 +895,9 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             request,
             event
           });
-
           if (matchResult) {
             // See https://github.com/GoogleChrome/workbox/issues/2079
             params = matchResult;
-
             if (Array.isArray(matchResult) && matchResult.length === 0) {
               // Instead of passing an empty array in as params, use undefined.
               params = undefined;
@@ -1001,17 +909,15 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
               // don't set params.
               // See https://github.com/GoogleChrome/workbox/pull/2134#issuecomment-513924353
               params = undefined;
-            } // Return early if have a match.
-
-
+            }
+            // Return early if have a match.
             return {
               route,
               params
             };
           }
-        } // If no match was found above, return and empty object.
-
-
+        }
+        // If no match was found above, return and empty object.
         return {};
       }
       /**
@@ -1024,8 +930,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
        * @param {module:workbox-routing~handlerCallback} handler A callback
        * function that returns a Promise resulting in a Response.
        */
-
-
       setDefaultHandler(handler) {
         this._defaultHandler = normalizeHandler(handler);
       }
@@ -1036,8 +940,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
        * @param {module:workbox-routing~handlerCallback} handler A callback
        * function that returns a Promise resulting in a Response.
        */
-
-
       setCatchHandler(handler) {
         this._catchHandler = normalizeHandler(handler);
       }
@@ -1046,8 +948,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
        *
        * @param {module:workbox-routing.Route} route The route to register.
        */
-
-
       registerRoute(route) {
         {
           finalAssertExports.isType(route, 'object', {
@@ -1081,13 +981,11 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             paramName: 'route.method'
           });
         }
-
         if (!this._routes.has(route.method)) {
           this._routes.set(route.method, []);
-        } // Give precedence to all of the earlier routes by adding this additional
+        }
+        // Give precedence to all of the earlier routes by adding this additional
         // route to the end of the array.
-
-
         this._routes.get(route.method).push(route);
       }
       /**
@@ -1095,24 +993,19 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
        *
        * @param {module:workbox-routing.Route} route The route to unregister.
        */
-
-
       unregisterRoute(route) {
         if (!this._routes.has(route.method)) {
           throw new WorkboxError('unregister-route-but-not-found-with-method', {
             method: route.method
           });
         }
-
         const routeIndex = this._routes.get(route.method).indexOf(route);
-
         if (routeIndex > -1) {
           this._routes.get(route.method).splice(routeIndex, 1);
         } else {
           throw new WorkboxError('unregister-route-route-not-registered');
         }
       }
-
     }
 
     /*
@@ -1130,15 +1023,13 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      * @private
      * @return {Router}
      */
-
     const getOrCreateDefaultRouter = () => {
       if (!defaultRouter) {
-        defaultRouter = new Router(); // The helpers that use the default Router assume these listeners exist.
-
+        defaultRouter = new Router();
+        // The helpers that use the default Router assume these listeners exist.
         defaultRouter.addFetchListener();
         defaultRouter.addCacheListener();
       }
-
       return defaultRouter;
     };
 
@@ -1168,13 +1059,10 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      *
      * @memberof module:workbox-routing
      */
-
     function registerRoute(capture, handler, method) {
       let route;
-
       if (typeof capture === 'string') {
         const captureUrl = new URL(capture, location.href);
-
         {
           if (!(capture.startsWith('/') || capture.startsWith('http'))) {
             throw new WorkboxError('invalid-string', {
@@ -1182,19 +1070,16 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
               funcName: 'registerRoute',
               paramName: 'capture'
             });
-          } // We want to check if Express-style wildcards are in the pathname only.
+          }
+          // We want to check if Express-style wildcards are in the pathname only.
           // TODO: Remove this log message in v4.
-
-
-          const valueToCheck = capture.startsWith('http') ? captureUrl.pathname : capture; // See https://github.com/pillarjs/path-to-regexp#parameters
-
+          const valueToCheck = capture.startsWith('http') ? captureUrl.pathname : capture;
+          // See https://github.com/pillarjs/path-to-regexp#parameters
           const wildcards = '[*:?+]';
-
           if (new RegExp(`${wildcards}`).exec(valueToCheck)) {
             logger.debug(`The '$capture' parameter contains an Express-style wildcard ` + `character (${wildcards}). Strings are now always interpreted as ` + `exact matches; use a RegExp for partial or wildcard matches.`);
           }
         }
-
         const matchCallback = ({
           url
         }) => {
@@ -1203,11 +1088,9 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
               logger.debug(`${capture} only partially matches the cross-origin URL ` + `${url}. This route will only handle cross-origin requests ` + `if they match the entire URL.`);
             }
           }
-
           return url.href === captureUrl.href;
-        }; // If `capture` is a string then `handler` and `method` must be present.
-
-
+        };
+        // If `capture` is a string then `handler` and `method` must be present.
         route = new Route(matchCallback, handler, method);
       } else if (capture instanceof RegExp) {
         // If `capture` is a `RegExp` then `handler` and `method` must be present.
@@ -1224,7 +1107,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
           paramName: 'capture'
         });
       }
-
       const defaultRouter = getOrCreateDefaultRouter();
       defaultRouter.registerRoute(route);
       return route;
@@ -1265,7 +1147,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      * @private
      * @memberof module:workbox-core
      */
-
     const wrappedFetch = async ({
       request,
       fetchOptions,
@@ -1274,23 +1155,19 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
     }) => {
       if (typeof request === 'string') {
         request = new Request(request);
-      } // We *should* be able to call `await event.preloadResponse` even if it's
+      }
+      // We *should* be able to call `await event.preloadResponse` even if it's
       // undefined, but for some reason, doing so leads to errors in our Node unit
       // tests. To work around that, explicitly check preloadResponse's value first.
-
-
       if (event instanceof FetchEvent && event.preloadResponse) {
         const possiblePreloadResponse = await event.preloadResponse;
-
         if (possiblePreloadResponse) {
           {
             logger.log(`Using a preloaded navigation response for ` + `'${getFriendlyURL(request.url)}'`);
           }
-
           return possiblePreloadResponse;
         }
       }
-
       {
         finalAssertExports.isInstance(request, Request, {
           paramName: 'request',
@@ -1300,36 +1177,25 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
           funcName: 'wrappedFetch'
         });
       }
-
-      const failedFetchPlugins = pluginUtils.filter(plugins, "fetchDidFail"
-      /* FETCH_DID_FAIL */
-      ); // If there is a fetchDidFail plugin, we need to save a clone of the
+      const failedFetchPlugins = pluginUtils.filter(plugins, "fetchDidFail" /* FETCH_DID_FAIL */);
+      // If there is a fetchDidFail plugin, we need to save a clone of the
       // original request before it's either modified by a requestWillFetch
       // plugin or before the original request's body is consumed via fetch().
-
       const originalRequest = failedFetchPlugins.length > 0 ? request.clone() : null;
-
       try {
         for (const plugin of plugins) {
-          if ("requestWillFetch"
-          /* REQUEST_WILL_FETCH */
-          in plugin) {
-            const pluginMethod = plugin["requestWillFetch"
-            /* REQUEST_WILL_FETCH */
-            ];
+          if ("requestWillFetch" /* REQUEST_WILL_FETCH */ in plugin) {
+            const pluginMethod = plugin["requestWillFetch" /* REQUEST_WILL_FETCH */];
             const requestClone = request.clone();
             request = await pluginMethod.call(plugin, {
               request: requestClone,
               event
             });
-
             if ("development" !== 'production') {
               if (request) {
                 finalAssertExports.isInstance(request, Request, {
                   moduleName: 'Plugin',
-                  funcName: "cachedResponseWillBeUsed"
-                  /* CACHED_RESPONSE_WILL_BE_USED */
-                  ,
+                  funcName: "cachedResponseWillBeUsed" /* CACHED_RESPONSE_WILL_BE_USED */,
                   isReturnValueProblem: true
                 });
               }
@@ -1340,77 +1206,61 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         throw new WorkboxError('plugin-error-request-will-fetch', {
           thrownError: err
         });
-      } // The request can be altered by plugins with `requestWillFetch` making
+      }
+      // The request can be altered by plugins with `requestWillFetch` making
       // the original request (Most likely from a `fetch` event) to be different
       // to the Request we make. Pass both to `fetchDidFail` to aid debugging.
-
-
       const pluginFilteredRequest = request.clone();
-
       try {
-        let fetchResponse; // See https://github.com/GoogleChrome/workbox/issues/1796
-
+        let fetchResponse;
+        // See https://github.com/GoogleChrome/workbox/issues/1796
         if (request.mode === 'navigate') {
           fetchResponse = await fetch(request);
         } else {
           fetchResponse = await fetch(request, fetchOptions);
         }
-
         if ("development" !== 'production') {
           logger.debug(`Network request for ` + `'${getFriendlyURL(request.url)}' returned a response with ` + `status '${fetchResponse.status}'.`);
         }
-
         for (const plugin of plugins) {
-          if ("fetchDidSucceed"
-          /* FETCH_DID_SUCCEED */
-          in plugin) {
-            fetchResponse = await plugin["fetchDidSucceed"
-            /* FETCH_DID_SUCCEED */
-            ].call(plugin, {
+          if ("fetchDidSucceed" /* FETCH_DID_SUCCEED */ in plugin) {
+            fetchResponse = await plugin["fetchDidSucceed" /* FETCH_DID_SUCCEED */].call(plugin, {
               event,
               request: pluginFilteredRequest,
               response: fetchResponse
             });
-
             if ("development" !== 'production') {
               if (fetchResponse) {
                 finalAssertExports.isInstance(fetchResponse, Response, {
                   moduleName: 'Plugin',
-                  funcName: "fetchDidSucceed"
-                  /* FETCH_DID_SUCCEED */
-                  ,
+                  funcName: "fetchDidSucceed" /* FETCH_DID_SUCCEED */,
                   isReturnValueProblem: true
                 });
               }
             }
           }
         }
-
         return fetchResponse;
       } catch (error) {
         {
           logger.error(`Network request for ` + `'${getFriendlyURL(request.url)}' threw an error.`, error);
         }
-
         for (const plugin of failedFetchPlugins) {
-          await plugin["fetchDidFail"
-          /* FETCH_DID_FAIL */
-          ].call(plugin, {
+          await plugin["fetchDidFail" /* FETCH_DID_FAIL */].call(plugin, {
             error,
             event,
             originalRequest: originalRequest.clone(),
             request: pluginFilteredRequest.clone()
           });
         }
-
         throw error;
       }
     };
-
     const fetchWrapper = {
       fetch: wrappedFetch
     };
 
+    // @ts-ignore
     try {
       self['workbox:strategies:5.1.4'] && _();
     } catch (e) {}
@@ -1452,7 +1302,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      *
      * @memberof module:workbox-strategies
      */
-
     class NetworkOnly {
       /**
        * @param {Object} options
@@ -1479,8 +1328,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
        * @param {Event} [options.event] The event that triggered the request.
        * @return {Promise<Response>}
        */
-
-
       async handle({
         event,
         request
@@ -1488,7 +1335,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         if (typeof request === 'string') {
           request = new Request(request);
         }
-
         {
           finalAssertExports.isInstance(request, Request, {
             moduleName: 'workbox-strategies',
@@ -1497,10 +1343,8 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
             paramName: 'request'
           });
         }
-
         let error;
         let response;
-
         try {
           response = await fetchWrapper.fetch({
             request,
@@ -1511,30 +1355,24 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
         } catch (err) {
           error = err;
         }
-
         {
           logger.groupCollapsed(messages$1.strategyStart('NetworkOnly', request));
-
           if (response) {
             logger.log(`Got response from network.`);
           } else {
             logger.log(`Unable to get a response from the network.`);
           }
-
           messages$1.printFinalResponse(response);
           logger.groupEnd();
         }
-
         if (!response) {
           throw new WorkboxError('no-response', {
             url: request.url,
             error
           });
         }
-
         return response;
       }
-
     }
 
     /*
@@ -1551,7 +1389,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      *
      * @memberof module:workbox-core
      */
-
     function skipWaiting() {
       // We need to explicitly call `self.skipWaiting()` here because we're
       // shadowing `skipWaiting` with this local function.
@@ -1571,7 +1408,6 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
      *
      * @memberof module:workbox-core
      */
-
     function clientsClaim() {
       self.addEventListener('activate', () => self.clients.claim());
     }
@@ -1582,4 +1418,4 @@ define("./workbox-f88dbe3b.js",['exports'], function (exports) { 'use strict';
     exports.skipWaiting = skipWaiting;
 
 });
-//# sourceMappingURL=workbox-f88dbe3b.js.map
+//# sourceMappingURL=workbox-13b39601.js.map
