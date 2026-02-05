@@ -896,6 +896,15 @@ class Checkout extends Component {
       },
     };
 
+    console.log(
+      "deliveryDate: ",
+      deliveryDate,
+      isNoDiscountDate(deliveryDate.value),
+    );
+    const chosenCityPrice = isNoDiscountDate(deliveryDate.value)
+      ? this.state.chosenCity?.price + 1000
+      : this.state.chosenCity?.price;
+
     const loyaltyDiscountApplied = parseFloat(loyaltyPointApplied?.value || 0);
 
     const ttlGcDiscount = giftCardObject?.remainingValue || 0;
@@ -921,10 +930,10 @@ class Checkout extends Component {
     if (discountAmount > subTotal + deliveryCost) finalAmount = 0;
 
     if (
-      this.state.chosenCity?.price > this.state.deliveryDiscount &&
+      chosenCityPrice > this.state.deliveryDiscount &&
       deliveryDiscountObject?.id
     )
-      finalAmount += this.state.chosenCity?.price - this.state.deliveryDiscount;
+      finalAmount += chosenCityPrice - this.state.deliveryDiscount;
 
     return (
       <div className="cart-container">
@@ -1310,20 +1319,15 @@ class Checkout extends Component {
                   </span>
                   <span className="text">
                     {this.props.deliveryDiscountObject?.id &&
-                    this.state.chosenCity?.price ? (
+                    chosenCityPrice ? (
                       <>
-                        <strike>
-                          ₦{this.state.chosenCity?.price.toLocaleString()}
-                        </strike>
+                        <strike>₦{chosenCityPrice.toLocaleString()}</strike>
                         &nbsp;
-                        {this.state.chosenCity?.price <=
-                          this.state.deliveryDiscount &&
+                        {chosenCityPrice <= this.state.deliveryDiscount &&
                           `₦${this.props.deliveryDiscountObject?.price.toLocaleString()}`}
-                        {this.state.chosenCity?.price >
-                          this.state.deliveryDiscount &&
+                        {chosenCityPrice > this.state.deliveryDiscount &&
                           `Shipping discount applied. Fee reduced to ₦${(
-                            this.state.chosenCity?.price -
-                            this.state.deliveryDiscount
+                            chosenCityPrice - this.state.deliveryDiscount
                           ).toLocaleString()}`}
                       </>
                     ) : (
@@ -1332,8 +1336,7 @@ class Checkout extends Component {
                     )}
                     {(!this.props.deliveryDiscountObject?.id ||
                       (this.props.deliveryDiscountObject?.id &&
-                        this.state.chosenCity?.price <=
-                          this.state.deliveryDiscount)) && (
+                        chosenCityPrice <= this.state.deliveryDiscount)) && (
                       // <></>
                       <>&nbsp;will be charged for delivery</>
                     )}
