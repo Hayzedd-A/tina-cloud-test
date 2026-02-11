@@ -117,6 +117,9 @@ class Checkout extends Component {
     isCheckingOut: false,
     deliveryDiscount: DELIVERY_DISCOUNT,
     paymentStatus: "idle", // idle | loading | success | failed
+    allowedCategories: [],
+    cannotCheckout: false,
+    excludedItem: [],
   };
 
   checkPrice = (subTotal) => {
@@ -262,6 +265,43 @@ class Checkout extends Component {
       },
       deliveryDiscount: isNoDiscountDate(day) ? 0 : DELIVERY_DISCOUNT,
     });
+    console.log(this.state.allowedCategories);
+
+    if (
+      this.state.allowedCategories &&
+      this.state.allowedCategories.length &&
+      isNoDiscountDate(day)
+    ) {
+      const allowedProducts = this.state.allowedCategories
+        .map((item) => item.products)
+        .flat();
+      if (allowedProducts.length) {
+        const allowedProductsIds = allowedProducts.map(({ id, name }) => name);
+        const cartItemIds = this.props.cart.map(({ name }) => name);
+        const notAllowed = cartItemIds.filter(
+          (cId) => !allowedProductsIds.includes(cId),
+        );
+        console.log("Not allowed: ", notAllowed);
+        if (notAllowed.length) {
+          this.setState({
+            cannotCheckout: true,
+            excludedItem: notAllowed,
+          });
+        } else {
+          this.setState({
+            cannotCheckout: false,
+          });
+        }
+      } else {
+        this.setState({
+          cannotCheckout: false,
+        });
+      }
+    } else {
+      this.setState({
+        cannotCheckout: false,
+      });
+    }
   };
 
   checkFormValidity = () => {
@@ -722,6 +762,11 @@ class Checkout extends Component {
 
     const subTotal = reduceArray(this.props.cart, "totalCost");
     this.checkPrice(subTotal);
+    this.setState({
+      allowedCategories: JSON.parse(
+        localStorage.getItem("gourmet-14-allowed") || "",
+      ),
+    });
 
     // Check if pickup is enabled and address set for pickup option
     if (currentStore) {
@@ -1307,6 +1352,15 @@ class Checkout extends Component {
               sub: "Also, items not readily available will require fresh processing, with an average prep time of 3 hours depending on the size.",
             }}
           />
+          {this.state.cannotCheckout && (
+            <PopupModal
+              OkText="Change product or date"
+              text={{
+                main: "Sorry!. \n Your cart contains some product that cannot be ordered for the selected date: ",
+                sub: this.state.excludedItem.join(", "),
+              }}
+            />
+          )}
         </div>
         <div className="cart-actions no-margin fixed">
           {deliveryCost >= 0 &&
@@ -1354,6 +1408,7 @@ class Checkout extends Component {
                   !this.checkFormValidity() ||
                   isCheckingOut ||
                   isLoadingDeliveryPrice ||
+                  this.state.cannotCheckout ||
                   Object.entries(this.state.chosenCity).length === 0
                     ? true
                     : false,

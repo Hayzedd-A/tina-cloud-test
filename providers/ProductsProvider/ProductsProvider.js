@@ -20,48 +20,53 @@ class ProductsProvider extends Component {
 
   getProducts = async () => {
     this.setState({
-      isLoadingProducts: true
+      isLoadingProducts: true,
     });
 
     try {
       const res = await getRequest({
-        url: `/customer-requests/stores/${STORE_ID}/products`
-      })
+        url: `/customer-requests/stores/${STORE_ID}/products`,
+      });
       this.setState({
         products: res.data.data,
-        isLoadingProducts: false
-      })
+        isLoadingProducts: false,
+      });
+      const allowedCategories = ["Valentine Gift Boxes"];
+      const allowed = res.data.data.filter((item) =>
+        allowedCategories.includes(item.name),
+      );
+      localStorage.setItem("gourmet-14-allowed", JSON.stringify(allowed));
     } catch (error) {
       const message = getRequestError(error);
       console.log(error, message);
 
       this.setState({
-        isLoadingProducts: false
-      })
+        isLoadingProducts: false,
+      });
     }
   };
 
   getProductCagetegories = async () => {
     this.setState({
-      isLoadingProductCategories: true
+      isLoadingProductCategories: true,
     });
 
     try {
       const res = await getRequest({
-        url: `/customer-requests/stores/${STORE_ID}/product-categories`
-      })
+        url: `/customer-requests/stores/${STORE_ID}/product-categories`,
+      });
 
       this.setState({
         productCategories: res.data.data,
-        isLoadingProductCategories: false
-      })
+        isLoadingProductCategories: false,
+      });
     } catch (error) {
       const message = getRequestError(error);
       console.log(error, message);
 
       this.setState({
-        isLoadingProductCategories: false
-      })
+        isLoadingProductCategories: false,
+      });
     }
   };
 
@@ -85,7 +90,7 @@ class ProductsProvider extends Component {
   }
 }
 
-const ProductsConsumer = Component => {
+const ProductsConsumer = (Component) => {
   return class Consumer extends React.Component {
     static getInitialProps(ctx) {
       return Component.getInitialProps ? Component.getInitialProps(ctx) : {};
@@ -94,7 +99,7 @@ const ProductsConsumer = Component => {
     render() {
       return (
         <ProductsContext.Consumer>
-          {data => <Component {...this.props} {...data} />}
+          {(data) => <Component {...this.props} {...data} />}
         </ProductsContext.Consumer>
       );
     }
