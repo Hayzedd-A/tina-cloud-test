@@ -69,15 +69,16 @@ class Home extends Component {
                   </div>
 
                   <div className="message">
-                    Enjoy FREE delivery when you order above 25k.
+                    Free delivery on orders above 25k remains available.
                     <span style={{ display: "block", fontSize: 15 }}>
-                      If delivery exceeds N3,000 you only pay the difference!
+                      But will not apply to orders made for Saturday, February
+                      14th.
                     </span>
                     <span
                       style={{ display: "block", fontSize: 15, color: "red" }}
                     >
-                      Please note: This does not apply to orders made for Feb
-                      14th.
+                      N.B. Only Valentine box orders can be scheduled for
+                      Saturday, February 14th.
                     </span>
                   </div>
 
@@ -98,30 +99,18 @@ class Home extends Component {
 }
 
 export default ProductsConsumer(withRouter(Home));
+
 {
-  /* <>
-  {this.state.showModal && (
-    <Modal closeModal={this.closeModal}>
-      <div className="add-cart-success">
-        <div className="icon">
-          <Logo />
-        </div>
-
-        <div className="message">
-          Enjoy FREE delivery when you order above 25k.
-          <span style={{ display: "block", fontSize: 15 }}>
-            If delivery exceeds N3,000 you only pay the difference!
-          </span>
-        </div>
-
-        <div className="actions">
-          <button className="continue" onClick={this.closeModal}>
-            Ok
-          </button>
-        </div>
-      </div>
-    </Modal>
-  )}
-  <Shop selectItem={this.selectItem} />
-</>; */
+  /* <div className="message">
+                    Enjoy FREE delivery when you order above 25k.
+                    <span style={{ display: "block", fontSize: 15 }}>
+                      If delivery exceeds N3,000 you only pay the difference!
+                    </span>
+                    <span
+                      style={{ display: "block", fontSize: 15, color: "red" }}
+                    >
+                      Please note: This does not apply to orders made for Feb
+                      14th.
+                    </span>
+                  </div> */
 }
