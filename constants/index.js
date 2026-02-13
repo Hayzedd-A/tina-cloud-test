@@ -3,7 +3,7 @@
 
 // prod
 
-const NO_DISCOUNT_DELIVERY_DATE = "2026-02-14"; // val day
+const NO_DISCOUNT_DELIVERY_DATE = "2026-02-13"; // val day
 
 export const isNoDiscountDate = (ts) =>
   new Date(ts).toDateString() ===
