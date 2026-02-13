@@ -997,7 +997,7 @@ class Checkout extends Component {
       },
     };
 
-    const chosenCityPrice = isNoDiscountDate(deliveryDate.value)
+    const chosenCityPrice = isNoDiscountDate(new Date())
       ? this.state.chosenCity?.price + 1000
       : this.state.chosenCity?.price;
 
