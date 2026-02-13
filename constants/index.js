@@ -3,14 +3,11 @@
 
 // prod
 
-const NO_DISCOUNT_DELIVERY_DATE1 = "2026-02-13"; // val day
 const NO_DISCOUNT_DELIVERY_DATE = "2026-02-14"; // val day
 
 export const isNoDiscountDate = (ts) =>
   new Date(ts).toDateString() ===
-    new Date(NO_DISCOUNT_DELIVERY_DATE).toDateString() ||
-  new Date(ts).toDateString() ===
-    new Date(NO_DISCOUNT_DELIVERY_DATE1).toDateString();
+  new Date(NO_DISCOUNT_DELIVERY_DATE).toDateString();
 
 export const STORE_ID = "8a7a28dc-b54d-4841-b949-efe60dbae709";
 export const merchentRef = "ref_8d6cd1583f4ee33c29786a208d";
