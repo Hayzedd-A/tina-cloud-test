@@ -66,7 +66,7 @@ class Cart extends Component {
     }));
 
     const toppingsPrices = toppings.map(
-      (topping) => parseFloat(topping.unitPrice) * quantity
+      (topping) => parseFloat(topping.unitPrice) * quantity,
     );
 
     const toppingsTotalCost = reduceLinearArray(toppingsPrices);
@@ -150,24 +150,21 @@ class Cart extends Component {
     const { verify, orderReference } = this.props.router.query;
     if (verify && orderReference) {
       try {
-        console.log("verifying payment for order ref:", orderReference);
         // Verify order here
         this.setState({ paymentStatus: "loading" });
         const { data } = await postRequest({
           url: "/payment/nomba/verify-reference",
           data: { reference: orderReference },
         });
-        console.log(data.status);
         this.setState({ paymentStatus: data.status });
         localStorage.removeItem("gourmettwistcart");
-        console.log({func: this.showCheckoutSuccess})
         this.showCheckoutSuccess(true);
         // Clear query parameters to prevent re-verification on reload
       } catch (error) {
         console.error("Error verifying payment:", getRequestError(error));
         this.setState({ paymentStatus: "idle" });
       } finally {
-        this.props.router.replace('/cart');
+        this.props.router.replace("/cart");
         setTimeout(() => {
           // this.setState({ paymentStatus: "idles" });
         }, 1000);
@@ -196,7 +193,10 @@ class Cart extends Component {
     let finalAmount = subTotal - discountAmount;
     if (finalAmount < 0) finalAmount = 0;
 
-    if (finalAmount < FREE_DELIVERY_TRESHOLD && this.props.deliveryDiscountObject?.id) {
+    if (
+      finalAmount < FREE_DELIVERY_TRESHOLD &&
+      this.props.deliveryDiscountObject?.id
+    ) {
       this.props.resetDeliveryDiscount();
     } else if (
       finalAmount >= FREE_DELIVERY_TRESHOLD &&

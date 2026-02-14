@@ -82,7 +82,6 @@ const Header = () => {
             showSearchInput={(val) => {
               showSearchInput(val);
               if (router.pathname === "/search") {
-                console.log("router.pathname", router.pathname);
                 router.push("/");
               }
             }}

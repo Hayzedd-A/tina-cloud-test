@@ -16,7 +16,7 @@ class CartProvider extends Component {
     cartMessage: "",
     remoteCartOutcome: "",
     remoteCartMessage: "",
-    remoteCartData: {}
+    remoteCartData: {},
   };
 
   resetState = () => {
@@ -25,13 +25,13 @@ class CartProvider extends Component {
       cartOutcome: "",
       remoteCartOutcome: "",
       remoteCartMessage: "",
-      remoteCartData: {}
+      remoteCartData: {},
     });
   };
 
   getCart = async () => {
     this.setState({
-      isLoadingCart: true
+      isLoadingCart: true,
     });
 
     try {
@@ -40,11 +40,11 @@ class CartProvider extends Component {
 
       this.setState({
         cart,
-        isLoadingCart: false
+        isLoadingCart: false,
       });
     } catch (error) {
       this.setState({
-        isLoadingCart: false
+        isLoadingCart: false,
       });
     }
   };
@@ -60,43 +60,43 @@ class CartProvider extends Component {
   addOrderDetails = (orderDetails, success) => {
     this.setState(
       {
-        orderDetails
+        orderDetails,
       },
-      () => success && success()
+      () => success && success(),
     );
   };
-  
-  addRemoteCart = async data => {
+
+  addRemoteCart = async (data) => {
     this.resetState();
     this.setState({
-      isAddingRemoteCart: true
+      isAddingRemoteCart: true,
     });
 
     try {
       const res = await postRequest({
-        url: 'orders',
-        data
+        url: "orders",
+        data,
       });
 
       this.setState({
         isAddingRemoteCart: false,
-        remoteCartOutcome: 'success',
-        remoteCartData: res.data
+        remoteCartOutcome: "success",
+        remoteCartData: res.data,
       });
     } catch (error) {
       const message = getRequestError(error);
 
       this.setState({
         isAddingRemoteCart: false,
-        remoteCartOutcome: 'error',
-        remoteCartMessage: message
+        remoteCartOutcome: "error",
+        remoteCartMessage: message,
       });
     }
   };
 
   removeOrderDetails = () => {
     this.setState({
-      orderDetails: {}
+      orderDetails: {},
     });
   };
 
@@ -104,7 +104,9 @@ class CartProvider extends Component {
     const { cart } = this.state;
     const cartCopy = [...cart];
 
-    const currentItem = cartCopy.find(cartItem => cartItem.uuid === item.uuid);
+    const currentItem = cartCopy.find(
+      (cartItem) => cartItem.uuid === item.uuid,
+    );
     const index = cartCopy.indexOf(currentItem);
 
     cartCopy[index] = item;
@@ -115,9 +117,7 @@ class CartProvider extends Component {
   removeFromCart = ({ uuid }, success) => {
     const { cart } = this.state;
     let cartCopy = [...cart];
-    cartCopy = cartCopy.filter(cartItem => cartItem.uuid !== uuid);
-
-    console.log(cartCopy);
+    cartCopy = cartCopy.filter((cartItem) => cartItem.uuid !== uuid);
 
     this.updateLocalCart(cartCopy, success);
   };
@@ -125,15 +125,18 @@ class CartProvider extends Component {
   clearCart = () => {
     localStorage.removeItem("gourmettwistcart");
     this.setState({
-      cart: []
+      cart: [],
     });
   };
 
   updateLocalCart = (cart, success) => {
     localStorage.setItem("gourmettwistcart", JSON.stringify(cart));
-    this.setState({
-      cart
-    }, () => success && success());
+    this.setState(
+      {
+        cart,
+      },
+      () => success && success(),
+    );
   };
 
   // how can i get the location prop here?
@@ -154,7 +157,7 @@ class CartProvider extends Component {
           addRemoteCart: this.addRemoteCart,
           updateCart: this.updateCart,
           removeFromCart: this.removeFromCart,
-          clearCart: this.clearCart
+          clearCart: this.clearCart,
         }}
       >
         {this.props.children}
@@ -163,7 +166,7 @@ class CartProvider extends Component {
   }
 }
 
-const CartConsumer = Component => {
+const CartConsumer = (Component) => {
   return class Consumer extends React.Component {
     static getInitialProps(ctx) {
       return Component.getInitialProps ? Component.getInitialProps(ctx) : {};
@@ -172,7 +175,7 @@ const CartConsumer = Component => {
     render() {
       return (
         <CartContext.Consumer>
-          {data => <Component {...this.props} {...data} />}
+          {(data) => <Component {...this.props} {...data} />}
         </CartContext.Consumer>
       );
     }

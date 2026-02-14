@@ -158,8 +158,7 @@ class Checkout extends Component {
 
   handleDeliveryChange = ({ target }, valid) => {
     const { value } = target;
-    this.resetDelivery(value);
-    console.log("delviery changed: ", value, deliveryArr);
+    // this.resetDelivery(value);
     if (deliveryArr.includes(value)) {
       const { store } = this.props;
       if (store?.states?.length < 1 && store?.delivery_types?.length < 1) {
@@ -176,7 +175,6 @@ class Checkout extends Component {
   };
 
   effectDeliveryChange = (value) => {
-    console.log(value);
     this.setState(
       {
         formData: {
@@ -265,7 +263,6 @@ class Checkout extends Component {
       },
       deliveryDiscount: isNoDiscountDate(day) ? 0 : DELIVERY_DISCOUNT,
     });
-    console.log(this.state.allowedCategories);
 
     if (
       this.state.allowedCategories &&
@@ -281,7 +278,6 @@ class Checkout extends Component {
         const notAllowed = cartItemIds.filter(
           (cId) => !allowedProductsIds.includes(cId),
         );
-        console.log("Not allowed: ", notAllowed);
         if (notAllowed.length) {
           this.setState({
             cannotCheckout: true,
@@ -412,8 +408,6 @@ class Checkout extends Component {
     const { deliveryLocation, chosenCity, formData } = this.state;
     const { store } = this.props;
 
-    console.log(deliveryLocation, chosenCity);
-
     if (!deliveryLocation.address || deliveryLocation.address.trim() === "") {
       return;
     }
@@ -424,7 +418,6 @@ class Checkout extends Component {
 
     // Only calculate for delivery methods that require it
     if (!deliveryArr.includes(formData.shippingMethod.value)) {
-      console.log("method not found");
       return;
     }
 
@@ -446,7 +439,6 @@ class Checkout extends Component {
           },
         });
 
-        console.log(res.data);
         const { total_amount, id } = res.data;
         this.setState({
           chosenCity: {
@@ -527,7 +519,38 @@ class Checkout extends Component {
       loyaltyPointsAvailable,
     } = this.props;
 
-    console.log("cart item: ", cart);
+    console.log("deliveryDate", deliveryDate);
+    if (!deliveryDate || isNoDiscountDate(deliveryDate || new Date())) {
+      const allowedProducts = this.state.allowedCategories
+        .map((item) => item.products)
+        .flat();
+      if (allowedProducts.length) {
+        const allowedProductsIds = allowedProducts.map(({ id, name }) => name);
+        const cartItemIds = this.props.cart.map(({ name }) => name);
+        const notAllowed = cartItemIds.filter(
+          (cId) => !allowedProductsIds.includes(cId),
+        );
+        if (notAllowed.length) {
+          this.setState({
+            cannotCheckout: true,
+            excludedItem: notAllowed,
+          });
+          return;
+        } else {
+          this.setState({
+            cannotCheckout: false,
+          });
+        }
+      } else {
+        this.setState({
+          cannotCheckout: false,
+        });
+      }
+    } else {
+      this.setState({
+        cannotCheckout: false,
+      });
+    }
 
     const orderItems = cart.map(({ id, quantity, name, size, toppings }) => ({
       productId: id,
@@ -782,6 +805,41 @@ class Checkout extends Component {
           },
         });
       }
+      if (
+        // this.state.formData.deliveryDate !== null &&
+        isNoDiscountDate(new Date())
+      ) {
+        const allowedProducts = this.state.allowedCategories
+          .map((item) => item.products)
+          .flat();
+        if (allowedProducts.length) {
+          const allowedProductsIds = allowedProducts.map(
+            ({ id, name }) => name,
+          );
+          const cartItemIds = this.props.cart.map(({ name }) => name);
+          const notAllowed = cartItemIds.filter(
+            (cId) => !allowedProductsIds.includes(cId),
+          );
+          if (notAllowed.length) {
+            this.setState({
+              cannotCheckout: true,
+              excludedItem: notAllowed,
+            });
+          } else {
+            this.setState({
+              cannotCheckout: false,
+            });
+          }
+        } else {
+          this.setState({
+            cannotCheckout: false,
+          });
+        }
+      } else {
+        this.setState({
+          cannotCheckout: false,
+        });
+      }
     }
 
     if (currentUser) {
@@ -883,8 +941,6 @@ class Checkout extends Component {
       return elem.key == cityIndex || elem.id === cityIndex;
     });
 
-    console.log("found: ", found);
-
     if (found) {
       if (Object.entries(found).length > 0) {
         this.setState({
@@ -941,11 +997,6 @@ class Checkout extends Component {
       },
     };
 
-    console.log(
-      "deliveryDate: ",
-      deliveryDate,
-      isNoDiscountDate(deliveryDate.value),
-    );
     const chosenCityPrice = isNoDiscountDate(deliveryDate.value)
       ? this.state.chosenCity?.price + 1000
       : this.state.chosenCity?.price;

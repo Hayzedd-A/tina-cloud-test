@@ -1,13 +1,13 @@
-import { useEffect, useCallback } from 'react';
-import analyticsService from '../services/analyticsService';
+import { useEffect, useCallback } from "react";
+import analyticsService from "../services/analyticsService";
 
 export const useAnalytics = (userId = null, sessionId = null) => {
   useEffect(() => {
-    console.log('✅✅✅starting analysis from hook', { userId, sessionId });
+    console.log("✅✅✅starting analysis from hook", { userId, sessionId });
     analyticsService.init(userId, sessionId);
 
     const handleRightClick = (event) => {
-      analyticsService.trackEvent('right_click', {
+      analyticsService.trackEvent("right_click", {
         x: event.pageX,
         y: event.pageY,
         element: event.target.tagName,
@@ -20,15 +20,14 @@ export const useAnalytics = (userId = null, sessionId = null) => {
       });
     };
 
-    document.addEventListener('contextmenu', handleRightClick);
+    document.addEventListener("contextmenu", handleRightClick);
 
     return () => {
-      document.removeEventListener('contextmenu', handleRightClick);
+      document.removeEventListener("contextmenu", handleRightClick);
     };
   }, [userId, sessionId]);
 
   const trackEvent = useCallback(async (eventName, eventData) => {
-    console.log("An event is tracked")
     await analyticsService.trackEvent(eventName, eventData);
   }, []);
 

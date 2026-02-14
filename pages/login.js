@@ -78,7 +78,7 @@ class CreateLogin extends Component {
       const status = error.response ? error.response.status : "Unknown";
       if (status === 300)
         message.warning(
-          "Message is already sent. Please wait till you receive the message"
+          "Message is already sent. Please wait till you receive the message",
         );
       else if (status === 404) message.warning("Phone number does not exist");
     }
@@ -121,11 +121,10 @@ class CreateLogin extends Component {
     console.log(`***********`);
     console.log(`***********`);
     console.log(`***********`);
-    console.log(formData);
 
     return Object.values(data).every(
       (value) =>
-        value.valid && (isSignUp ? pin.value === confirmPin.value : true)
+        value.valid && (isSignUp ? pin.value === confirmPin.value : true),
     );
   };
 
@@ -141,13 +140,14 @@ class CreateLogin extends Component {
           (error) =>
             this.openToaster(
               "error",
-              error || `An error occurred. Please try again.`
-            )
+              error || `An error occurred. Please try again.`,
+            ),
         )
       : login(
           { phoneNumber, pin },
           () => router.push("/my-account"),
-          (error) => this.openToaster("error", error || `Invalid login details`)
+          (error) =>
+            this.openToaster("error", error || `Invalid login details`),
         );
   };
 

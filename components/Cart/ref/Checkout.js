@@ -121,7 +121,7 @@ class Checkout extends Component {
         if (store?.states.length < 1) {
           this.openToaster(
             "error",
-            "The delivery system for this store is not availabale yet"
+            "The delivery system for this store is not availabale yet",
           );
         } else {
           this.effectDeliveryChange(value);
@@ -133,8 +133,6 @@ class Checkout extends Component {
   };
 
   effectDeliveryChange = (value) => {
-    console.log(value);
-
     this.setState({
       formData: {
         ...this.state.formData,
@@ -208,7 +206,7 @@ class Checkout extends Component {
         (rest.shippingMethod.value === "delivery" ||
         rest.shippingMethod.value === "s-delivery"
           ? address.valid
-          : true)
+          : true),
     );
   };
 
@@ -255,7 +253,7 @@ class Checkout extends Component {
             isLoadingDeliveryPrice: false,
           });
         }
-      }
+      },
     );
   };
 
@@ -356,19 +354,13 @@ class Checkout extends Component {
         storeID: "8a7a28dc-b54d-4841-b949-efe60dbae709",
       };
 
-      console.log({
-        email,
-        paymentReference,
-        metadata,
-      });
-
       paystack(
         email,
         paymentReference,
         parseFloat(amount - (discountAmount || 0)) * 100,
         this.handlePaystackSuccess,
         this.handlePaystackClose,
-        metadata
+        metadata,
       );
 
       this.setState({
@@ -450,7 +442,7 @@ class Checkout extends Component {
     if (currentUser) {
       const formData = patchFormValues(
         initialFormData,
-        JSON.parse(currentUser).customer
+        JSON.parse(currentUser).customer,
       );
 
       this.setState({
@@ -500,7 +492,7 @@ class Checkout extends Component {
         });
         this.openToaster(
           "error",
-          "This store does not have any active delivery state,you can check the pickup option"
+          "This store does not have any active delivery state,you can check the pickup option",
         );
       }
       this.setState({
