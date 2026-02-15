@@ -520,37 +520,37 @@ class Checkout extends Component {
     } = this.props;
 
     console.log("deliveryDate", deliveryDate);
-    if (!deliveryDate || isNoDiscountDate(deliveryDate || new Date())) {
-      const allowedProducts = this.state.allowedCategories
-        .map((item) => item.products)
-        .flat();
-      if (allowedProducts.length) {
-        const allowedProductsIds = allowedProducts.map(({ id, name }) => name);
-        const cartItemIds = this.props.cart.map(({ name }) => name);
-        const notAllowed = cartItemIds.filter(
-          (cId) => !allowedProductsIds.includes(cId),
-        );
-        if (notAllowed.length) {
-          this.setState({
-            cannotCheckout: true,
-            excludedItem: notAllowed,
-          });
-          return;
-        } else {
-          this.setState({
-            cannotCheckout: false,
-          });
-        }
-      } else {
-        this.setState({
-          cannotCheckout: false,
-        });
-      }
-    } else {
-      this.setState({
-        cannotCheckout: false,
-      });
-    }
+    // if (!deliveryDate || isNoDiscountDate(deliveryDate || new Date())) {
+    //   const allowedProducts = this.state.allowedCategories
+    //     .map((item) => item.products)
+    //     .flat();
+    //   if (allowedProducts.length) {
+    //     const allowedProductsIds = allowedProducts.map(({ id, name }) => name);
+    //     const cartItemIds = this.props.cart.map(({ name }) => name);
+    //     const notAllowed = cartItemIds.filter(
+    //       (cId) => !allowedProductsIds.includes(cId),
+    //     );
+    //     if (notAllowed.length) {
+    //       this.setState({
+    //         cannotCheckout: true,
+    //         excludedItem: notAllowed,
+    //       });
+    //       return;
+    //     } else {
+    //       this.setState({
+    //         cannotCheckout: false,
+    //       });
+    //     }
+    //   } else {
+    //     this.setState({
+    //       cannotCheckout: false,
+    //     });
+    //   }
+    // } else {
+    //   this.setState({
+    //     cannotCheckout: false,
+    //   });
+    // }
 
     const orderItems = cart.map(({ id, quantity, name, size, toppings }) => ({
       productId: id,
