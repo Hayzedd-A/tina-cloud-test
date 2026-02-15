@@ -69,17 +69,16 @@ class Home extends Component {
                   </div>
 
                   <div className="message">
-                    Free delivery on orders above 25k remains available.
+                    Enjoy FREE delivery when you order above 25k.
                     <span style={{ display: "block", fontSize: 15 }}>
-                      But will not apply to orders made for Saturday, February
-                      14th.
+                      If delivery exceeds N3,000 you only pay the difference!
                     </span>
-                    <span
+                    {/* <span
                       style={{ display: "block", fontSize: 15, color: "red" }}
                     >
-                      N.B. Only Valentine box orders can be scheduled for
-                      Saturday, February 14th.
-                    </span>
+                      Please note: This does not apply to orders made for Feb
+                      14th.
+                    </span> */}
                   </div>
 
                   <div className="actions">
@@ -101,16 +100,5 @@ class Home extends Component {
 export default ProductsConsumer(withRouter(Home));
 
 {
-  /* <div className="message">
-                    Enjoy FREE delivery when you order above 25k.
-                    <span style={{ display: "block", fontSize: 15 }}>
-                      If delivery exceeds N3,000 you only pay the difference!
-                    </span>
-                    <span
-                      style={{ display: "block", fontSize: 15, color: "red" }}
-                    >
-                      Please note: This does not apply to orders made for Feb
-                      14th.
-                    </span>
-                  </div> */
+  /* */
 }
