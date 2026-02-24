@@ -4,7 +4,8 @@ import { CartConsumer } from "../providers/CartProvider";
 import Toaster from "../components/Toaster";
 
 import Main from "../layouts/Main";
-import { Cart, Checkout, CheckoutSuccess } from "../components/Cart";
+import { Cart, CheckoutSuccess } from "../components/Cart";
+import Checkout from "../components/Cart/checkout/Checkout";
 import { getRequest } from "../api";
 import { STORE_ID } from "../constants";
 import Modal from "../components/Modal";
@@ -172,7 +173,7 @@ const CartPage = ({ cart }) => {
           moment(res.data.data.startDate),
           moment(res.data.data.endDate),
           "day",
-          "[]"
+          "[]",
         )
       ) {
         setGiftCardObject(null);
