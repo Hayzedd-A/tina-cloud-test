@@ -28,31 +28,31 @@ class Checkout extends Component {
     deliveryCost: 0,
     deliveryDiscount: DELIVERY_DISCOUNT,
     isDeliveryDiscountEligible: false,
-    
+
     // Location state
     deliveryLocation: { address: "", latitude: "", longitude: "" },
     pickupLocation: { address: "", latitude: "", longitude: "" },
     selectedPickup: "",
-    
+
     // City/State management
     chosenState: "",
     chosenCity: {},
     cities: [],
     storeCities: [],
-    
+
     // UI state
     isMenuActive: false,
     isLoadingDeliveryPrice: false,
     isCheckingOut: false,
     touched: false,
     toaster: null,
-    
+
     // Validation state
     priceCheck: false,
     cannotCheckout: false,
     excludedItem: [],
     allowedCategories: [],
-    
+
     // Misc
     deliveryId: "",
     initialValue: "",
@@ -67,7 +67,7 @@ class Checkout extends Component {
   }
 
   // ==================== Initialization ====================
-  
+
   initializeCheckout = async () => {
     await this.props?.fetchStoreInfo();
     window.scrollTo(0, 0);
@@ -100,7 +100,7 @@ class Checkout extends Component {
     if (currentUser) {
       const userData = JSON.parse(currentUser).customer;
       const formData = validationService.patchFormValues(initialFormData, userData);
-      
+
       this.setState({
         formData: {
           ...formData,
@@ -118,7 +118,7 @@ class Checkout extends Component {
       formData: {
         ...this.state.formData,
         [target.name]: { value: target.value, valid },
-        address: target.name === "shippingMethod" 
+        address: target.name === "shippingMethod"
           ? { value: "", valid: false }
           : this.state.formData.address,
       },
@@ -149,9 +149,9 @@ class Checkout extends Component {
       formData: {
         ...this.state.formData,
         shippingMethod: { value, valid: true },
-        address: { 
+        address: {
           value: isPickup ? "" : this.state.formData.address.value,
-          valid: isPickup 
+          valid: isPickup
         },
         deliveryDate: {
           value: isRegularDelivery ? new Date() : "",
@@ -160,9 +160,9 @@ class Checkout extends Component {
       },
       deliveryCost: isPickup ? 0 : this.state.deliveryCost,
     }, () => {
-      if (DELIVERY_METHODS.includes(value) && 
-          this.state.deliveryLocation.address && 
-          Object.keys(this.state.chosenCity).length > 0) {
+      if (DELIVERY_METHODS.includes(value) &&
+        this.state.deliveryLocation.address &&
+        Object.keys(this.state.chosenCity).length > 0) {
         this.calculateDeliveryFee();
       }
     });
@@ -205,7 +205,7 @@ class Checkout extends Component {
     if (!suggest) return;
 
     const addressData = deliveryService.extractAddressData(suggest);
-    
+
     this.setState({
       formData: {
         ...this.state.formData,
@@ -243,7 +243,7 @@ class Checkout extends Component {
 
   handlePickupLocationChange = (selectedValue) => {
     const pickupLocation = deliveryService.getPickupLocation(selectedValue);
-    
+
     this.setState({
       selectedPickup: selectedValue,
       pickupLocation,
@@ -310,7 +310,7 @@ class Checkout extends Component {
   checkProductAvailability = (selectedDate) => {
     const { allowedCategories, formData } = this.state;
     const { cart } = this.props;
-    
+
     const result = validationService.checkProductAvailability(
       allowedCategories,
       cart,
@@ -328,15 +328,22 @@ class Checkout extends Component {
     const { deliveryDiscountObject } = this.props;
     const subTotal = reduceArray(this.props.cart, "totalCost");
 
+    console.log("is delivery discount eligible", {
+      subTotal,
+      deliveryCost,
+      deliveryDiscount: this.state.deliveryDiscount,
+      cartData: this.props.cart
+    })
+
     const discountEligible = validationService.isDeliveryDiscountEligible(
       subTotal,
       deliveryCost,
       this.state.deliveryDiscount
     );
 
-    if (discountEligible !== this.state.isDeliveryDiscountEligible && 
-        chosenCity?.price && 
-        deliveryDiscountObject?.id) {
+    if (discountEligible !== this.state.isDeliveryDiscountEligible &&
+      chosenCity?.price &&
+      deliveryDiscountObject?.id) {
       this.setState({ isDeliveryDiscountEligible: discountEligible });
     }
   };
@@ -347,16 +354,16 @@ class Checkout extends Component {
     if (!this.checkFormValidity()) return;
 
     const checkoutData = this.prepareCheckoutData();
-    
+
     this.setState({ isCheckingOut: true });
 
     try {
       const response = await checkoutService.processCheckout(checkoutData);
-      
+
       analyticsService.trackEvent("purchase_response", response);
-      
+
       this.setState({ isCheckingOut: false });
-      
+
       if (response.checkoutLink) {
         window.location.href = response.checkoutLink;
       } else {
@@ -377,9 +384,9 @@ class Checkout extends Component {
   prepareCheckoutData = () => {
     const { formData, deliveryCost, chosenCity, deliveryLocation, pickupLocation } = this.state;
     const { cart, user, couponObject, giftCardObject, deliveryDiscountObject, loyaltyPointApplied } = this.props;
-    
+
     const formValues = getFormValues(formData);
-    
+
     return checkoutService.prepareCheckoutPayload({
       formValues,
       cart,

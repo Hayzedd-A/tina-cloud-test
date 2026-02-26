@@ -19,6 +19,21 @@ const CheckoutActions = ({
   isFormValid,
   onCheckout,
 }) => {
+  console.log("Checkout Actions", {
+    subTotal,
+    deliveryCost,
+    finalAmount,
+    shippingMethod,
+    chosenCity,
+    deliveryDiscount,
+    deliveryDiscountObject,
+    isCheckingOut,
+    isLoadingDeliveryPrice,
+    priceCheck,
+    cannotCheckout,
+    isFormValid,
+    onCheckout,
+  })
   const isDeliveryMethod = DELIVERY_METHODS.includes(shippingMethod);
   const discountAmount = subTotal + deliveryCost - finalAmount;
 
@@ -97,7 +112,7 @@ const DeliveryFeeNotice = ({
             <>₦{deliveryCost.toLocaleString()}</>
           )}
           {(!hasDiscount || isFullyDiscounted) && (
-            <>&nbsp;will be charged for delivery</>
+            <>&nbsp;will be charged for deliverys</>
           )}
         </span>
       </div>

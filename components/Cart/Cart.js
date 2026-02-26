@@ -190,19 +190,31 @@ class Cart extends Component {
     if (loyaltyDiscountApplied) discountAmount += loyaltyDiscountApplied;
     if (discountAmountGc) discountAmount += discountAmountGc;
 
+    // finalAmount represents how much the customer will pay after
+    // coupons/loyalty/gift cards.  Free delivery eligibility should be based
+    // on the *cart subtotal* alone, not the discounted total, because the
+    // policy is "any order with a cart total greater than the threshold
+    // qualifies".  Loyalty or other discounts reduce what the customer pays
+    // but should not revoke the delivery discount once the threshold has
+    // been reached.
     let finalAmount = subTotal - discountAmount;
     if (finalAmount < 0) finalAmount = 0;
 
+    const qualifiesForDeliveryDiscount =
+      subTotal >= FREE_DELIVERY_TRESHOLD;
+
     if (
-      finalAmount < FREE_DELIVERY_TRESHOLD &&
+      !qualifiesForDeliveryDiscount &&
       this.props.deliveryDiscountObject?.id
     ) {
+      // cart dropped below threshold (before discounts) so remove the code
       this.props.resetDeliveryDiscount();
     } else if (
-      finalAmount >= FREE_DELIVERY_TRESHOLD &&
+      qualifiesForDeliveryDiscount &&
       !this.props.deliveryDiscountObject?.id &&
       !this.state.isApplyingDC
     ) {
+      // reached threshold based on subtotal regardless of applied loyalty
       this.handleApplyDCCode();
     }
   }
