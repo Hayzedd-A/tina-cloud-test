@@ -111,9 +111,10 @@ export const checkoutService = {
       }
 
       payload.loyaltyPointsDiscountRedeemed = loyaltyPointsToRedeem;
-      payload.loyaltyPointsRedeemed = Math.ceil(
-        loyaltyPointsToRedeem / loyaltyPointApplied.discountPerPoint,
-      );
+      payload.loyaltyPointsRedeemed = loyaltyPointsToRedeem;
+      // payload.loyaltyPointsRedeemed = Math.ceil(
+      //   loyaltyPointsToRedeem / loyaltyPointApplied.discountPerPoint,
+      // );
     }
 
     return { ...payload, email };
