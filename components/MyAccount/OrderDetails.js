@@ -1,23 +1,93 @@
 import { Component } from "react";
 import * as moment from "moment";
 
-import { RightArrow } from "../../public/static/vectors";
+import { RightArrow, ModalBread } from "../../public/static/vectors";
 import { reduceArray, reduceLinearArray } from "../../utils/functions";
+import { withRouter } from "next/router";
+import { v4 as uuidv4 } from "uuid";
+import { CartConsumer } from "../../providers/CartProvider";
+import Toaster from "../Toaster";
+import Modal from "../Modal";
+import analyticsService from "../../services/analyticsService";
+import Loader from "../Loader";
 
 class OrderDetails extends Component {
+  state = {
+    toaster: {},
+  };
+
+  openToaster = (status, message) => {
+    this.setState({ toaster: { status, message } });
+  };
+
+  closeToaster = () => {
+    this.setState({ toaster: {} });
+  };
+
+  reorderAction = () => {
+    const { activeOrderDetails, addToCart } = this.props;
+    const { order_items } = activeOrderDetails || {};
+
+    if (!order_items || !order_items.length) return;
+
+    const cartItems = order_items.map((item) => {
+      const { product, quantity, toppings } = item;
+
+      let toppingsPrices = 0;
+      (toppings || []).forEach((topping) => {
+        toppingsPrices += parseFloat(topping.product.unitPrice) * quantity;
+      });
+      const productCost = parseFloat(product.unitPrice) * quantity;
+      const totalCost = productCost + toppingsPrices;
+
+      return {
+        uuid: uuidv4(),
+        id: product.id,
+        size: product.categorySize ? product.categorySize.name : "",
+        unitPrice: product.unitPrice,
+        imageUrl: product.imageUrl,
+        name: product.name,
+        quantity: quantity,
+        toppings: toppings || [],
+        totalCost: totalCost,
+      };
+    });
+
+    if (analyticsService && analyticsService.trackAddToCart) {
+      analyticsService.trackAddToCart(cartItems);
+    }
+
+    addToCart(cartItems, () => {
+      this.openToaster("success", `Successfully added to your cart`);
+    });
+  };
   componentDidMount() {
     window.scrollTo(0, 0);
   }
 
   render() {
-    const { goBack, orderDetails } = this.props;
+    const { toaster } = this.state;
+    const { goBack, activeOrderDetails } = this.props;
     const { createdAt, order_items, deliveryLocation, grandTotal } =
-      orderDetails || {};
+      activeOrderDetails || {};
+
+    if (!activeOrderDetails || !Object.keys(activeOrderDetails).length)
+      return <Loader />;
 
     return (
       <div className="cart-container full-height">
         <div className="cart-header">
-          <div className="container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+          <div
+            className="container"
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              height: "100%",
+            }}
+          >
             <div className="back" onClick={goBack}>
               <RightArrow />
             </div>
@@ -29,12 +99,12 @@ class OrderDetails extends Component {
             <div className="title">
               <div className="container">ITEM</div>
             </div>
-            {order_items.map((cartItem, index) => {
+            {order_items?.map((cartItem, index) => {
               const { quantity, toppings, product } = cartItem;
 
               let toppingsPrices = 0;
 
-              toppings.forEach(topping => {
+              toppings.forEach((topping) => {
                 toppingsPrices +=
                   parseFloat(topping.product.unitPrice) * quantity;
               });
@@ -113,9 +183,69 @@ class OrderDetails extends Component {
             </div>
           </div>
         </div>
+        <div
+          className="reorder-action-container"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "20px",
+            paddingBottom: "40px",
+          }}
+        >
+          <button
+            onClick={this.reorderAction}
+            style={{
+              width: "max-content",
+              padding: "16px 32px",
+              backgroundColor: "#F4C029",
+              color: "#000",
+              border: "none",
+              borderRadius: "2em",
+              fontSize: "14px",
+              fontWeight: "600",
+              cursor: "pointer",
+              textTransform: "uppercase",
+            }}
+          >
+            Re-order Items
+          </button>
+        </div>
+
+        {toaster.status === "success" && (
+          <Modal closeModal={this.closeToaster}>
+            <div className="add-cart-success">
+              <div className="icon">
+                <ModalBread />
+              </div>
+              <div className="message">{toaster.message}</div>
+              <div className="actions">
+                <button
+                  className="continue"
+                  onClick={() => {
+                    this.props.router.push("/cart");
+                  }}
+                >
+                  Checkout
+                </button>
+                <button
+                  className="go-checkout"
+                  onClick={() => {
+                    this.props.router.push("/");
+                  }}
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            </div>
+          </Modal>
+        )}
+
+        {toaster.status === "error" && (
+          <Toaster {...toaster} closeToaster={this.closeToaster} />
+        )}
       </div>
     );
   }
 }
 
-export default OrderDetails;
+export default CartConsumer(withRouter(OrderDetails));

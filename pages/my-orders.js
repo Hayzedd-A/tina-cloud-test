@@ -23,6 +23,7 @@ class MyAccount extends Component {
   };
 
   showOrderDetails = (orderDetails) => {
+    console.log("orderDetails in showOrderDetails", orderDetails);
     this.setState({
       orderDetails,
     });
@@ -68,13 +69,15 @@ class MyAccount extends Component {
     const { isMounted, orderDetails, isMenuActive } = this.state;
     const { router } = this.props;
 
+    console.log("orderDetails in my-orders", orderDetails);
+
     return (
       <Main>
         {!isMounted && <Loader />}
         <OrdersProvider>
           {orderDetails ? (
             <OrderDetails
-              orderDetails={orderDetails}
+              activeOrderDetails={orderDetails}
               goBack={() => this.showOrderDetails()}
             />
           ) : (
