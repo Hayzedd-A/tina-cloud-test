@@ -79,6 +79,7 @@ export const checkoutService = {
     if (couponObject) {
       payload.discountType = couponObject.discountType;
       payload.discountValue = couponObject.value;
+      payload.couponObject = couponObject;
     }
 
     // Handle gift card

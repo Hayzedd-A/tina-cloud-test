@@ -200,8 +200,7 @@ class Cart extends Component {
     let finalAmount = subTotal - discountAmount;
     if (finalAmount < 0) finalAmount = 0;
 
-    const qualifiesForDeliveryDiscount =
-      subTotal >= FREE_DELIVERY_TRESHOLD;
+    const qualifiesForDeliveryDiscount = subTotal >= FREE_DELIVERY_TRESHOLD;
 
     if (
       !qualifiesForDeliveryDiscount &&
@@ -373,7 +372,9 @@ class Cart extends Component {
         {!isLoadingCart &&
           (cart?.length ? (
             <>
-              <div className="cart-content">
+              <div
+                className={`cart-content ${!!couponObject || !!giftCardObject ? "more-padding" : ""}`}
+              >
                 <div className="cart-items">
                   <div className="title">
                     <div className="container">ITEM</div>
