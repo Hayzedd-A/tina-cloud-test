@@ -132,14 +132,14 @@ const CartPage = ({ cart }) => {
       const res = await getRequest({
         url: `/customer-requests/stores/${STORE_ID}/coupons/${value}`,
       });
-      setCouponObject(res.data.data);
-      if (!res.data.data) {
-        openToaster("error", "Coupon does not exist");
+      console.log("coupon response: ", res.data);
+      if (res.data.statusMessage !== "active") {
+        openToaster("error", res.data.statusMessage);
+        return;
       }
+      setCouponObject(res.data.data);
     } catch (error) {
       console.log(error);
-      // const message = getRequestError(error);
-
       openToaster("error", "An error occurred, please try again later");
     }
   };
