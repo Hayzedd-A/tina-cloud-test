@@ -127,7 +127,7 @@ export const paystack = (
   amount,
   handlePaystackSuccess,
   handlePaystackClose,
-  metadata
+  metadata,
 ) => {
   analyticsService.trackEvent("paystack_intiated", {
     email,
@@ -145,6 +145,7 @@ export const paystack = (
           : "pk_test_54ed04488bcc1a192bd2406fd36cfd8596e3ccae",
       email,
       amount,
+      subaccount: "ACCT_36lp0bsvdqusuon",
       currency: "NGN",
       metadata,
       ref,
@@ -209,7 +210,7 @@ export const dynamicSort = (property) => {
  * @returns {string} - Formatted WhatsApp message
  */
 export const formatOrderForWhatsApp = (orderData, amount) => {
-   // Build the message
+  // Build the message
   let message = `🛒 *NEW ORDER REQUEST*\n\n`;
 
   // Customer Information
@@ -250,7 +251,7 @@ export const formatOrderForWhatsApp = (orderData, amount) => {
 
   if (orderData.deliveryDate) {
     message += `Delivery Date: ${new Date(
-      orderData.deliveryDate
+      orderData.deliveryDate,
     ).toLocaleDateString()}\n`;
   }
 
@@ -261,7 +262,6 @@ export const formatOrderForWhatsApp = (orderData, amount) => {
   if (amount) {
     message += `\n💰 *TOTAL AMOUNT*: NGN ${amount.toLocaleString()} (including delivery)\n`;
   }
-  
 
   message += `\n✅ Please confirm this order. Thank you!`;
 
