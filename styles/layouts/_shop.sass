@@ -1,3 +1,27 @@
+.promo-marquee
+    overflow: hidden
+    width: 100%
+    background: $brown
+    padding: 11px 0
+    position: sticky
+    top: 0
+    z-index: 15
+
+    .promo-marquee-track
+        display: flex
+        white-space: nowrap
+        animation: marquee 28s linear infinite
+
+        span
+            flex-shrink: 0
+            color: $yellow
+            font-size: 13px
+            font-weight: $font-weight-bold
+            letter-spacing: 0.3px
+
+.shop-container .tabs-container
+    top: 40px
+
 .shop-container
     height: 100%
 

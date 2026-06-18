@@ -108,6 +108,14 @@ class Checkout extends Component {
           address: { value: "", valid: false },
         },
       });
+    } else if (this.props.cartPhoneNumber) {
+      const sanitized = this.props.cartPhoneNumber.replace(/\D/g, "").slice(0, 11);
+      this.setState({
+        formData: {
+          ...this.state.formData,
+          phoneNumber: { value: sanitized, valid: sanitized.length === 11 },
+        },
+      });
     }
   };
 

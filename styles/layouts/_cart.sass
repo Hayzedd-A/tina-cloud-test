@@ -436,6 +436,66 @@
 *
     box-sizing: border-box
 
+.first-order-phone-confirmed
+    display: inline-flex
+    align-items: center
+    gap: 8px
+    background: transparentize(#52c41a, 0.88)
+    border: 1px solid transparentize(#52c41a, 0.5)
+    border-radius: 20px
+    padding: 6px 14px
+    font-size: 14px
+    font-weight: bold
+    margin-bottom: 16px
+    color: #1b1618
+
+.first-order-banner
+    display: flex
+    align-items: center
+    justify-content: space-between
+    background: transparentize(#F2C131, 0.82)
+    border: 1px solid #F2C131
+    border-radius: 10px
+    padding: 12px 16px
+    margin-bottom: 20px
+    font-size: 14px
+    font-weight: bold
+    gap: 10px
+
+    .first-order-banner-reveal
+        white-space: nowrap
+        color: #1b1618
+        text-decoration: underline
+        cursor: pointer
+        font-size: 13px
+
+.first-order-coupon-display
+    display: flex
+    align-items: center
+    justify-content: center
+    gap: 12px
+    margin-top: 14px
+    padding: 10px 20px
+    background: #1b1618
+    color: #F2C131
+    font-size: 22px
+    font-weight: bold
+    letter-spacing: 3px
+    border-radius: 8px
+    text-align: center
+    width: 100%
+    cursor: pointer
+    user-select: none
+    transition: opacity 0.15s ease
+
+    &:hover
+        opacity: 0.85
+
+    .first-order-coupon-copy-icon
+        font-size: 18px
+        color: #F2C131
+        flex-shrink: 0
+
 .button-coupon
     padding: 7px 20px
     height: 60px

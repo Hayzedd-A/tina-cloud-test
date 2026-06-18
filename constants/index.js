@@ -1,3 +1,7 @@
+// First-order discount — change these values as needed
+export const FIRST_ORDER_COUPON_CODE = "WELCOME10";
+export const FIRST_ORDER_DISCOUNT_PERCENT = 10;
+
 // dev
 // export const STORE_ID="ba629b0f-9749-4097-bfc7-825fdcfe6811";
 

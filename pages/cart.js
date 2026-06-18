@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { CopyOutlined, CheckOutlined } from "@ant-design/icons";
 
 import { CartConsumer } from "../providers/CartProvider";
 import Toaster from "../components/Toaster";
@@ -6,8 +7,12 @@ import Toaster from "../components/Toaster";
 import Main from "../layouts/Main";
 import { Cart, CheckoutSuccess } from "../components/Cart";
 import Checkout from "../components/Cart/checkout/Checkout";
-import { getRequest } from "../api";
-import { STORE_ID } from "../constants";
+import { getRequest, postRequest, getUserDetails } from "../api";
+import {
+  STORE_ID,
+  FIRST_ORDER_COUPON_CODE,
+  FIRST_ORDER_DISCOUNT_PERCENT,
+} from "../constants";
 import Modal from "../components/Modal";
 import { ModalBread } from "../public/static/vectors";
 import { reduceArray } from "../utils/functions";
@@ -48,6 +53,19 @@ const CartPage = ({ cart }) => {
     value: "",
     valid: false,
   });
+
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isCheckingFirstTimeUser, setIsCheckingFirstTimeUser] = useState(false);
+  const [firstTimeChecked, setFirstTimeChecked] = useState(false);
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(null);
+  const [showFirstOrderModal, setShowFirstOrderModal] = useState(false);
+  const [couponCopied, setCouponCopied] = useState(false);
+
+  const copyCouponCode = useCallback(async () => {
+    await navigator.clipboard.writeText(FIRST_ORDER_COUPON_CODE);
+    setCouponCopied(true);
+    setTimeout(() => setCouponCopied(false), 2000);
+  }, []);
 
   const openToaster = (status, message) => {
     setToaster({
@@ -109,6 +127,35 @@ const CartPage = ({ cart }) => {
 
   useEffect(() => {
     getLoyaltyDiscountAvailable();
+  }, []);
+
+  const checkFirstTimeUser = async (phone) => {
+    if (!phone) return;
+    setIsCheckingFirstTimeUser(true);
+    try {
+      const res = await getRequest({
+        url: `/customer-requests/stores/check-first-time-user?phoneNumber=${phone}`,
+      });
+      const isFirst = res.data?.isFirstTimeUser;
+      setIsFirstTimeUser(isFirst);
+      setFirstTimeChecked(true);
+      if (isFirst) setShowFirstOrderModal(true);
+    } catch (error) {
+      openToaster("error", "An error occurred, please try again later");
+    } finally {
+      setIsCheckingFirstTimeUser(false);
+    }
+  };
+
+  const handlePhoneNumberChange = ({ target }) => {
+    setPhoneNumber(target.value);
+  };
+
+  useEffect(() => {
+    const user = getUserDetails();
+    if (user?.customer?.phoneNumber) {
+      checkFirstTimeUser(user.customer.phoneNumber);
+    }
   }, []);
 
   const getLoyaltyDiscountAvailable = async () => {
@@ -276,6 +323,44 @@ const CartPage = ({ cart }) => {
         </Modal>
       )}
 
+      {showFirstOrderModal && (
+        <Modal closeModal={() => setShowFirstOrderModal(false)}>
+          <div className="add-cart-success">
+            <div className="icon">
+              <ModalBread />
+            </div>
+            <div className="message">
+              <strong>Welcome! You&apos;re a first-time customer.</strong>
+              <br />
+              Enjoy {FIRST_ORDER_DISCOUNT_PERCENT}% off your first order! Enter
+              the coupon code below in your cart:
+              <div
+                className="first-order-coupon-display"
+                onClick={copyCouponCode}
+                title="Click to copy"
+              >
+                {FIRST_ORDER_COUPON_CODE}
+                <span className="first-order-coupon-copy-icon">
+                  {couponCopied ? (
+                    <CheckOutlined style={{ color: "#52c41a" }} />
+                  ) : (
+                    <CopyOutlined />
+                  )}
+                </span>
+              </div>
+            </div>
+            <div className="actions">
+              <button
+                className="continue"
+                onClick={() => setShowFirstOrderModal(false)}
+              >
+                Got it!
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
       {isCheckoutSuccessActive ? (
         <CheckoutSuccess />
       ) : isCheckoutActive ? (
@@ -287,6 +372,7 @@ const CartPage = ({ cart }) => {
           loyaltyPointsAvailable={loyaltyPointsAvailable}
           loyaltyPointApplied={loyaltyPointApplied}
           showCheckoutSuccess={showCheckoutSuccess}
+          cartPhoneNumber={phoneNumber}
         />
       ) : (
         <Cart
@@ -311,6 +397,16 @@ const CartPage = ({ cart }) => {
           handleChangeDeliveryDiscountCode={handleChangeDeliveryDiscountCode}
           resetDeliveryDiscount={resetDeliveryDiscount}
           showCheckoutSuccess={showCheckoutSuccess}
+          phoneNumber={phoneNumber}
+          handlePhoneNumberChange={handlePhoneNumberChange}
+          isCheckingFirstTimeUser={isCheckingFirstTimeUser}
+          firstTimeChecked={firstTimeChecked}
+          isFirstTimeUser={isFirstTimeUser}
+          checkFirstTimeUser={checkFirstTimeUser}
+          autoOpenCoupon={isFirstTimeUser === true}
+          onShowFirstOrderModal={() => setShowFirstOrderModal(true)}
+          firstOrderCouponCode={FIRST_ORDER_COUPON_CODE}
+          firstOrderDiscountPercent={FIRST_ORDER_DISCOUNT_PERCENT}
         />
       )}
       {toaster && <Toaster {...toaster} closeToaster={closeToaster} />}

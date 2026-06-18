@@ -32,7 +32,7 @@ class Shop extends Component {
       .getBoundingClientRect();
 
     this.setState({
-      isTabActive: tab && tab.top <= 0,
+      isTabActive: tab && tab.top <= 40,
     });
   };
 
@@ -87,6 +87,12 @@ class Shop extends Component {
     return (
       <div className="shop-container" id="shop-container">
         <Header />
+        <div className="promo-marquee">
+          <div className="promo-marquee-track">
+            <span>✦&nbsp;&nbsp;FREE delivery on orders above ₦25,000&nbsp;&nbsp;·&nbsp;&nbsp;If delivery exceeds ₦3,000 you only pay the difference!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>✦&nbsp;&nbsp;FREE delivery on orders above ₦25,000&nbsp;&nbsp;·&nbsp;&nbsp;If delivery exceeds ₦3,000 you only pay the difference!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          </div>
+        </div>
 
         {/* {this.state.modalOpen && (
           <Modal closeModal={this.closeToaster}>

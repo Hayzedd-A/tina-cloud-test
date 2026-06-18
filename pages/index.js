@@ -4,31 +4,22 @@ import { withRouter } from "next/router";
 import Main from "../layouts/Main";
 import Shop from "../components/Shop";
 import SplashScreen from "../components/SplashScreen";
+import PopupModal from "../components/PopupModal";
 
 import { ProductsConsumer } from "../providers/ProductsProvider";
 import { slugify } from "../utils/functions";
-
-import Modal from "../components/Modal";
-import { Logo } from "../public/static/vectors";
+import { FIRST_ORDER_COUPON_CODE, FIRST_ORDER_DISCOUNT_PERCENT } from "../constants";
 import analyticsService from "../services/analyticsService";
-// import withAnalytics from '../hocs/withAnalytics';
 
 class Home extends Component {
   state = {
     selectedItem: {},
     showDetails: false,
     showSplash: true,
-    showModal: true,
-    phoneNumber: "2347018249203",
-    message: "Hello, I would like to place an order.",
   };
 
   selectItem = ({ name, id }) => {
-    // Use analytics from props provided by HOC
-    analyticsService.trackProductView({
-      id,
-      name,
-    });
+    analyticsService.trackProductView({ id, name });
     this.props.router.push(`/shop?name=${slugify(name)}&id=${id}`, undefined, {
       shallow: true,
     });
@@ -36,21 +27,13 @@ class Home extends Component {
 
   componentDidMount() {
     this.splashtimeout = setTimeout(() => {
-      this.setState({
-        showSplash: false,
-      });
+      this.setState({ showSplash: false });
     }, 4000);
   }
 
   componentWillUnmount() {
     clearTimeout(this.splashtimeout);
   }
-
-  closeModal = () => {
-    this.setState({
-      showModal: false,
-    });
-  };
 
   render() {
     const { isLoadingProducts } = this.props;
@@ -61,34 +44,13 @@ class Home extends Component {
           <SplashScreen />
         ) : (
           <>
-            {this.state.showModal && (
-              <Modal closeModal={this.closeModal}>
-                <div className="add-cart-success">
-                  <div className="icon">
-                    <Logo />
-                  </div>
-
-                  <div className="message">
-                    Enjoy FREE delivery when you order above 25k.
-                    <span style={{ display: "block", fontSize: 15 }}>
-                      If delivery exceeds N3,000 you only pay the difference!
-                    </span>
-                    {/* <span
-                      style={{ display: "block", fontSize: 15, color: "red" }}
-                    >
-                      Please note: This does not apply to orders made for Feb
-                      14th.
-                    </span> */}
-                  </div>
-
-                  <div className="actions">
-                    <button className="continue" onClick={this.closeModal}>
-                      Ok
-                    </button>
-                  </div>
-                </div>
-              </Modal>
-            )}
+            <PopupModal
+              OkText="Got it!"
+              text={{
+                main: `🎉 First-time customer? Enjoy ${FIRST_ORDER_DISCOUNT_PERCENT}% off your first order!`,
+                sub: `Add items to your cart and enter your phone number to check eligibility and unlock coupon code ${FIRST_ORDER_COUPON_CODE}.`,
+              }}
+            />
             <Shop selectItem={this.selectItem} />
           </>
         )}

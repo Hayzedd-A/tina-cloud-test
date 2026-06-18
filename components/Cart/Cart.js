@@ -174,6 +174,10 @@ class Cart extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    if (!prevProps.autoOpenCoupon && this.props.autoOpenCoupon) {
+      this.setState({ showCouponSection: true });
+    }
+
     const { cart, couponObject, loyaltyPointApplied, giftCardObject } =
       this.props;
 
@@ -446,6 +450,85 @@ class Cart extends Component {
                     );
                   })}
                 </div>
+                {!JSON.parse(localStorage.getItem("gourmet-twist-user")) && (
+                  <div className="container" style={{ marginBottom: 10 }}>
+                    <div className="row" style={{ alignItems: "flex-end" }}>
+                      <div className="col-12">
+                        <div
+                          style={{
+                            marginBottom: "8px",
+                            fontSize: 14,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          New customer? Enter your phone number to check for a
+                          first-order discount
+                        </div>
+                        {!this.props.firstTimeChecked ? (
+                          <div
+                            className="row"
+                            style={{ alignItems: "flex-end" }}
+                          >
+                            <div className="col-8">
+                              <TextField
+                                label="Phone Number"
+                                placeholder="e.g. 08012345678"
+                                name="firstTimePhone"
+                                value={this.props.phoneNumber}
+                                onChange={this.props.handlePhoneNumberChange}
+                                className="mb-40"
+                                type="tel"
+                              />
+                            </div>
+                            <div className="col-4">
+                              <button
+                                onClick={() =>
+                                  this.props.checkFirstTimeUser(
+                                    this.props.phoneNumber,
+                                  )
+                                }
+                                className={classNames("button-coupon mb-40", {
+                                  disabled:
+                                    !this.props.phoneNumber ||
+                                    this.props.isCheckingFirstTimeUser,
+                                })}
+                              >
+                                {this.props.isCheckingFirstTimeUser
+                                  ? "Checking..."
+                                  : "Check"}
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="first-order-phone-confirmed">
+                            <CheckCircleFilled
+                              style={{ color: "#52c41a", fontSize: 16 }}
+                            />
+                            <span>{this.props.phoneNumber}</span>
+                          </div>
+                        )}
+                        {this.props.firstTimeChecked &&
+                          this.props.isFirstTimeUser && (
+                            <div className="first-order-banner">
+                              <span>
+                                🎉 First-order discount unlocked! Use coupon
+                                code{" "}
+                                <strong>{this.props.firstOrderCouponCode}</strong>{" "}
+                                for {this.props.firstOrderDiscountPercent}% off.
+                              </span>
+                              <span
+                                className="first-order-banner-reveal"
+                                onClick={this.props.onShowFirstOrderModal}
+                              >
+                                View code
+                              </span>
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {!giftCardObject && (
                   <div className="container">
                     <div className="row" style={{ alignItems: "flex-end" }}>
