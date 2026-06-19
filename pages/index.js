@@ -8,7 +8,7 @@ import PopupModal from "../components/PopupModal";
 
 import { ProductsConsumer } from "../providers/ProductsProvider";
 import { slugify } from "../utils/functions";
-import { FIRST_ORDER_COUPON_CODE, FIRST_ORDER_DISCOUNT_PERCENT } from "../constants";
+import { FIRST_ORDER_DISCOUNT_PERCENT } from "../constants";
 import analyticsService from "../services/analyticsService";
 
 class Home extends Component {
@@ -48,7 +48,7 @@ class Home extends Component {
               OkText="Got it!"
               text={{
                 main: `🎉 First-time customer? Enjoy ${FIRST_ORDER_DISCOUNT_PERCENT}% off your first order!`,
-                sub: `Add items to your cart and enter your phone number to check eligibility and unlock coupon code ${FIRST_ORDER_COUPON_CODE}.`,
+                sub: `Add items to your cart and enter your phone number to check eligibility and claim your exclusive code.`,
               }}
             />
             <Shop selectItem={this.selectItem} />

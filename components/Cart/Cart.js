@@ -450,7 +450,7 @@ class Cart extends Component {
                     );
                   })}
                 </div>
-                {!JSON.parse(localStorage.getItem("gourmet-twist-user")) && (
+                {/* {!JSON.parse(localStorage.getItem("gourmet-twist-user")) && (
                   <div className="container" style={{ marginBottom: 10 }}>
                     <div className="row" style={{ alignItems: "flex-end" }}>
                       <div className="col-12">
@@ -527,7 +527,7 @@ class Cart extends Component {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {!giftCardObject && (
                   <div className="container">

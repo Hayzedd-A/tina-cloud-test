@@ -60,12 +60,14 @@ const CartPage = ({ cart }) => {
   const [isFirstTimeUser, setIsFirstTimeUser] = useState(null);
   const [showFirstOrderModal, setShowFirstOrderModal] = useState(false);
   const [couponCopied, setCouponCopied] = useState(false);
+  const [generatedCouponCode, setGeneratedCouponCode] = useState(null);
 
   const copyCouponCode = useCallback(async () => {
-    await navigator.clipboard.writeText(FIRST_ORDER_COUPON_CODE);
+    const code = generatedCouponCode || FIRST_ORDER_COUPON_CODE;
+    await navigator.clipboard.writeText(code);
     setCouponCopied(true);
     setTimeout(() => setCouponCopied(false), 2000);
-  }, []);
+  }, [generatedCouponCode]);
 
   const openToaster = (status, message) => {
     setToaster({
@@ -139,7 +141,23 @@ const CartPage = ({ cart }) => {
       const isFirst = res.data?.isFirstTimeUser;
       setIsFirstTimeUser(isFirst);
       setFirstTimeChecked(true);
-      if (isFirst) setShowFirstOrderModal(true);
+      if (isFirst) {
+        try {
+          const couponRes = await getRequest({
+            url: `/customer-requests/stores/${STORE_ID}/coupon/new`,
+            params: { couponType: "first_time_user" },
+          });
+          const code =
+            couponRes.data?.code ||
+            couponRes.data?.couponCode ||
+            couponRes.data?.data?.code ||
+            couponRes.data?.data?.couponCode;
+          if (code) setGeneratedCouponCode(code);
+        } catch {
+          // coupon fetch failing should not block the flow
+        }
+        setShowFirstOrderModal(true);
+      }
     } catch (error) {
       openToaster("error", "An error occurred, please try again later");
     } finally {
@@ -176,8 +194,10 @@ const CartPage = ({ cart }) => {
   const handleApplyCouponCode = async () => {
     const { value } = couponCode;
     try {
+      const welcomePhone = localStorage.getItem("gourmet-twist-welcome-phone");
       const res = await getRequest({
         url: `/customer-requests/stores/${STORE_ID}/coupons/${value}`,
+        params: welcomePhone ? { phoneNumber: welcomePhone } : undefined,
       });
       console.log("coupon response: ", res.data);
       if (res.data.statusMessage !== "active") {
@@ -334,20 +354,22 @@ const CartPage = ({ cart }) => {
               <br />
               Enjoy {FIRST_ORDER_DISCOUNT_PERCENT}% off your first order! Enter
               the coupon code below in your cart:
-              <div
-                className="first-order-coupon-display"
-                onClick={copyCouponCode}
-                title="Click to copy"
-              >
-                {FIRST_ORDER_COUPON_CODE}
-                <span className="first-order-coupon-copy-icon">
-                  {couponCopied ? (
-                    <CheckOutlined style={{ color: "#52c41a" }} />
-                  ) : (
-                    <CopyOutlined />
-                  )}
-                </span>
-              </div>
+              {(generatedCouponCode || FIRST_ORDER_COUPON_CODE) && (
+                <div
+                  className="first-order-coupon-display"
+                  onClick={copyCouponCode}
+                  title="Click to copy"
+                >
+                  {generatedCouponCode || FIRST_ORDER_COUPON_CODE}
+                  <span className="first-order-coupon-copy-icon">
+                    {couponCopied ? (
+                      <CheckOutlined style={{ color: "#52c41a" }} />
+                    ) : (
+                      <CopyOutlined />
+                    )}
+                  </span>
+                </div>
+              )}
             </div>
             <div className="actions">
               <button
@@ -405,7 +427,7 @@ const CartPage = ({ cart }) => {
           checkFirstTimeUser={checkFirstTimeUser}
           autoOpenCoupon={isFirstTimeUser === true}
           onShowFirstOrderModal={() => setShowFirstOrderModal(true)}
-          firstOrderCouponCode={FIRST_ORDER_COUPON_CODE}
+          firstOrderCouponCode={generatedCouponCode || FIRST_ORDER_COUPON_CODE}
           firstOrderDiscountPercent={FIRST_ORDER_DISCOUNT_PERCENT}
         />
       )}
