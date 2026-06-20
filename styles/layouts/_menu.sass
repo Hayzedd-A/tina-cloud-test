@@ -1,0 +1,596 @@
+// ── Menu page ────────────────────────────────────────────────────────────────
+
+.menu-page
+    min-height: 100vh
+    background: $brown
+    color: $white
+    font-family: $primary-font
+
+// ── Hero ─────────────────────────────────────────────────────────────────────
+
+.menu-hero
+    min-height: 100svh
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    text-align: center
+    padding: 60px 32px 80px
+    position: relative
+    background: $brown
+
+    &::after
+        content: ''
+        position: absolute
+        bottom: 0
+        left: 0
+        width: 100%
+        height: 2px
+        background: $yellow
+
+.menu-hero-logo
+    width: 68px
+    height: 68px
+    border-radius: 50%
+    background: $brown-2
+    display: flex
+    align-items: center
+    justify-content: center
+    margin-bottom: 40px
+    flex-shrink: 0
+
+    svg
+        width: 44px
+        height: auto
+
+.menu-hero-wordmark
+    display: flex
+    flex-direction: column
+    align-items: center
+    line-height: 0.9
+    margin-bottom: 28px
+
+.menu-hero-w1
+    font-size: clamp(52px, 16vw, 96px)
+    font-weight: $font-weight-bold
+    color: $white
+    letter-spacing: -2px
+    display: block
+
+.menu-hero-w2
+    font-size: clamp(52px, 16vw, 96px)
+    font-weight: $font-weight-bold
+    color: $yellow
+    letter-spacing: -2px
+    display: block
+
+.menu-hero-sub
+    font-size: 13px
+    color: rgba(255, 255, 255, 0.45)
+    letter-spacing: 1.5px
+    text-transform: uppercase
+    line-height: 1.7
+    margin-bottom: 8px
+
+.menu-hero-location
+    font-size: 14px
+    color: rgba(255, 255, 255, 0.28)
+    margin-bottom: 48px
+
+.menu-hero-cta
+    display: inline-flex
+    align-items: center
+    height: 48px
+    padding: 0 24px
+    border: 1.5px solid rgba(242, 193, 49, 0.4)
+    border-radius: 100px
+    font-size: 14px
+    font-weight: $font-weight-bold
+    color: $yellow
+    text-decoration: none
+    letter-spacing: 0.5px
+    transition: background 0.2s, border-color 0.2s
+
+    &:hover
+        background: rgba(242, 193, 49, 0.08)
+        border-color: $yellow
+
+// ── Category tabs ─────────────────────────────────────────────────────────────
+
+.menu-tabs-bar
+    position: sticky
+    top: 0
+    z-index: 20
+    background: $brown-2
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07)
+    overflow: hidden
+
+.menu-tabs-track
+    display: flex
+    overflow-x: auto
+    padding: 0 12px
+    gap: 4px
+    -ms-overflow-style: none
+    scrollbar-width: none
+
+    &::-webkit-scrollbar
+        display: none
+
+.menu-tab
+    flex-shrink: 0
+    height: 50px
+    padding: 0 16px
+    background: transparent
+    border: none
+    border-bottom: 2.5px solid transparent
+    font-family: $primary-font
+    font-size: 13px
+    font-weight: $font-weight-bold
+    color: rgba(255, 255, 255, 0.45)
+    cursor: pointer
+    white-space: nowrap
+    transition: color 0.2s, border-color 0.2s
+
+    &--on
+        color: $yellow
+        border-bottom-color: $yellow
+
+    &:focus-visible
+        outline: 2px solid $yellow
+        outline-offset: -2px
+
+.menu-tabs-loading
+    height: 50px
+
+// ── Body ─────────────────────────────────────────────────────────────────────
+
+.menu-body
+    padding-bottom: 16px
+
+// ── Loading / Error ───────────────────────────────────────────────────────────
+
+.menu-loading
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 20px
+    padding: 80px 24px
+
+.menu-spinner
+    width: 36px
+    height: 36px
+    border: 3px solid rgba(242, 193, 49, 0.15)
+    border-top-color: $yellow
+    border-radius: 50%
+    animation: spin 0.75s linear infinite
+
+.menu-loading-text
+    font-size: 14px
+    color: rgba(255, 255, 255, 0.35)
+
+.menu-error
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 16px
+    padding: 80px 24px
+    text-align: center
+    color: rgba(255, 255, 255, 0.5)
+
+    button
+        height: 44px
+        padding: 0 24px
+        background: $yellow
+        border: none
+        border-radius: 100px
+        font-family: $primary-font
+        font-size: 14px
+        font-weight: $font-weight-bold
+        color: $brown
+        cursor: pointer
+
+// ── Section / Chapter header ──────────────────────────────────────────────────
+
+.menu-section
+    padding: 40px 0 8px
+
+.menu-ch
+    padding: 0 16px
+    margin-bottom: 20px
+
+.menu-ch-inner
+    display: flex
+    align-items: baseline
+    justify-content: space-between
+    margin-bottom: 10px
+
+.menu-ch-name
+    font-size: clamp(22px, 6vw, 32px)
+    font-weight: $font-weight-bold
+    color: $white
+    letter-spacing: -0.5px
+    line-height: 1.1
+
+.menu-ch-count
+    font-size: 11px
+    font-weight: $font-weight-bold
+    letter-spacing: 1.5px
+    text-transform: uppercase
+    color: rgba(242, 193, 49, 0.55)
+    flex-shrink: 0
+
+.menu-ch-rule
+    height: 1px
+    background: linear-gradient(to right, $yellow 0%, rgba(242, 193, 49, 0.08) 100%)
+
+// ── Product cards ─────────────────────────────────────────────────────────────
+
+// Featured (first item, full width)
+.mc
+    background: $brown-2
+    cursor: pointer
+    user-select: none
+    transition: opacity 0.15s
+
+    &:active
+        opacity: 0.85
+
+    &:focus-visible
+        outline: 2px solid $yellow
+        outline-offset: 2px
+
+.mc--featured
+    margin: 0 16px 16px
+
+    .mc-img-wrap
+        height: 220px
+        border-radius: 14px 14px 0 0
+
+    .mc-img
+        border-radius: 14px 14px 0 0
+
+    .mc-img-placeholder
+        border-radius: 14px 14px 0 0
+
+    .mc-body
+        border-radius: 0 0 14px 14px
+        padding: 14px 16px 16px
+
+    .mc-name
+        font-size: 17px
+
+// Grid layout for rest of cards
+.menu-grid
+    display: grid
+    grid-template-columns: 1fr 1fr
+    gap: 10px
+    padding: 0 16px
+
+    .mc
+        border-radius: 12px
+        overflow: hidden
+
+        .mc-img-wrap
+            height: 160px
+
+        .mc-body
+            padding: 10px 12px 12px
+
+        .mc-name
+            font-size: 13px
+            -webkit-line-clamp: 2
+            -webkit-box-orient: vertical
+            display: -webkit-box
+            overflow: hidden
+
+// Shared card parts
+.mc-img-wrap
+    position: relative
+    overflow: hidden
+    background: $brown-2
+    flex-shrink: 0
+
+.mc-img
+    width: 100%
+    height: 100%
+    object-fit: cover
+    display: block
+    transition: transform 0.3s ease
+
+    .mc:hover &
+        transform: scale(1.03)
+
+.mc-img-placeholder
+    width: 100%
+    height: 100%
+    background: rgba(242, 193, 49, 0.1)
+    display: flex
+    align-items: center
+    justify-content: center
+
+    span
+        font-size: 36px
+        font-weight: $font-weight-bold
+        color: rgba(242, 193, 49, 0.4)
+        text-transform: uppercase
+
+.mc-price
+    position: absolute
+    top: 10px
+    right: 10px
+    background: $yellow
+    color: $brown
+    font-size: 11px
+    font-weight: $font-weight-bold
+    padding: 4px 9px
+    border-radius: 100px
+    white-space: nowrap
+    letter-spacing: 0.3px
+
+.mc-body
+    background: $brown-2
+    display: flex
+    flex-direction: column
+    gap: 6px
+
+.mc-name
+    font-weight: $font-weight-bold
+    color: $white
+    line-height: 1.3
+
+.mc-tap-hint
+    font-size: 10px
+    color: rgba(255, 255, 255, 0.22)
+    letter-spacing: 0.5px
+    margin-top: 2px
+
+// ── Product modal (bottom sheet) ─────────────────────────────────────────────
+
+.mm-overlay
+    position: fixed
+    inset: 0
+    background: rgba(27, 22, 23, 0.72)
+    z-index: 200
+    display: flex
+    align-items: flex-end
+    justify-content: center
+    backdrop-filter: blur(3px)
+    -webkit-backdrop-filter: blur(3px)
+
+.mm-sheet
+    width: 100%
+    max-width: 560px
+    max-height: 92svh
+    background: $brown-2
+    border-radius: 20px 20px 0 0
+    overflow-y: auto
+    overflow-x: hidden
+    overscroll-behavior: contain
+    animation: slideUp 0.26s cubic-bezier(0.32, 0.72, 0, 1)
+
+    // hide scrollbar visually but keep scroll
+    -ms-overflow-style: none
+    scrollbar-width: none
+    &::-webkit-scrollbar
+        display: none
+
+.mm-img-wrap
+    position: relative
+    width: 100%
+    height: 260px
+    background: $brown
+    flex-shrink: 0
+
+.mm-img
+    width: 100%
+    height: 100%
+    object-fit: cover
+    display: block
+
+.mm-img-placeholder
+    width: 100%
+    height: 100%
+    display: flex
+    align-items: center
+    justify-content: center
+    background: rgba(242, 193, 49, 0.08)
+
+    span
+        font-size: 64px
+        font-weight: $font-weight-bold
+        color: rgba(242, 193, 49, 0.35)
+        text-transform: uppercase
+
+.mm-close
+    position: absolute
+    top: 14px
+    right: 14px
+    width: 36px
+    height: 36px
+    border-radius: 50%
+    background: rgba(27, 22, 23, 0.65)
+    border: none
+    color: $white
+    font-size: 14px
+    cursor: pointer
+    display: flex
+    align-items: center
+    justify-content: center
+    font-family: $primary-font
+    transition: background 0.15s
+    backdrop-filter: blur(4px)
+
+    &:hover
+        background: rgba(27, 22, 23, 0.88)
+
+    &:focus-visible
+        outline: 2px solid $yellow
+        outline-offset: 2px
+
+.mm-content
+    padding: 20px 20px 36px
+
+.mm-name
+    font-size: 22px
+    font-weight: $font-weight-bold
+    color: $white
+    line-height: 1.2
+    letter-spacing: -0.3px
+    margin-bottom: 10px
+
+.mm-desc
+    font-size: 14px
+    color: rgba(255, 255, 255, 0.5)
+    line-height: 1.65
+    margin-bottom: 24px
+
+.mm-pricing
+    margin-bottom: 24px
+
+.mm-pricing-label
+    font-size: 10px
+    font-weight: $font-weight-bold
+    letter-spacing: 2px
+    text-transform: uppercase
+    color: rgba(255, 255, 255, 0.3)
+    margin-bottom: 12px
+
+.mm-sizes-list
+    display: flex
+    flex-direction: column
+    gap: 2px
+    border-radius: 12px
+    overflow: hidden
+    border: 1px solid rgba(255, 255, 255, 0.06)
+
+.mm-size-row
+    display: flex
+    align-items: center
+    justify-content: space-between
+    padding: 13px 16px
+    background: rgba(255, 255, 255, 0.03)
+    transition: background 0.15s
+
+    &:not(:last-child)
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05)
+
+    &:hover
+        background: rgba(255, 255, 255, 0.06)
+
+    &--solo
+        justify-content: center
+        padding: 16px
+
+.mm-size-name
+    font-size: 15px
+    color: rgba(255, 255, 255, 0.75)
+
+.mm-size-price
+    font-size: 16px
+    font-weight: $font-weight-bold
+    color: $yellow
+    letter-spacing: 0.2px
+
+.mm-size-row--solo .mm-size-price
+    font-size: 28px
+    letter-spacing: -0.5px
+
+.mm-order-btn
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 100%
+    height: 54px
+    background: $yellow
+    border-radius: 14px
+    font-size: 16px
+    font-weight: $font-weight-bold
+    color: $brown
+    text-decoration: none
+    transition: opacity 0.15s
+
+    &:hover
+        opacity: 0.9
+
+@media (min-width: 480px)
+    .mm-img-wrap
+        height: 310px
+
+// ── Footer ───────────────────────────────────────────────────────────────────
+
+.menu-footer
+    margin-top: 48px
+    padding: 40px 24px 60px
+    text-align: center
+    border-top: 1px solid rgba(255, 255, 255, 0.07)
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 12px
+
+.menu-footer-logo
+    width: 52px
+    height: 52px
+    border-radius: 50%
+    background: $brown-2
+    display: flex
+    align-items: center
+    justify-content: center
+    margin-bottom: 4px
+
+    svg
+        width: 34px
+        height: auto
+
+.menu-footer-copy
+    font-size: 12px
+    color: rgba(255, 255, 255, 0.3)
+    line-height: 1.6
+
+.menu-footer-order
+    display: inline-flex
+    align-items: center
+    height: 48px
+    padding: 0 28px
+    background: $yellow
+    border-radius: 100px
+    font-size: 15px
+    font-weight: $font-weight-bold
+    color: $brown
+    text-decoration: none
+    margin-top: 8px
+    transition: opacity 0.15s
+
+    &:hover
+        opacity: 0.9
+
+// ── Responsive ───────────────────────────────────────────────────────────────
+
+@media (min-width: 480px)
+    .menu-grid
+        gap: 14px
+
+    .mc--featured
+        .mc-img-wrap
+            height: 270px
+
+    .menu-grid .mc
+        .mc-img-wrap
+            height: 190px
+
+@media (min-width: 640px)
+    .menu-grid
+        grid-template-columns: repeat(3, 1fr)
+
+    .mc--featured
+        .mc-img-wrap
+            height: 320px
+
+// ── Reduced motion ─────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce)
+    .mc-img
+        transition: none
+
+    .menu-hero-cta, .mc
+        transition: none
