@@ -237,7 +237,10 @@ export default function MenuPage() {
           <p className="menu-hero-sub">
             Artisan bakes · Gift boxes · Breakfast · Cakes
           </p>
-          <p className="menu-hero-location">Victoria Island, Lagos</p>
+          <div className="menu-hero-locations">
+            <p className="menu-hero-location">📍 19B Fola Osibo, Lekki Phase 1, Lekki</p>
+            <p className="menu-hero-location">📍 13b Methodist Church St, Opebi, Lagos</p>
+          </div>
           <a
             href="#menu-start"
             className="menu-hero-cta"
