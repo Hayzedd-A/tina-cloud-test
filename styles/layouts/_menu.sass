@@ -103,14 +103,18 @@
         background: rgba(242, 193, 49, 0.08)
         border-color: $yellow
 
-// ── Category tabs ─────────────────────────────────────────────────────────────
+// ── Sticky wrapper (tabs + search) ───────────────────────────────────────────
 
-.menu-tabs-bar
+.menu-sticky-bar
     position: sticky
     top: 0
     z-index: 20
     background: $brown-2
     border-bottom: 1px solid rgba(255, 255, 255, 0.07)
+
+// ── Category tabs ─────────────────────────────────────────────────────────────
+
+.menu-tabs-bar
     overflow: hidden
 
 .menu-tabs-track
@@ -149,6 +153,105 @@
 
 .menu-tabs-loading
     height: 50px
+
+// ── Search bar ───────────────────────────────────────────────────────────────
+
+.menu-search-bar
+    display: flex
+    align-items: center
+    gap: 10px
+    padding: 8px 14px 10px
+    border-top: 1px solid rgba(255, 255, 255, 0.06)
+
+.menu-search-icon
+    flex-shrink: 0
+    color: rgba(255, 255, 255, 0.35)
+    display: flex
+    align-items: center
+
+.menu-search-input
+    flex: 1
+    height: 36px
+    background: rgba(255, 255, 255, 0.07)
+    border: 1px solid rgba(255, 255, 255, 0.1)
+    border-radius: 100px
+    padding: 0 14px
+    font-family: $primary-font
+    font-size: 14px
+    color: $white
+    transition: border-color 0.2s
+
+    &::placeholder
+        color: rgba(255, 255, 255, 0.3)
+
+    &:focus
+        outline: none
+        border-color: rgba(242, 193, 49, 0.45)
+
+    // hide the native clear button (type="search")
+    &::-webkit-search-cancel-button
+        display: none
+
+.menu-search-clear
+    flex-shrink: 0
+    width: 28px
+    height: 28px
+    border-radius: 50%
+    background: rgba(255, 255, 255, 0.1)
+    border: none
+    color: rgba(255, 255, 255, 0.5)
+    font-size: 11px
+    cursor: pointer
+    display: flex
+    align-items: center
+    justify-content: center
+    font-family: $primary-font
+    transition: background 0.15s
+
+    &:hover
+        background: rgba(255, 255, 255, 0.18)
+
+// ── Search results ────────────────────────────────────────────────────────────
+
+.menu-search-results
+    padding-top: 8px
+    padding-bottom: 24px
+
+.menu-search-count
+    font-size: 12px
+    color: rgba(255, 255, 255, 0.35)
+    padding: 14px 16px 6px
+    letter-spacing: 0.3px
+
+.menu-search-group
+    padding-top: 20px
+
+.menu-search-group-label
+    display: block
+    font-size: 10px
+    font-weight: $font-weight-bold
+    letter-spacing: 2px
+    text-transform: uppercase
+    color: rgba(242, 193, 49, 0.55)
+    padding: 0 16px 10px
+
+.menu-search-empty
+    padding: 64px 32px
+    text-align: center
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 8px
+
+.menu-search-empty-title
+    font-size: 17px
+    font-weight: $font-weight-bold
+    color: $white
+
+.menu-search-empty-hint
+    font-size: 13px
+    color: rgba(255, 255, 255, 0.35)
+    line-height: 1.6
 
 // ── Body ─────────────────────────────────────────────────────────────────────
 

@@ -156,6 +156,50 @@ function ProductCard({ product, featured, onOpen }) {
   );
 }
 
+// ── Search results view ───────────────────────────────────────────────────────
+
+function SearchResults({ query, categories, onOpen }) {
+  const q = query.toLowerCase().trim();
+  const groups = categories
+    .map((cat) => ({
+      name: cat.name,
+      matches: cat.products.filter((p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.description || "").toLowerCase().includes(q)
+      ),
+    }))
+    .filter((g) => g.matches.length > 0);
+
+  const total = groups.reduce((n, g) => n + g.matches.length, 0);
+
+  if (!total) {
+    return (
+      <div className="menu-search-empty">
+        <p className="menu-search-empty-title">No results for &ldquo;{query}&rdquo;</p>
+        <p className="menu-search-empty-hint">Try a different name — e.g. &ldquo;banana bread&rdquo; or &ldquo;Enjoyment Box&rdquo;</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="menu-search-results">
+      <p className="menu-search-count">
+        {total} result{total !== 1 ? "s" : ""} for &ldquo;{query}&rdquo;
+      </p>
+      {groups.map((g) => (
+        <div key={g.name} className="menu-search-group">
+          <span className="menu-search-group-label">{g.name}</span>
+          <div className="menu-grid">
+            {g.matches.map((p) => (
+              <ProductCard key={p.id} product={p} featured={false} onOpen={onOpen} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function MenuPage() {
@@ -164,9 +208,13 @@ export default function MenuPage() {
   const [error, setError] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const sectionRefs = useRef([]);
   const tabsRef = useRef(null);
   const heroRef = useRef(null);
+  const searchInputRef = useRef(null);
+
+  const isSearching = searchQuery.trim().length > 0;
 
   useEffect(() => {
     getRequest({ url: `/customer-requests/stores/${STORE_ID}/products` })
@@ -253,25 +301,61 @@ export default function MenuPage() {
           </a>
         </header>
 
-        {/* ── Sticky category tabs ───────────────── */}
-        <nav className="menu-tabs-bar" ref={tabsRef} id="menu-start">
-          {loading ? (
-            <div className="menu-tabs-loading" />
-          ) : (
-            <div className="menu-tabs-track">
-              {categories.map((cat, i) => (
+        {/* ── Sticky category tabs + search ──────── */}
+        <div className="menu-sticky-bar" ref={tabsRef} id="menu-start">
+          <nav className="menu-tabs-bar">
+            {loading ? (
+              <div className="menu-tabs-loading" />
+            ) : (
+              <div className="menu-tabs-track">
+                {categories.map((cat, i) => (
+                  <button
+                    key={cat.id}
+                    data-idx={i}
+                    className={`menu-tab${activeTab === i && !isSearching ? " menu-tab--on" : ""}`}
+                    onClick={() => {
+                      setSearchQuery("");
+                      scrollToSection(i);
+                    }}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </nav>
+
+          {!loading && (
+            <div className="menu-search-bar">
+              <span className="menu-search-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </span>
+              <input
+                ref={searchInputRef}
+                className="menu-search-input"
+                type="search"
+                placeholder="Search the menu…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoComplete="off"
+              />
+              {isSearching && (
                 <button
-                  key={cat.id}
-                  data-idx={i}
-                  className={`menu-tab${activeTab === i ? " menu-tab--on" : ""}`}
-                  onClick={() => scrollToSection(i)}
+                  className="menu-search-clear"
+                  onClick={() => {
+                    setSearchQuery("");
+                    searchInputRef.current?.focus();
+                  }}
+                  aria-label="Clear search"
                 >
-                  {cat.name}
+                  ✕
                 </button>
-              ))}
+              )}
             </div>
           )}
-        </nav>
+        </div>
 
         {/* ── Content ──────────────────────────── */}
         <main className="menu-body">
@@ -289,36 +373,44 @@ export default function MenuPage() {
             </div>
           )}
 
-          {categories.map((cat, ci) => {
-            const [featured, ...rest] = cat.products;
-            return (
-              <section
-                key={cat.id}
-                className="menu-section"
-                ref={(el) => (sectionRefs.current[ci] = el)}
-              >
-                <div className="menu-ch">
-                  <div className="menu-ch-inner">
-                    <h2 className="menu-ch-name">{cat.name}</h2>
-                    <span className="menu-ch-count">{cat.products.length} items</span>
+          {isSearching ? (
+            <SearchResults
+              query={searchQuery}
+              categories={categories}
+              onOpen={openProduct}
+            />
+          ) : (
+            categories.map((cat, ci) => {
+              const [featured, ...rest] = cat.products;
+              return (
+                <section
+                  key={cat.id}
+                  className="menu-section"
+                  ref={(el) => (sectionRefs.current[ci] = el)}
+                >
+                  <div className="menu-ch">
+                    <div className="menu-ch-inner">
+                      <h2 className="menu-ch-name">{cat.name}</h2>
+                      <span className="menu-ch-count">{cat.products.length} items</span>
+                    </div>
+                    <div className="menu-ch-rule" />
                   </div>
-                  <div className="menu-ch-rule" />
-                </div>
 
-                {featured && (
-                  <ProductCard product={featured} featured onOpen={openProduct} />
-                )}
+                  {featured && (
+                    <ProductCard product={featured} featured onOpen={openProduct} />
+                  )}
 
-                {rest.length > 0 && (
-                  <div className="menu-grid">
-                    {rest.map((p) => (
-                      <ProductCard key={p.id} product={p} featured={false} onOpen={openProduct} />
-                    ))}
-                  </div>
-                )}
-              </section>
-            );
-          })}
+                  {rest.length > 0 && (
+                    <div className="menu-grid">
+                      {rest.map((p) => (
+                        <ProductCard key={p.id} product={p} featured={false} onOpen={openProduct} />
+                      ))}
+                    </div>
+                  )}
+                </section>
+              );
+            })
+          )}
         </main>
 
         {/* ── Footer ───────────────────────────── */}
