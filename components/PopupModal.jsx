@@ -3,7 +3,7 @@ import Modal from "./Modal";
 import { Logo } from "../public/static/vectors";
 
 function PopupModal({ text, OkText }) {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   const dismissModal = () => {
     setShowModal(false)
@@ -28,7 +28,7 @@ function PopupModal({ text, OkText }) {
           </div>
 
           <div className="actions">
-            <button className="continue" style={{cursor: "pointer"}} onClick={dismissModal}>
+            <button className="continue" style={{ cursor: "pointer" }} onClick={dismissModal}>
               {OkText}
             </button>
           </div>
