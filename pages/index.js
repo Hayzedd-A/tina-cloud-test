@@ -44,13 +44,13 @@ class Home extends Component {
           <SplashScreen />
         ) : (
           <>
-            <PopupModal
+            {/* <PopupModal
               OkText="Got it!"
               text={{
                 main: `🎉 First-time customer? Enjoy ${FIRST_ORDER_DISCOUNT_PERCENT}% off your first order!`,
                 sub: `Add items to your cart and enter your phone number to check eligibility and claim your exclusive code.`,
               }}
-            />
+            /> */}
             <Shop selectItem={this.selectItem} />
           </>
         )}

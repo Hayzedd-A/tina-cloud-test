@@ -3,7 +3,7 @@ import Modal from "./Modal";
 import { Logo } from "../public/static/vectors";
 
 function PopupModal({ text, OkText }) {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true);
 
   const dismissModal = () => {
     setShowModal(false)
