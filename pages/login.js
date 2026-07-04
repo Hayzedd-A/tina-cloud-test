@@ -420,9 +420,7 @@ class CreateLogin extends Component {
                 )}
                 {(pinResetStage === 0 ||
                   isSignUp ||
-                  (pinResetStage === 1 && resetMethod === "whatsapp") ||
-                  (pinResetStage === 2 && resetMethod === "whatsapp") ||
-                  pinResetStage === 3) && (
+                  (pinResetStage === 1 && resetMethod === "whatsapp")) && (
                   <TextField
                     label="Phone Number"
                     placeholder="Enter your phone number"
