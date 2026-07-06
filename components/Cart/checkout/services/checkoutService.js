@@ -23,6 +23,7 @@ export const checkoutService = {
     deliveryDiscountObject,
     loyaltyPointApplied,
     storeId,
+    tracking,
   }) {
     const {
       name,
@@ -117,6 +118,8 @@ export const checkoutService = {
       //   loyaltyPointsToRedeem / loyaltyPointApplied.discountPerPoint,
       // );
     }
+
+    if (tracking) payload.tracking = tracking;
 
     return { ...payload, email };
   },

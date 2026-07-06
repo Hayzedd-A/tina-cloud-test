@@ -53,6 +53,20 @@ import PopupModal from "../PopupModal";
 
 const deliveryArr = ["delivery", "s-delivery", "c-delivery", "sc-delivery"];
 
+// Read a browser cookie by name
+function getCookie(name) {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+// Build _fbc from fbclid URL param when the cookie isn't set
+function buildFbc() {
+  if (typeof window === "undefined") return null;
+  const fbclid = new URLSearchParams(window.location.search).get("fbclid");
+  return fbclid ? `fb.1.${Date.now()}.${fbclid}` : null;
+}
+
 const initialFormData = {
   name: {
     value: "",
@@ -638,9 +652,14 @@ class Checkout extends Component {
       payload.deliveryLocation = payload.pickupLocation;
     }
 
-    analyticsService.trackPurchase({
-      ...payload,
-    });
+    // Capture Meta tracking signals — Zupa stores these and includes them
+    // in the order.paid webhook so the server-side CAPI Purchase has match quality data
+    payload.tracking = {
+      fbp: getCookie("_fbp"),
+      fbc: getCookie("_fbc") || buildFbc(),
+      clientUserAgent: navigator.userAgent,
+      sourceUrl: window.location.href,
+    };
 
     try {
       const res = await postRequest({

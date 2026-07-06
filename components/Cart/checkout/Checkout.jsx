@@ -22,6 +22,18 @@ import { AuthenticationConsumer } from "../../../providers/AuthenticationProvide
 import { CartConsumer } from "../../../providers/CartProvider";
 import { StoreConsumer } from "../../../providers/StoreProvider";
 
+function getCookie(name) {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+function buildFbc() {
+  if (typeof window === "undefined") return null;
+  const fbclid = new URLSearchParams(window.location.search).get("fbclid");
+  return fbclid ? `fb.1.${Date.now()}.${fbclid}` : null;
+}
+
 class Checkout extends Component {
   state = {
     formData: { ...initialFormData },
@@ -395,6 +407,13 @@ class Checkout extends Component {
 
     const formValues = getFormValues(formData);
 
+    const tracking = {
+      fbp: getCookie("_fbp"),
+      fbc: getCookie("_fbc") || buildFbc(),
+      clientUserAgent: typeof navigator !== "undefined" ? navigator.userAgent : null,
+      sourceUrl: typeof window !== "undefined" ? window.location.href : null,
+    };
+
     return checkoutService.prepareCheckoutPayload({
       formValues,
       cart,
@@ -407,6 +426,7 @@ class Checkout extends Component {
       deliveryDiscountObject,
       loyaltyPointApplied,
       storeId: STORE_ID,
+      tracking,
     });
   };
 
