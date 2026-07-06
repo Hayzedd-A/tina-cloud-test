@@ -7,7 +7,10 @@ const META_ENDPOINT = `https://graph.facebook.com/v21.0/${PIXEL_ID}/events`;
 export const config = { api: { bodyParser: true } };
 
 function sha256(value) {
-  return crypto.createHash("sha256").update(value.trim().toLowerCase()).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(value.trim().toLowerCase())
+    .digest("hex");
 }
 
 function sha256Raw(value) {
@@ -33,10 +36,12 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
+  console.log("Order paid webhook received", req.body);
 
   if (!verifySecret(req)) {
     return res.status(401).json({ error: "Unauthorized" });
   }
+  console.log("[Order paid webhook] verification passed");
 
   const token = process.env.META_CAPI_TOKEN;
   if (!token) {
@@ -48,8 +53,11 @@ export default async function handler(req, res) {
 
   // Validate required fields
   if (!body?.orderId || !body?.amount) {
-    return res.status(400).json({ error: "Missing required fields: orderId, amount" });
+    return res
+      .status(400)
+      .json({ error: "Missing required fields: orderId, amount" });
   }
+  console.log("[Order paid webhook] required fields validated", body);
 
   try {
     const user_data = {};
@@ -65,11 +73,17 @@ export default async function handler(req, res) {
     // fbp and fbc are NOT hashed — passed as-is
     if (body.tracking?.fbp) user_data.fbp = body.tracking.fbp;
     if (body.tracking?.fbc) user_data.fbc = body.tracking.fbc;
-    if (body.tracking?.clientIp) user_data.client_ip_address = body.tracking.clientIp;
-    if (body.tracking?.clientUserAgent) user_data.client_user_agent = body.tracking.clientUserAgent;
+    if (body.tracking?.clientIp)
+      user_data.client_ip_address = body.tracking.clientIp;
+    if (body.tracking?.clientUserAgent)
+      user_data.client_user_agent = body.tracking.clientUserAgent;
+    console.log("[Order paid webhook] user data", user_data);
 
     const contentIds = (body.orderItems || []).map((item) => item.productId);
-    const numItems = (body.orderItems || []).reduce((sum, item) => sum + (item.quantity || 1), 0);
+    const numItems = (body.orderItems || []).reduce(
+      (sum, item) => sum + (item.quantity || 1),
+      0,
+    );
 
     const payload = {
       data: [
@@ -80,7 +94,8 @@ export default async function handler(req, res) {
             : Math.floor(Date.now() / 1000),
           event_id: body.orderId, // deduplication key — same as what browser eventID would use
           action_source: "website",
-          event_source_url: body.tracking?.sourceUrl || "https://gourmettwist.com/cart",
+          event_source_url:
+            body.tracking?.sourceUrl || "https://gourmettwist.com/cart",
           user_data,
           custom_data: {
             value: Number(body.amount),
@@ -93,6 +108,8 @@ export default async function handler(req, res) {
         },
       ],
     };
+
+    console.log("[Order paid webhook] payload", payload);
 
     // Uncomment to test in Meta Events Manager without affecting real data:
     // payload.test_event_code = "TESTxxxxx";
@@ -107,11 +124,15 @@ export default async function handler(req, res) {
 
     if (!metaRes.ok) {
       console.error("[CAPI] Meta rejected event:", metaBody);
-      return res.status(502).json({ error: "Meta CAPI error", detail: metaBody });
+      return res
+        .status(502)
+        .json({ error: "Meta CAPI error", detail: metaBody });
     }
 
     console.log("[CAPI] Purchase fired for order", body.orderId, metaBody);
-    return res.status(200).json({ ok: true, events_received: metaBody.events_received });
+    return res
+      .status(200)
+      .json({ ok: true, events_received: metaBody.events_received });
   } catch (err) {
     console.error("[CAPI] Unexpected error:", err);
     return res.status(500).json({ error: "Internal error" });
