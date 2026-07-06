@@ -706,3 +706,90 @@
 
     .menu-hero-cta, .mc
         transition: none
+
+// ── /menu/[category] page ────────────────────────────────────────────────────
+
+.cp-topbar
+    background: $brown-2
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07)
+    position: sticky
+    top: 0
+    z-index: 20
+
+.cp-topbar-inner
+    display: flex
+    align-items: center
+    justify-content: space-between
+    padding: 0 16px
+    height: 54px
+
+.cp-back
+    display: inline-flex
+    align-items: center
+    gap: 6px
+    font-size: 14px
+    font-weight: $font-weight-bold
+    color: $yellow
+    text-decoration: none
+    letter-spacing: 0.2px
+    transition: opacity 0.15s
+
+    &:hover
+        opacity: 0.75
+
+.cp-topbar-logo
+    width: 36px
+    height: 36px
+    border-radius: 50%
+    background: $brown
+    display: flex
+    align-items: center
+    justify-content: center
+
+    svg
+        width: 22px
+        height: auto
+
+.cp-heading
+    padding: 32px 16px 0
+
+.cp-heading-name
+    font-family: 'Pacifico', cursive
+    font-size: clamp(28px, 9vw, 44px)
+    font-weight: 400
+    color: $white
+    letter-spacing: 0.3px
+    line-height: 1.15
+    margin-bottom: 12px
+
+.cp-heading-count
+    font-size: 11px
+    font-weight: $font-weight-bold
+    letter-spacing: 1.5px
+    text-transform: uppercase
+    color: rgba(242, 193, 49, 0.55)
+    margin-top: 10px
+    margin-bottom: 24px
+
+.cp-not-found
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 16px
+    padding: 80px 24px
+    text-align: center
+
+.cp-not-found-title
+    font-size: 18px
+    font-weight: $font-weight-bold
+    color: rgba(255, 255, 255, 0.55)
+
+.cp-not-found-link
+    font-size: 14px
+    color: $yellow
+    text-decoration: none
+    font-weight: $font-weight-bold
+
+    &:hover
+        opacity: 0.75
+
