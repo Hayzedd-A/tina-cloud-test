@@ -29,7 +29,7 @@ class Main extends Component {
                 t.src=v;s=b.getElementsByTagName(e)[0];
                 s.parentNode.insertBefore(t,s)}(window, document,'script',
                 'https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', '616138642084241');
+                fbq('init', '1850287295460876');
                 fbq('track', 'PageView');
               `,
             }}
@@ -39,7 +39,7 @@ class Main extends Component {
               height="1"
               width="1"
               style={{ display: "none" }}
-              src="https://www.facebook.com/tr?id=616138642084241&ev=PageView&noscript=1"
+              src="https://www.facebook.com/tr?id=1850287295460876&ev=PageView&noscript=1"
             />
           </noscript>
         </Head>

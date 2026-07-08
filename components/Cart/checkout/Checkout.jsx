@@ -68,6 +68,7 @@ class Checkout extends Component {
     // Misc
     deliveryId: "",
     initialValue: "",
+    pendingOrder: null,
   };
 
   componentDidMount = async () => {
@@ -382,7 +383,15 @@ class Checkout extends Component {
 
       analyticsService.trackEvent("purchase_response", response);
 
-      this.setState({ isCheckingOut: false });
+      const skus = (checkoutData.orderItems || []).map((item) => item.productId);
+      const numItems = (checkoutData.orderItems || []).reduce(
+        (sum, item) => sum + (item.quantity || 1),
+        0
+      );
+      this.setState({
+        isCheckingOut: false,
+        pendingOrder: { orderId: response.id, amount: response.amount, skus, numItems },
+      });
 
       if (response.checkoutLink) {
         window.location.href = response.checkoutLink;
@@ -432,6 +441,23 @@ class Checkout extends Component {
 
   handlePaymentSuccess = (response) => {
     const { clearCart, showCheckoutSuccess } = this.props;
+    const { pendingOrder } = this.state;
+
+    if (pendingOrder && typeof window !== "undefined" && typeof window.fbq === "function") {
+      window.fbq(
+        "track",
+        "Purchase",
+        {
+          value: Number(pendingOrder.amount),
+          currency: "NGN",
+          content_ids: pendingOrder.skus,
+          content_type: "product",
+          num_items: pendingOrder.numItems,
+        },
+        { eventID: pendingOrder.orderId }
+      );
+    }
+
     clearCart();
     showCheckoutSuccess(true);
     analyticsService.trackEvent("Paystack_successful", response);

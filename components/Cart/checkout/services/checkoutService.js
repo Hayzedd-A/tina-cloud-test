@@ -130,8 +130,6 @@ export const checkoutService = {
   async processCheckout(checkoutData) {
     const { email, ...payload } = checkoutData;
 
-    analyticsService.trackPurchase(payload);
-
     const response = await postRequest({
       url: `/customer-requests/stores/${STORE_ID}/placed-orders`,
       data: payload,

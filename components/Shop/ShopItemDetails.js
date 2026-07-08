@@ -20,8 +20,6 @@ import Toaster from '../Toaster';
 import Modal from '../Modal';
 import { HeaderMenu } from '../Header';
 
-import axios from 'axios';
-import { API_BASE_URL } from '../../constants';
 import analyticsService from '../../services/analyticsService';
 
 class ShopItemDetails extends Component {
@@ -296,24 +294,15 @@ class ShopItemDetails extends Component {
 
       const ttlQty = reduceArray(this.state.tempCart, 'quantity');
 
-      if (ttlQty)
-        await axios.post(`${API_BASE_URL}auth/customer/facebook-pixel-api`, {
-          data: [
-            {
-              event_name: 'AddToCart',
-              event_time: new Date().getTime(),
-              action_source: 'website',
-              user_data: {
-                em: ['7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068'],
-                ph: [null],
-              },
-              custom_data: {
-                currency: 'N',
-                value: this.getTotalCost().toString(),
-              },
-            },
-          ],
+      if (ttlQty && typeof window !== 'undefined' && typeof window.fbq === 'function') {
+        window.fbq('track', 'AddToCart', {
+          content_ids: [selectedItem.id],
+          content_type: 'product',
+          content_name: selectedItem.name,
+          value: this.getTotalCost(),
+          currency: 'NGN',
         });
+      }
     }
   };
 

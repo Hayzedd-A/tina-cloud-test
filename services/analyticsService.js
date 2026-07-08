@@ -1,6 +1,5 @@
 import axios from "axios";
 import { ANALYTICS_API_BASE_URL } from "../constants";
-import { API_BASE_URL } from "../constants";
 
 class AnalyticsService {
   constructor() {
@@ -89,30 +88,6 @@ class AnalyticsService {
         });
       }
 
-      // Also send to backend for Facebook Conversions API
-      if (
-        ["purchase", "add_to_cart", "initiate_checkout"].includes(eventName)
-      ) {
-        await axios.post(`${API_BASE_URL}auth/customer/facebook-pixel-api`, {
-          data: [
-            {
-              event_name: this.mapToFacebookEvent(eventName),
-              event_time: Math.floor(Date.now() / 1000),
-              action_source: "website",
-              user_data: {
-                em: data.email ? [this.hashEmail(data.email)] : [],
-                ph: data.phone ? [this.hashPhone(data.phone)] : [],
-              },
-              custom_data: {
-                currency: "NGN",
-                value: data.value || 0,
-                content_name: data.productName,
-                content_category: data.category,
-              },
-            },
-          ],
-        });
-      }
     } catch (error) {
       console.error("Facebook Pixel tracking error:", error);
     }
