@@ -53,6 +53,33 @@ export default class MyDocument extends Document {
           <meta name="theme-color" content="#ffffff" />
           <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmIEtz7r7jGYPVGKfMAp-6SiMTfGMrMPI&libraries=places"></script>
           <script src="https://js.paystack.co/v1/inline.js"></script>
+
+          {/* Meta Pixel — must be in _document so it loads on every page */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window,document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init','1850287295460876');
+                fbq('track','PageView');
+              `,
+            }}
+          />
+          <noscript>
+            <img
+              height="1"
+              width="1"
+              style={{ display: "none" }}
+              src="https://www.facebook.com/tr?id=1850287295460876&ev=PageView&noscript=1"
+            />
+          </noscript>
+
           <script
             dangerouslySetInnerHTML={{
               __html: `

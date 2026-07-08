@@ -18,7 +18,16 @@ function GourmetTwist({ Component, pageProps }) {
 
   useEffect(() => {
     smoothscroll.polyfill();
-  });
+
+    const handleRouteChange = () => {
+      if (typeof window !== "undefined" && typeof window.fbq === "function") {
+        window.fbq("track", "PageView");
+      }
+    };
+
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => router.events.off("routeChangeComplete", handleRouteChange);
+  }, []);
 
   return (
     <StoreProvider>
