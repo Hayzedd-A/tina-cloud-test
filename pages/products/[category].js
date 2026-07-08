@@ -11,11 +11,22 @@ import Menu from "../../components/Menu";
 import { ProductsConsumer } from "../../providers/ProductsProvider";
 import { slugify } from "../../utils/functions";
 import { EmptyStore, RightArrow } from "../../public/static/vectors";
-import analyticsService from "../../services/analyticsService";
 
 class ProductCategoryPage extends Component {
-  selectItem = ({ name, id, toppings }) => {
-    analyticsService.trackProductView({ id, name });
+  selectItem = ({ name, id, sizes }) => {
+    if (typeof window !== "undefined" && typeof window.fbq === "function") {
+      const firstSizeKey = Object.keys(sizes || {}).find(
+        (s) => sizes[s] && sizes[s].length > 0
+      );
+      const unitPrice = firstSizeKey ? sizes[firstSizeKey][0]?.unitPrice || 0 : 0;
+      window.fbq("track", "ViewContent", {
+        content_ids: [id],
+        content_type: "product",
+        content_name: name,
+        value: unitPrice,
+        currency: "NGN",
+      });
+    }
     this.props.router.push(
       `/shop?name=${slugify(name)}&id=${id}`,
       undefined,

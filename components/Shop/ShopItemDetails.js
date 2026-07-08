@@ -131,7 +131,19 @@ class ShopItemDetails extends Component {
 
     const cartItems = tempCart.filter(({ quantity }) => quantity);
 
-    analyticsService.trackAddToCart(cartItems);
+    if (cartItems.length > 0 && typeof window !== "undefined" && typeof window.fbq === "function") {
+      const totalValue = cartItems.reduce(
+        (sum, item) => sum + parseFloat(item.unitPrice || 0) * (item.quantity || 0),
+        0
+      );
+      window.fbq("track", "AddToCart", {
+        content_ids: cartItems.map((item) => item.id),
+        content_type: "product",
+        value: totalValue,
+        currency: "NGN",
+        num_items: cartItems.reduce((sum, item) => sum + (item.quantity || 0), 0),
+      });
+    }
 
     addToCart(cartItems, () => {
       name && id && this.selectItem(id);
@@ -292,17 +304,6 @@ class ShopItemDetails extends Component {
         }
       );
 
-      const ttlQty = reduceArray(this.state.tempCart, 'quantity');
-
-      if (ttlQty && typeof window !== 'undefined' && typeof window.fbq === 'function') {
-        window.fbq('track', 'AddToCart', {
-          content_ids: [selectedItem.id],
-          content_type: 'product',
-          content_name: selectedItem.name,
-          value: this.getTotalCost(),
-          currency: 'NGN',
-        });
-      }
     }
   };
 
