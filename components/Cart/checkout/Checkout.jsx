@@ -393,6 +393,16 @@ class Checkout extends Component {
         pendingOrder: { orderId: response.id, amount: response.amount, skus, numItems },
       });
 
+      if (typeof window !== "undefined" && typeof window.fbq === "function") {
+        window.fbq("track", "InitiateCheckout", {
+          value: Number(response.amount),
+          currency: "NGN",
+          content_ids: skus,
+          content_type: "product",
+          num_items: numItems,
+        });
+      }
+
       if (response.checkoutLink) {
         window.location.href = response.checkoutLink;
       } else {

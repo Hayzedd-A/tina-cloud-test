@@ -292,19 +292,6 @@ const CartPage = ({ cart }) => {
     });
   };
 
-  const initiateCheckoutFacebookPixel = () => {
-    const subTotal = reduceArray(cart, "totalCost");
-    const numItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-    if (typeof window !== "undefined" && typeof window.fbq === "function") {
-      window.fbq("track", "InitiateCheckout", {
-        value: subTotal,
-        currency: "NGN",
-        content_ids: cart.map((item) => item.id),
-        content_type: "product",
-        num_items: numItems,
-      });
-    }
-  };
 
   return (
     <Main>
@@ -394,10 +381,7 @@ const CartPage = ({ cart }) => {
           deliveryDiscountObject={deliveryDiscountObject}
           couponCode={couponCode}
           couponObject={couponObject}
-          checkout={() => {
-            initiateCheckoutFacebookPixel();
-            showCheckout(true);
-          }}
+          checkout={() => showCheckout(true)}
           handleChangeLoyaltyPoints={handleChangeLoyaltyPoints}
           handleApplyCouponCode={handleApplyCouponCode}
           handleChangeCouponCode={handleChangeCouponCode}
