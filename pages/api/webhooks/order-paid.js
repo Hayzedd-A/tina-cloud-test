@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-const PIXEL_ID = "1850287295460876";
+const PIXEL_ID = "616138642084241";
 const META_ENDPOINT = `https://graph.facebook.com/v21.0/${PIXEL_ID}/events`;
 
 // Disable Next.js body parsing so we can read the raw body for sig verification
