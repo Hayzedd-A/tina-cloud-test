@@ -312,26 +312,28 @@ class ShopItemDetails extends Component {
   };
 
   componentDidMount() {
-    const { router } = this.props;
+    const { router, productId } = this.props;
     const { name, id } = router.query;
+    const resolvedId = id || productId;
 
     this.formatProducts(() => {
-      name && id && this.selectItem(id);
+      resolvedId && this.selectItem(resolvedId);
     });
   }
 
   componentDidUpdate(prevProps) {
-    const { router, products } = this.props;
+    const { router, products, productId } = this.props;
     const { name, id } = router.query;
+    const resolvedId = id || productId;
 
     if (!shallowequal(prevProps.products, products) && products.length) {
       this.formatProducts(() => {
-        this.selectItem(id);
+        resolvedId && this.selectItem(resolvedId);
       });
     }
 
-    if (!shallowequal(prevProps.router, router) && name && id) {
-      this.selectItem(id);
+    if (!shallowequal(prevProps.router, router) && resolvedId) {
+      this.selectItem(resolvedId);
     }
   }
 

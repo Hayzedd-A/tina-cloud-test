@@ -1,0 +1,209 @@
+.seo-page
+  background: $brown
+  color: $white
+  min-height: 100vh
+  padding-bottom: 60px
+
+.seo-hero
+  text-align: center
+  padding: 56px 24px 48px
+  background: linear-gradient(180deg, $brown-2 0%, $brown 100%)
+  border-bottom: 1px solid rgba($yellow, 0.15)
+
+  &__eyebrow
+    font-size: 11px
+    letter-spacing: 2px
+    text-transform: uppercase
+    color: $yellow
+    margin-bottom: 16px
+
+  &__title
+    font-size: clamp(28px, 6vw, 48px)
+    font-weight: 700
+    line-height: 1.15
+    margin-bottom: 16px
+    color: $white
+
+  &__sub
+    font-size: 16px
+    color: $brown-light
+    max-width: 480px
+    margin: 0 auto 32px
+
+.seo-cta
+  display: inline-block
+  background: $yellow
+  color: $brown
+  font-weight: 700
+  font-size: 15px
+  padding: 14px 32px
+  border-radius: 8px
+  text-decoration: none
+  transition: opacity 0.15s
+
+  &:hover
+    opacity: 0.88
+
+.seo-body
+  max-width: 680px
+  margin: 0 auto
+  padding: 48px 24px 32px
+
+  p
+    font-size: 16px
+    line-height: 1.75
+    color: rgba($white, 0.85)
+    margin-bottom: 20px
+
+    strong
+      color: $white
+
+.seo-section-title
+  font-size: 22px
+  font-weight: 700
+  color: $white
+  margin-bottom: 28px
+
+.seo-features
+  max-width: 680px
+  margin: 0 auto
+  padding: 8px 24px 48px
+
+  &__list
+    list-style: none
+    padding: 0
+    margin: 0
+    display: flex
+    flex-direction: column
+    gap: 14px
+
+  &__item
+    display: flex
+    align-items: flex-start
+    gap: 12px
+    font-size: 15px
+    color: rgba($white, 0.85)
+    line-height: 1.5
+
+  &__check
+    color: $yellow
+    font-weight: 700
+    flex-shrink: 0
+    margin-top: 1px
+
+.seo-products
+  padding: 48px 24px
+
+  .seo-section-title
+    text-align: center
+
+  &__grid
+    display: grid
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr))
+    gap: 16px
+    max-width: 800px
+    margin: 0 auto 36px
+
+.seo-product-card
+  background: $brown-2
+  border-radius: 12px
+  overflow: hidden
+  cursor: pointer
+  transition: transform 0.15s, box-shadow 0.15s
+  border: 1px solid rgba($white, 0.06)
+
+  &:hover
+    transform: translateY(-3px)
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35)
+
+  &__img-wrap
+    width: 100%
+    aspect-ratio: 1 / 1
+    overflow: hidden
+    background: rgba($white, 0.04)
+
+  &__img
+    width: 100%
+    height: 100%
+    object-fit: cover
+    display: block
+
+  &__img-placeholder
+    width: 100%
+    height: 100%
+    background: linear-gradient(135deg, rgba($yellow, 0.08) 0%, rgba($brown, 0.4) 100%)
+
+  &__info
+    padding: 12px 14px 14px
+    display: flex
+    flex-direction: column
+    gap: 4px
+
+  &__name
+    font-size: 13px
+    font-weight: 600
+    color: $white
+    line-height: 1.3
+
+  &__price
+    font-size: 12px
+    color: $yellow
+
+.seo-cta-row
+  text-align: center
+
+.seo-faq
+  max-width: 680px
+  margin: 0 auto
+  padding: 8px 24px 48px
+
+  &__list
+    display: flex
+    flex-direction: column
+    gap: 0
+
+  &__item
+    border-top: 1px solid rgba($white, 0.08)
+    padding: 24px 0
+
+    &:last-child
+      border-bottom: 1px solid rgba($white, 0.08)
+
+  &__q
+    font-size: 16px
+    font-weight: 600
+    color: $white
+    margin-bottom: 10px
+    line-height: 1.4
+
+  &__a
+    font-size: 15px
+    color: rgba($white, 0.75)
+    line-height: 1.7
+    margin: 0
+
+.seo-bottom-cta
+  text-align: center
+  padding: 56px 24px
+  background: $brown-2
+  margin-top: 24px
+  border-top: 1px solid rgba($yellow, 0.15)
+
+  &__title
+    font-size: clamp(20px, 4vw, 30px)
+    font-weight: 700
+    color: $white
+    margin-bottom: 14px
+
+  &__sub
+    font-size: 16px
+    color: rgba($white, 0.75)
+    margin-bottom: 32px
+
+.seo-phone
+  color: $yellow
+  text-decoration: none
+  font-weight: 600
+
+  &:hover
+    text-decoration: underline

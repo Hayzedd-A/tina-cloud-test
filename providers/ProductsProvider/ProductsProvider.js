@@ -10,11 +10,12 @@ class ProductsProvider extends Component {
   constructor(props) {
     super(props);
 
+    const { initialProducts, initialCategories } = props;
     this.state = {
-      products: [],
-      productCategories: [],
-      isLoadingProducts: true,
-      isLoadingProductCategories: true,
+      products: initialProducts || [],
+      productCategories: initialCategories || [],
+      isLoadingProducts: !initialProducts,
+      isLoadingProductCategories: !initialCategories,
     };
   }
 

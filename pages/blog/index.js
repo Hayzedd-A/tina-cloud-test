@@ -1,20 +1,20 @@
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
 import { useState } from "react";
-import { withRouter } from "next/router";
+import { useRouter } from "next/router";
 import Main from "../../layouts/Main";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 import { RightArrow } from "../../public/static/vectors";
 import { HeaderMenu } from "../../components/Header";
-import { AuthenticationConsumer } from "../../providers/AuthenticationProvider";
-import useFetchBlogs from "../../hooks/useFetchBlogs";
 import PostItem from "../../components/Blogs/Posts";
-import ClipLoader from "react-spinners/ClipLoader";
 import moment from "moment";
 
-const Blogs = (props) => {
-  const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/blogs?populate=*`;
+const POSTS_DIR = path.join(process.cwd(), "content/posts");
+
+const Blogs = ({ posts }) => {
+  const router = useRouter();
   const [isMenuActive, setIsMenuActive] = useState(false);
-  const { posts, loading } = useFetchBlogs(url);
-  const { router } = props;
 
   const showMenu = (show) => {
     setIsMenuActive(show);
@@ -39,11 +39,7 @@ const Blogs = (props) => {
             >
               <div
                 className="back"
-                onClick={() =>
-                  router.push(`/`, undefined, {
-                    shallow: true,
-                  })
-                }
+                onClick={() => router.push("/", undefined, { shallow: true })}
               >
                 <RightArrow />
               </div>
@@ -67,29 +63,19 @@ const Blogs = (props) => {
           </div>
 
           <div className="container" style={{ marginTop: 20 }}>
-            {loading && (
-              <div
-                style={{
-                  height: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "100%",
-                }}
-              >
-                <ClipLoader color={"#000"} loading={true} size={50} />
-              </div>
-            )}
-
             <div className="shop-section">
               <div className="section-items">
                 {posts.map((post) => (
                   <PostItem
-                    key={post.id}
-                    name={post.attributes.title}
-                    image={`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}${post.attributes.image.data.attributes.formats.small.url}`}
-                    date={moment(post.attributes.publishedDate).format("LL")}
-                    onClick={() => router.push(`/blog/${post.id}`)}
+                    key={post.slug}
+                    name={post.title}
+                    image={post.coverImage || null}
+                    date={
+                      post.publishedAt
+                        ? moment(post.publishedAt).format("LL")
+                        : ""
+                    }
+                    onClick={() => router.push(`/blog/${post.slug}`)}
                   />
                 ))}
               </div>
@@ -101,4 +87,31 @@ const Blogs = (props) => {
   );
 };
 
-export default AuthenticationConsumer(withRouter(Blogs));
+export async function getStaticProps() {
+  const files = fs.existsSync(POSTS_DIR)
+    ? fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".mdx"))
+    : [];
+
+  const posts = files
+    .map((filename) => {
+      const slug = filename.replace(/\.mdx$/, "");
+      const raw = fs.readFileSync(path.join(POSTS_DIR, filename), "utf-8");
+      const { data } = matter(raw);
+      return {
+        slug,
+        title: data.title || "",
+        description: data.description || "",
+        publishedAt: data.publishedAt ? data.publishedAt.toString() : null,
+        coverImage: data.coverImage || null,
+      };
+    })
+    .sort((a, b) => {
+      if (!a.publishedAt) return 1;
+      if (!b.publishedAt) return -1;
+      return new Date(b.publishedAt) - new Date(a.publishedAt);
+    });
+
+  return { props: { posts }, revalidate: 60 };
+}
+
+export default Blogs;

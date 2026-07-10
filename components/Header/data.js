@@ -25,6 +25,10 @@ export const menu = [
   },
   {
     label: "Blog",
-    value: "/blog/"
-  }
+    value: "/blog/",
+  },
+  {
+    label: "World's Best",
+    value: "/best-banana-bread-in-lagos",
+  },
 ];

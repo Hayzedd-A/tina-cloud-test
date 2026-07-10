@@ -35,3 +35,7 @@ yarn-error.log*
 
 # extensions
 .qodo
+
+# TinaCMS generated files (rebuilt at deploy time)
+tina/__generated__
+public/admin

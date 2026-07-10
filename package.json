@@ -1,7 +1,9 @@
 {
   "scripts": {
     "dev": "PORT=7080 next dev",
+    "dev:cms": "tinacms dev -c \"PORT=7080 next dev\"",
     "build": "next build",
+    "build:cms": "tinacms build && next build",
     "start": "next start"
   },
   "dependencies": {
@@ -9,12 +11,15 @@
     "@sanity/client": "^4.0.1",
     "@sanity/image-url": "^1.0.2",
     "@svgr/webpack": "^5.5.0",
+    "@tinacms/cli": "^2.5.3",
     "antd": "^5.15.0",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
+    "gray-matter": "^4.0.3",
     "moment": "^2.29.4",
     "next": "12.3.4",
     "next-elfsight-widget": "^1.0.0",
+    "next-mdx-remote": "^4.4.1",
     "next-page-transitions": "^1.0.0-beta.2",
     "next-pwa": "^3.1.1",
     "patch-package": "^6.2.2",
@@ -32,6 +37,7 @@
     "sass": "1.26.3",
     "shallowequal": "^1.1.0",
     "smoothscroll-polyfill": "^0.4.4",
+    "tinacms": "^3.10.0",
     "uuid": "^8.3.1"
   }
 }

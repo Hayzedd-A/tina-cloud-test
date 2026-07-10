@@ -27,11 +27,7 @@ class ProductCategoryPage extends Component {
         currency: "NGN",
       });
     }
-    this.props.router.push(
-      `/shop?name=${slugify(name)}&id=${id}`,
-      undefined,
-      { shallow: true },
-    );
+    this.props.router.push(`/shop/${slugify(name)}`);
   };
 
   render() {

@@ -44,7 +44,10 @@ function GourmetTwist({ Component, pageProps }) {
   return (
     <StoreProvider>
       <CartProvider>
-        <ProductsProvider>
+        <ProductsProvider
+          initialProducts={pageProps.initialProducts}
+          initialCategories={pageProps.initialCategories}
+        >
           <AuthenticationProvider>
             <Component {...pageProps} />
           </AuthenticationProvider>
