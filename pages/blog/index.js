@@ -3,11 +3,11 @@ import path from "path";
 import matter from "gray-matter";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import Main from "../../layouts/Main";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
 import { RightArrow } from "../../public/static/vectors";
 import { HeaderMenu } from "../../components/Header";
-import PostItem from "../../components/Blogs/Posts";
 import moment from "moment";
 
 const POSTS_DIR = path.join(process.cwd(), "content/posts");
@@ -16,74 +16,81 @@ const Blogs = ({ posts }) => {
   const router = useRouter();
   const [isMenuActive, setIsMenuActive] = useState(false);
 
-  const showMenu = (show) => {
-    setIsMenuActive(show);
-  };
-
   return (
-    <div className="shop-container" id="shop-container">
-      <Main>
-        <div
-          className="cart-container login-container"
-          style={{ overflow: "visible" }}
-        >
-          <div className="cart-header login-header">
+    <Main>
+      <Head>
+        <title>Blog | Gourmet Twist</title>
+        <meta name="description" content="Stories, guides, and everything banana bread from Gourmet Twist Lagos." />
+      </Head>
+
+      <div className="blog-page">
+        {/* header strip */}
+        <div className="cart-header login-header" style={{ marginBottom: 0 }}>
+          <div
+            className="container login-header-inner"
+            style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <div className="back" onClick={() => router.push("/", undefined, { shallow: true })}>
+              <RightArrow />
+            </div>
+            <div className="title">Blog</div>
             <div
-              className="container login-header-inner"
-              style={{
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              className="header-icon-container hamburger-menu right-menu"
+              style={{ top: "-5px" }}
+              onClick={() => setIsMenuActive(true)}
             >
-              <div
-                className="back"
-                onClick={() => router.push("/", undefined, { shallow: true })}
-              >
-                <RightArrow />
-              </div>
-              <div className="title">Gourmet Twist Blog</div>
-              <div
-                className="header-icon-container hamburger-menu right-menu"
-                style={{ top: "-5px" }}
-                onClick={() => showMenu(true)}
-              >
-                <span></span>
-              </div>
-
-              <CSSTransitionGroup
-                transitionName="header-menu-animation"
-                transitionEnterTimeout={500}
-                transitionLeaveTimeout={300}
-              >
-                {isMenuActive && <HeaderMenu showMenu={showMenu} />}
-              </CSSTransitionGroup>
+              <span></span>
             </div>
-          </div>
-
-          <div className="container" style={{ marginTop: 20 }}>
-            <div className="shop-section">
-              <div className="section-items">
-                {posts.map((post) => (
-                  <PostItem
-                    key={post.slug}
-                    name={post.title}
-                    image={post.coverImage || null}
-                    date={
-                      post.publishedAt
-                        ? moment(post.publishedAt).format("LL")
-                        : ""
-                    }
-                    onClick={() => router.push(`/blog/${post.slug}`)}
-                  />
-                ))}
-              </div>
-            </div>
+            <CSSTransitionGroup
+              transitionName="header-menu-animation"
+              transitionEnterTimeout={500}
+              transitionLeaveTimeout={300}
+            >
+              {isMenuActive && <HeaderMenu showMenu={setIsMenuActive} />}
+            </CSSTransitionGroup>
           </div>
         </div>
-      </Main>
-    </div>
+
+        <div className="container" style={{ maxWidth: 900, margin: "0 auto", padding: "40px 24px 80px" }}>
+          <h1 className="blog-page-title">From the kitchen</h1>
+          <p className="blog-page-sub">Stories, guides, and everything banana bread.</p>
+
+          {posts.length === 0 ? (
+            <p className="blog-empty">No posts yet — check back soon.</p>
+          ) : (
+            <div className="blog-grid">
+              {posts.map((post) => (
+                <div
+                  key={post.slug}
+                  className="blog-card"
+                  onClick={() => router.push(`/blog/${post.slug}`)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === "Enter" && router.push(`/blog/${post.slug}`)}
+                >
+                  <div className="blog-card__img-wrap">
+                    {post.coverImage ? (
+                      <img src={post.coverImage} alt={post.title} className="blog-card__img" loading="lazy" />
+                    ) : (
+                      <div className="blog-card__img-wrap" style={{ background: "rgba(242,193,49,0.1)" }} />
+                    )}
+                  </div>
+                  <div className="blog-card__body">
+                    {post.publishedAt && (
+                      <span className="blog-card__date">{moment(post.publishedAt).format("LL")}</span>
+                    )}
+                    <p className="blog-card__title">{post.title}</p>
+                    {post.description && (
+                      <p className="blog-card__desc">{post.description}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </Main>
   );
 };
 
