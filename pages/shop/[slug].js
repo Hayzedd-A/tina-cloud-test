@@ -112,34 +112,14 @@ function buildProductProps(product, slug) {
   };
 }
 
-export async function getStaticPaths() {
-  try {
-    const res = await fetch(
-      `${API_BASE_URL}customer-requests/stores/${STORE_ID}/products`
-    );
-    const json = await res.json();
-    const categories = Array.isArray(json.data) ? json.data : [];
-    const products = flattenProducts(categories);
-
-    const slugs = new Set();
-    products.forEach((p) => slugs.add(slugify(p.name)));
-
-    return {
-      paths: Array.from(slugs).map((slug) => ({ params: { slug } })),
-      fallback: "blocking",
-    };
-  } catch {
-    return { paths: [], fallback: "blocking" };
-  }
-}
-
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const { slug } = params;
 
   try {
     const res = await fetch(
       `${API_BASE_URL}customer-requests/stores/${STORE_ID}/products`
     );
+    if (!res.ok) throw new Error(`API ${res.status}`);
     const json = await res.json();
     const categories = Array.isArray(json.data) ? json.data : [];
     const allProducts = flattenProducts(categories);
@@ -155,7 +135,6 @@ export async function getStaticProps({ params }) {
         product: buildProductProps(match, slug),
         slug,
       },
-      revalidate: 300,
     };
   } catch {
     return { notFound: true };
