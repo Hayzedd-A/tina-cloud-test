@@ -39,3 +39,6 @@ yarn-error.log*
 # TinaCMS generated files (rebuilt at deploy time)
 tina/__generated__
 public/admin
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
